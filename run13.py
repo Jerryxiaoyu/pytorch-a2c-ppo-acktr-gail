@@ -5,7 +5,7 @@ import shutil
 import glob
 import paramiko
 import time
-
+import utils.ssh as ssh
 class VG(VariantGenerator):
 
     @variant
@@ -49,12 +49,12 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [1e7]
+        return [5e5]
  ##----------------------------------------------------
 
     @variant
     def action_dim(self):
-        return [ 2,3,13]
+        return [ 2 ]#2,3,13
 
     @variant
     def reward_fun_choice(self):
@@ -102,6 +102,11 @@ EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
+
+ssh_FLAG = True
+AWS_logpath = '/home/ubuntu/jerry/projects/pytorch-a2c-ppo-acktr-gail/log-files/AWS_logfiles/'
+n_cpu = 32  #8
+
 # print choices
 variants = VG().variants()
 num=0
@@ -141,6 +146,14 @@ save_model_interval = 50
 
 full_output = True
 evaluate_monitor = False
+
+
+# SSH Config
+if ssh_FLAG:
+    hostname = '2402:f000:6:3801:15f4:4e92:4b69:87da' #'2600:1f16:e7a:a088:805d:16d6:f387:62e5'
+    username = 'drl'
+    key_path = '/home/ubuntu/.ssh/id_rsa_dl'
+    port = 22
 
 # run
 num_exp =0
@@ -247,5 +260,11 @@ for v in variants:
               " --save-dir " + str(save_dir)
 
               )
+
+    if ssh_FLAG:
+        local_dir = os.path.abspath(group_dir)
+        remote_dir = AWS_logpath + exp_group_dir + '/'
+        ssh.upload(local_dir, remote_dir, hostname=hostname, port=port, username=username,
+                   pkey_path=key_path)
 
 
