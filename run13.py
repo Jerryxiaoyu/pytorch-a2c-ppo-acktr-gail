@@ -250,7 +250,7 @@ for v in variants:
               " --num-mini-batch " + str(num_mini_batch) +
               " --num-env-steps " + str(num_env_steps) +
 
-
+              ' --no-cuda ' +
               " --gamma " + str(gamma) +
               " --tau " + str(tau) +
               " --use-linear-lr-decay " +
