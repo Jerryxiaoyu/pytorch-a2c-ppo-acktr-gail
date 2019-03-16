@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['full']  #full, error, no
+        return ['no']  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -89,7 +89,7 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [0  ]
+        return [1  ]
 
     @variant
     def turing_flag(self):
@@ -97,13 +97,13 @@ class VG(VariantGenerator):
 
 
 
-exp_id = 14
+exp_id = 15
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-ssh_FLAG = False
+ssh_FLAG = True
 AWS_logpath = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files/AWS_logfiles/'
 n_cpu = 32 #8
 num_threads = 32

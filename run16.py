@@ -58,7 +58,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [ 22]
+        return [ 21]
 
     @variant
     def num_buffer(self):
@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['full']  #full, error, no
+        return ['no']  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -77,10 +77,10 @@ class VG(VariantGenerator):
 
     @variant
     def state_mode(self):
-        return ['vel', 'pos']  # vel , pos, vel_f
+        return [ 'pos']  # vel , pos, vel_f
     @variant
     def command_vx_high(self):
-        return [0.2]
+        return [1]
     @variant
     def command_vy_high(self):
         return [0]
@@ -89,21 +89,21 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [0  ]
+        return [1  ]
 
     @variant
     def turing_flag(self):
-        return [ 2,3]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
+        return [ 1]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
 
 
 
-exp_id = 14
+exp_id = 15
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-ssh_FLAG = False
+ssh_FLAG = True
 AWS_logpath = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files/AWS_logfiles/'
 n_cpu = 32 #8
 num_threads = 32

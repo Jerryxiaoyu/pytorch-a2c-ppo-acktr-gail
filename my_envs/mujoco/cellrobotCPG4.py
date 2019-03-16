@@ -1335,6 +1335,26 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
 
             return reward, other_rewards
 
+    def reward_fun26(self, velocity_base, v_commdand, action, obs):
+
+            orien = obs[3:6]
+            x_pose = obs[0]
+            y_pose = obs[1]
+
+            forward_reward = 0.5 * min(velocity_base[0], 1)
+            #y_cost = -0.5 * K_kernel6(y_pose)
+            y_cost  = -0.5 *np.linalg.norm(y_pose)
+
+
+            ctrl_cost = -0.005 * np.square(action).sum()
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+
+            reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost ])
+
+            return reward, other_rewards
 def K_kernel(x):
     x = np.linalg.norm(x)
     K = -1 / (np.exp(x) + 2 + np.exp(-x))
