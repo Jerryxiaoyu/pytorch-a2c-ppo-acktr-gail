@@ -105,7 +105,9 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 ssh_FLAG = True
 AWS_logpath = '/home/ubuntu/jerry/projects/pytorch-a2c-ppo-acktr-gail/log-files/AWS_logfiles/'
-n_cpu = 32  #8
+n_cpu = 1 #8
+num_threads = 1
+
 
 # print choices
 variants = VG().variants()
@@ -140,7 +142,7 @@ with open(group_dir + '/readme.txt', 'wt') as f:
 
 
 algo ='ppo'
-num_threads = 8
+
 log_interval = 1
 save_model_interval = 50
 
@@ -240,7 +242,7 @@ for v in variants:
               " --use-gae "  +
               " --log-interval " + str(log_interval) +
               " --num-steps " + str(num_steps) +
-              " --num-processes " + str(num_threads) +
+              " --num-processes " + str(n_cpu) +
               " --lr " + str(learning_rate) +
               " --entropy-coef " + str(entropy_coef) +
               " --value-loss-coef " + str(value_loss_coef) +
