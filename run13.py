@@ -105,8 +105,8 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 ssh_FLAG = True
 AWS_logpath = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files/AWS_logfiles/'
-n_cpu = 1 #8
-num_threads = 1
+n_cpu = 32 #8
+num_threads = 32
 
 
 # print choices
