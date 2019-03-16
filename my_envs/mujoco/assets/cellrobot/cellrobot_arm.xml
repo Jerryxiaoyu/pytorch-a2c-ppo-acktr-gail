@@ -1,0 +1,246 @@
+<mujoco model="cellrobot(v1.0)">
+    <compiler angle="radian" coordinate="local" meshdir="meshes" strippath="false" texturedir="textures"/>
+    <option gravity="0 0 -9.81" integrator="RK4" timestep="0.001"/>
+
+    <size nconmax="250" njmax="795" nstack="631875"/>
+
+    <default>
+        <geom conaffinity="1" condim="3" friction="1 0.5 0.5" margin="0.001"/>
+        <mesh scale="1 1 1"/>
+        <joint armature=".01" damping="0.2" limited="true"/>
+
+        <default class="detacher">
+            <geom conaffinity="1" condim="3" friction="1 0.5 0.5" margin="0.001" pos="0 0 0" rgba="0.93 0.71 0.13 1"
+                  type="mesh"/>
+        </default>
+        <default class="cell">
+            <geom conaffinity="1" condim="3" friction="1 0.5 0.5" margin="0.001" type="mesh"/>
+
+        </default>
+
+
+    </default>
+    <asset>
+        <mesh file="cell_gear/shell_gear.STL" name="cell_half_gear"/>
+        <mesh file="cell_gear/detacher1.STL" name="detacher1"/>
+        <mesh file="cell_gear/detacher2.STL" name="detacher2"/>
+        <mesh file="cell_gear/detacher3.STL" name="detacher3"/>
+        <mesh file="cell_gear/detacher4.STL" name="detacher4"/>
+        <mesh file="cell_gear/circle_gear.STL" name="circle_gear"/>
+        <mesh file="cell_gear/led_gear.STL" name="led_gear"/>
+
+        <mesh file="cell_motor/shell_motor.STL" name="cell_half_motor"/>
+        <mesh file="cell_motor/detacher5.STL" name="detacher5"/>
+        <mesh file="cell_motor/detacher6.STL" name="detacher6"/>
+        <mesh file="cell_motor/detacher7.STL" name="detacher7"/>
+        <mesh file="cell_motor/detacher8.STL" name="detacher8"/>
+        <mesh file="cell_motor/circle_motor.STL" name="circle_motor"/>
+        <mesh file="cell_motor/led_motor.STL" name="led_motor"/>
+
+        <texture builtin="checker" height="100" name="floor_tex" rgb1=".2 .3 .4" rgb2=".1 .2 .3" type="2d" width="100"/>
+        <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+        <texture file="block.png" gridlayout=".U..LFRB.D.." gridsize="3 4" name="texture:object" type="cube"/>
+
+        <material name="floor_mat" reflectance="0.5" shininess="0.8" specular="0.7" texrepeat="10 10"
+                  texture="floor_tex"/>
+        <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="30 30" texture="texplane"/>
+        <material name="material:object" reflectance="0" shininess="0" specular="1" texture="texture:object"/>
+    </asset>
+
+
+    <visual>
+        <map fogend="3" fogstart="1.5"/>
+        <quality shadowsize="20480"/>
+    </visual>
+
+
+    <contact>
+        <exclude body1="cell1_1" body2="cell1_2"/>
+        <exclude body1="cell2_1" body2="cell2_2"/>
+        <exclude body1="cell3_1" body2="cell3_2"/>
+        <exclude body1="cell4_1" body2="cell4_2"/>
+        <exclude body1="cell0_1" body2="cell1_2"/>
+        <exclude body1="cell1_1" body2="cell2_2"/>
+        <exclude body1="cell2_1" body2="cell3_2"/>
+        <exclude body1="cell3_1" body2="cell4_2"/>
+    </contact>
+
+
+    <equality>
+        <weld body1="cell0_1" body2="cell1_2"/>
+        <weld body1="cell1_1" body2="cell2_2"/>
+        <weld body1="cell2_1" body2="cell3_2"/>
+        <weld body1="cell3_1" body2="cell4_2"/>
+    </equality>
+
+    <worldbody>
+
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3"
+               specular=".1 .1 .1"/>
+
+        <camera axisangle="2 2 -2 1" mode="fixed" name="main1" pos="2 2 2" target="torso"/>
+
+        <geom conaffinity="1" condim="3" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1"
+              size="15 15 15" type="plane"/>
+
+
+        <site name="target1" pos="1 0 0" rgba="1 0.5 0 1" size="0.5 " type="sphere"/>
+        <site name="target2" pos="0 0 1" rgba="1 0 0 1" size="0.04 " type="sphere"/>
+        <body euler="0 1.5808 0" name="torso" pos="0  0  0.35">
+            <geom name="torso_geom" pos="0  0  0" size="0.02" type="sphere"/>
+
+            <body name="cell0_1" pos="0 0 -0.001">
+                <inertial
+                        fullinertia="5.338593e-05 5.2989770000000003e-05 6.634227000000001e-05 4.3267e-07 1.1089e-06 2.2068200000000003e-06"
+                        mass="0.09814" pos="-0.0004 -0.00079 0.009519999999999999"/>
+                <geom class="cell" mesh="cell_half_gear" pos="0  0  0" rgba="1 1 1 1"/>
+                <geom class="detacher" mesh="detacher1" rgba="1 0.42 0.42 1"/>
+                <geom class="detacher" mesh="detacher2"/>
+                <geom class="detacher" mesh="detacher3"/>
+                <geom class="detacher" mesh="detacher4"/>
+                <geom class="cell" mesh="circle_gear" pos="0  0  0" rgba="0 0 0 1"/>
+                <geom class="cell" mesh="led_gear" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                <body name="cell0_2" pos="0 0 0">
+                    <site name="cell0" pos="0 0 0 " size="0.001 0.001 0.001"/>
+                    <joint axis="0 0 1" limited="false" name="joint:cell0" pos="0 0 -0.001"/>
+                    <inertial
+                            fullinertia="5.363084e-05 5.412367e-05 5.157385e-05 2.1730000000000002e-07 4.8619e-07 4.5697000000000005e-07"
+                            mass="0.1346" pos="0.00027 0.00011999999999999999 -0.01269"/>
+                    <geom class="cell" mesh="cell_half_motor" pos="0  0  0" rgba="1 1 1 1"/>
+                    <geom class="detacher" mesh="detacher5"/>
+                    <geom class="detacher" mesh="detacher6"/>
+                    <geom class="detacher" mesh="detacher7"/>
+                    <geom class="detacher" mesh="detacher8"/>
+                    <geom class="cell" mesh="circle_motor" pos="0  0  0" rgba="0 0 0 1"/>
+                    <geom class="cell" mesh="led_motor" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                </body>
+                <body name="cell1_2" pos="0.04096758 0.04096758 0.03896092" quat="0.0 0.57738155 0.57738155 0.57728771">
+                    <inertial
+                            fullinertia="5.363084e-05 5.412367e-05 5.157385e-05 2.1730000000000002e-07 4.8619e-07 4.5697000000000005e-07"
+                            mass="0.1346" pos="0.00027 0.00011999999999999999 -0.01269"/>
+                    <geom class="cell" mesh="cell_half_motor" pos="0  0  0" rgba="1 1 1 1"/>
+                    <geom class="detacher" mesh="detacher5"/>
+                    <geom class="detacher" mesh="detacher6"/>
+                    <geom class="detacher" mesh="detacher7"/>
+                    <geom class="detacher" mesh="detacher8"/>
+                    <geom class="cell" mesh="circle_motor" pos="0  0  0" rgba="0 0 0 1"/>
+                    <geom class="cell" mesh="led_motor" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                    <body name="cell1_1" pos="0 0 0">
+                        <site name="cell1" pos="0 0 0 " size="0.001 0.001 0.001"/>
+                        <joint axis="0 0 1" limited="false" name="joint:cell1" pos="0 0 -0.001"/>
+                        <inertial
+                                fullinertia="5.338593e-05 5.2989770000000003e-05 6.634227000000001e-05 4.3267e-07 1.1089e-06 2.2068200000000003e-06"
+                                mass="0.09814" pos="-0.0004 -0.00079 0.009519999999999999"/>
+                        <geom class="cell" mesh="cell_half_gear" pos="0  0  0" rgba="1 1 1 1"/>
+                        <geom class="detacher" mesh="detacher1" rgba="1 0.42 0.42 1"/>
+                        <geom class="detacher" mesh="detacher2"/>
+                        <geom class="detacher" mesh="detacher3"/>
+                        <geom class="detacher" mesh="detacher4"/>
+                        <geom class="cell" mesh="circle_gear" pos="0  0  0" rgba="0 0 0 1"/>
+                        <geom class="cell" mesh="led_gear" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                        <body name="cell2_2" pos="0.04096758 0.04096758 0.03896092"
+                              quat="0.0 0.57738155 0.57738155 0.57728771">
+                            <inertial
+                                    fullinertia="5.363084e-05 5.412367e-05 5.157385e-05 2.1730000000000002e-07 4.8619e-07 4.5697000000000005e-07"
+                                    mass="0.1346" pos="0.00027 0.00011999999999999999 -0.01269"/>
+                            <geom class="cell" mesh="cell_half_motor" pos="0  0  0" rgba="1 1 1 1"/>
+                            <geom class="detacher" mesh="detacher5"/>
+                            <geom class="detacher" mesh="detacher6"/>
+                            <geom class="detacher" mesh="detacher7"/>
+                            <geom class="detacher" mesh="detacher8"/>
+                            <geom class="cell" mesh="circle_motor" pos="0  0  0" rgba="0 0 0 1"/>
+                            <geom class="cell" mesh="led_motor" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                            <body name="cell2_1" pos="0 0 0">
+                                <site name="cell2" pos="0 0 0 " size="0.001 0.001 0.001"/>
+                                <joint axis="0 0 1" limited="false" name="joint:cell2" pos="0 0 -0.001"/>
+                                <inertial
+                                        fullinertia="5.338593e-05 5.2989770000000003e-05 6.634227000000001e-05 4.3267e-07 1.1089e-06 2.2068200000000003e-06"
+                                        mass="0.09814" pos="-0.0004 -0.00079 0.009519999999999999"/>
+                                <geom class="cell" mesh="cell_half_gear" pos="0  0  0" rgba="1 1 1 1"/>
+                                <geom class="detacher" mesh="detacher1" rgba="1 0.42 0.42 1"/>
+                                <geom class="detacher" mesh="detacher2"/>
+                                <geom class="detacher" mesh="detacher3"/>
+                                <geom class="detacher" mesh="detacher4"/>
+                                <geom class="cell" mesh="circle_gear" pos="0  0  0" rgba="0 0 0 1"/>
+                                <geom class="cell" mesh="led_gear" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                                <body name="cell3_2" pos="0.04096758 0.04096758 0.03896092"
+                                      quat="0.0 0.57738155 0.57738155 0.57728771">
+                                    <inertial
+                                            fullinertia="5.363084e-05 5.412367e-05 5.157385e-05 2.1730000000000002e-07 4.8619e-07 4.5697000000000005e-07"
+                                            mass="0.1346" pos="0.00027 0.00011999999999999999 -0.01269"/>
+                                    <geom class="cell" mesh="cell_half_motor" pos="0  0  0" rgba="1 1 1 1"/>
+                                    <geom class="detacher" mesh="detacher5"/>
+                                    <geom class="detacher" mesh="detacher6"/>
+                                    <geom class="detacher" mesh="detacher7"/>
+                                    <geom class="detacher" mesh="detacher8"/>
+                                    <geom class="cell" mesh="circle_motor" pos="0  0  0" rgba="0 0 0 1"/>
+                                    <geom class="cell" mesh="led_motor" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                                    <body name="cell3_1" pos="0 0 0">
+                                        <site name="cell3" pos="0 0 0 " size="0.001 0.001 0.001"/>
+                                        <joint axis="0 0 1" limited="false" name="joint:cell3" pos="0 0 -0.001"/>
+                                        <inertial
+                                                fullinertia="5.338593e-05 5.2989770000000003e-05 6.634227000000001e-05 4.3267e-07 1.1089e-06 2.2068200000000003e-06"
+                                                mass="0.09814" pos="-0.0004 -0.00079 0.009519999999999999"/>
+                                        <geom class="cell" mesh="cell_half_gear" pos="0  0  0" rgba="1 1 1 1"/>
+                                        <geom class="detacher" mesh="detacher1" rgba="1 0.42 0.42 1"/>
+                                        <geom class="detacher" mesh="detacher2"/>
+                                        <geom class="detacher" mesh="detacher3"/>
+                                        <geom class="detacher" mesh="detacher4"/>
+                                        <geom class="cell" mesh="circle_gear" pos="0  0  0" rgba="0 0 0 1"/>
+                                        <geom class="cell" mesh="led_gear" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                                        <body name="cell4_2" pos="0.04096758 0.04096758 0.03896092"
+                                              quat="0.0 0.57738155 0.57738155 0.57728771">
+                                            <inertial
+                                                    fullinertia="5.363084e-05 5.412367e-05 5.157385e-05 2.1730000000000002e-07 4.8619e-07 4.5697000000000005e-07"
+                                                    mass="0.1346" pos="0.00027 0.00011999999999999999 -0.01269"/>
+                                            <geom class="cell" mesh="cell_half_motor" pos="0  0  0" rgba="1 1 1 1"/>
+                                            <geom class="detacher" mesh="detacher5"/>
+                                            <geom class="detacher" mesh="detacher6"/>
+                                            <geom class="detacher" mesh="detacher7"/>
+                                            <geom class="detacher" mesh="detacher8"/>
+                                            <geom class="cell" mesh="circle_motor" pos="0  0  0" rgba="0 0 0 1"/>
+                                            <geom class="cell" mesh="led_motor" pos="0  0  0" rgba="0.53 0.81 0.98 1"/>
+                                            <body name="cell4_1" pos="0 0 0">
+                                                <site name="cell4" pos="0 0 0 " size="0.001 0.001 0.001"/>
+                                                <joint axis="0 0 1" limited="false" name="joint:cell4"
+                                                       pos="0 0 -0.001"/>
+                                                <inertial
+                                                        fullinertia="5.338593e-05 5.2989770000000003e-05 6.634227000000001e-05 4.3267e-07 1.1089e-06 2.2068200000000003e-06"
+                                                        mass="0.09814" pos="-0.0004 -0.00079 0.009519999999999999"/>
+                                                <geom class="cell" mesh="cell_half_gear" pos="0  0  0" rgba="1 1 1 1"/>
+                                                <geom class="detacher" mesh="detacher1" rgba="1 0.42 0.42 1"/>
+                                                <geom class="detacher" mesh="detacher2"/>
+                                                <geom class="detacher" mesh="detacher3"/>
+                                                <geom class="detacher" mesh="detacher4"/>
+                                                <geom class="cell" mesh="circle_gear" pos="0  0  0" rgba="0 0 0 1"/>
+                                                <geom class="cell" mesh="led_gear" pos="0  0  0"
+                                                      rgba="0.53 0.81 0.98 1"/>
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="joint:cell0"/>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="10" joint="joint:cell1"/>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="10" joint="joint:cell2"/>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="10" joint="joint:cell3"/>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="10" joint="joint:cell4"/>
+    </actuator>
+    <sensor>
+
+        <torque name="cell0_toq" site="cell0"/>
+        <torque name="cell1_toq" site="cell1"/>
+        <torque name="cell2_toq" site="cell2"/>
+        <torque name="cell3_toq" site="cell3"/>
+        <torque name="cell4_toq" site="cell4"/>
+    </sensor>
+</mujoco>

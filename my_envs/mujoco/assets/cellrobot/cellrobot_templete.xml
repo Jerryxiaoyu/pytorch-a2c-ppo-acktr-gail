@@ -1,0 +1,86 @@
+<mujoco model="cellrobot(v1.0)">
+    <compiler coordinate="local" angle="radian" meshdir="meshes" texturedir="textures" strippath="false"/>
+    <option integrator="RK4" gravity="0 0 -9.81" timestep="0.001"/>
+
+    <size njmax="795" nconmax="250" nstack="631875"/>
+
+    <default>
+        <geom contype="1"  conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0.001"   solref=".01 1" solimp=".99 .99 .01"/>
+        <mesh scale="1 1 1"/>
+        <joint armature="1" damping="15"  limited="true"/>
+        <default class="detacher">
+            <geom conaffinity="1"   margin="0.001" pos="0 0 0" rgba="0.93 0.71 0.13 1"
+                  type="mesh"/>
+        </default>
+        <default class="cell">
+            <geom conaffinity="1"   margin="0.001" solimp=".99 .99 .01" solref=".01 1"
+                  type="mesh"/>
+        </default>
+    </default>
+
+    <asset><!--Meshes-->
+        <mesh name="cell_half_gear" file="cell_gear/shell_gear.STL"/>
+        <mesh name="detacher1" file="cell_gear/detacher1.STL"/>
+        <mesh name="detacher2" file="cell_gear/detacher2.STL"/>
+        <mesh name="detacher3" file="cell_gear/detacher3.STL"/>
+        <mesh name="detacher4" file="cell_gear/detacher4.STL"/>
+        <mesh name="circle_gear" file="cell_gear/circle_gear.STL"/>
+        <mesh name="led_gear" file="cell_gear/led_gear.STL"/>
+
+        <mesh name="cell_half_motor" file="cell_motor/shell_motor.STL"/>
+        <mesh name="detacher5" file="cell_motor/detacher5.STL"/>
+        <mesh name="detacher6" file="cell_motor/detacher6.STL"/>
+        <mesh name="detacher7" file="cell_motor/detacher7.STL"/>
+        <mesh name="detacher8" file="cell_motor/detacher8.STL"/>
+        <mesh name="circle_motor" file="cell_motor/circle_motor.STL"/>
+        <mesh name="led_motor" file="cell_motor/led_motor.STL"/>
+        <!--Textures-->
+        <texture name="floor_tex" builtin="checker" type="2d" rgb1=".2 .3 .4" rgb2=".1 .2 .3" width="100" height="100"/>
+        <texture name="texplane" builtin="checker" height="100" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+        <texture name="texture:object" file="block.png" type="cube" gridsize="3 4"  gridlayout=".U..LFRB.D.."/>  <!-- gridlayout=".U..LFRB.D.." -->
+        <!--Materials-->
+        <material name='floor_mat' texture="floor_tex" shininess="0.8" texrepeat="10 10" specular="0.7"  reflectance="0.5"/>
+        <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="30 30" texture="texplane"/>
+        <material name="material:object" texture="texture:object" specular="1" shininess="0" reflectance="0"/>
+    </asset>
+
+
+    <visual>
+        <map fogstart="1.5" fogend="3"/>
+        <quality shadowsize="20480"/>
+    </visual>
+
+    <!--Contacts-->
+    <contact>
+    </contact>
+
+    <!--equality-->
+    <equality>
+    </equality>
+
+    <worldbody>
+        <!--Lighting parameters-->
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3"
+               specular=".1 .1 .1"/>
+
+        <!--Floor Property-->
+        <geom conaffinity="1" condim="3" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1"
+              size="15 15 15" type="plane"/>
+
+
+
+        <!--
+    <site name="target0" pos="0 0 0" size="0.5 "  rgba="1 0 0 1" type="sphere"></site>
+  -->
+        <camera name="track" mode="trackcom" pos="0 -3 0.3" xyaxes="1 0 0 0 0 1" target="torso"/>
+        <site name="target1" pos="0 0 0" rgba="1 0.5 0 1" size="0.05 " type="sphere"/>
+        <site name="target2" pos="1 0 0" rgba="1 0 0 1" size="0.05 " type="sphere"/>
+    </worldbody>
+
+<actuator>
+
+</actuator>
+<sensor>
+
+</sensor>
+</mujoco>
