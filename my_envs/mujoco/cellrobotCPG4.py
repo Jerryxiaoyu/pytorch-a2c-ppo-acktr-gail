@@ -170,12 +170,19 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
 
         if self.turing_flag == 1:
             self.command_vx_low = 0.5
-            self.command_duration = 10
+            self.command_duration = 20
         elif self.turing_flag == 2:
 
             self.command_duration = 5
         elif self.turing_flag == 3:
 
+            self.command_duration = 20
+        elif self.turing_flag == 4:
+
+            self.command_duration = 4
+        elif self.turing_flag == 5:
+            self.command_vx_low = 0.5
+            self.command_vy_low = 0.05
             self.command_duration = 20
 
         self.Calc_Reward = self.reward_fun1
@@ -235,9 +242,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
         if self.CPG_enable == 1 :
             action = CPG_transfer(a, self.CPG_controller, obs)
 
-
         self.do_simulation(action, self.frame_skip)
-
         obs = self._get_obs()
 
         pose_post = obs[:6]
@@ -301,8 +306,10 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
         return obs
 
     def reset_model(self, command = None, reward_fun_choice = None):
-        qpos = self.init_qpos  # + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)
-        qvel = self.init_qvel  # + self.np_random.randn(self.model.nv) * .1
+        T = np.ones(self.model.nq)
+        T[2] = 0
+        qpos = self.init_qpos # +  self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)*T
+        qvel = self.init_qvel # +  self.np_random.randn(self.model.nv) * .1
         self.set_state(qpos, qvel)
         self.goal_theta = pi / 4.0
         self.model.site_pos[1] = [cos(self.goal_theta), sin(self.goal_theta), 0]
@@ -388,6 +395,20 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
             self.Calc_Reward = self.reward_fun25
         elif reward_fun_choice == 26:
             self.Calc_Reward = self.reward_fun26
+        elif reward_fun_choice == 27:
+            self.Calc_Reward = self.reward_fun27
+        elif reward_fun_choice == 28:
+            self.Calc_Reward = self.reward_fun28
+        elif reward_fun_choice == 29:
+            self.Calc_Reward = self.reward_fun29
+        elif reward_fun_choice == 30:
+            self.Calc_Reward = self.reward_fun30
+        elif reward_fun_choice == 31:
+            self.Calc_Reward = self.reward_fun31
+        elif reward_fun_choice == 32:
+            self.Calc_Reward = self.reward_fun32
+        elif reward_fun_choice == 33:
+            self.Calc_Reward = self.reward_fun33
         elif reward_fun_choice is None:
             self.Calc_Reward = self.reward_fun1
             reward_fun_choice = 1
@@ -1251,7 +1272,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
             forward_pose_reward = -0.5  *np.linalg.norm(self.goal_xyyaw[:2] - obs[:2])
 
 
-            ctrl_cost = -0.005 * np.square(action).sum()
+            ctrl_cost = 0# -0.005 * np.square(action).sum()
             contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
             survive_reward = 0.2
             reward =  forward_reward + ctrl_cost + contact_cost + survive_reward + forward_pose_reward
@@ -1346,7 +1367,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
             y_cost  = -0.5 *np.linalg.norm(y_pose)
 
 
-            ctrl_cost = -0.005 * np.square(action).sum()
+            ctrl_cost = 0 #-0.5 * np.square(action).sum()
             contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
             survive_reward = 0.0
 
@@ -1355,6 +1376,182 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost ])
 
             return reward, other_rewards
+    def reward_fun27(self, velocity_base, v_commdand, action, obs):
+        v_e = np.concatenate((velocity_base[:2], velocity_base[-1:])) - v_commdand  # x, y, yaw
+        vxy = v_commdand[:2]
+        wyaw = v_commdand[2]
+        q_vel = obs[19:32]
+        orien = obs[3:6]
+
+        vx = v_commdand[0]
+        vy = v_commdand[1]
+        orien = obs[3:6]
+        xy_pose = obs[:2]
+
+        center_point = np.array([0,  1])
+
+        forward_reward = -0.5 * abs(np.linalg.norm(center_point - xy_pose) - v_commdand[0])
+
+        vel_reward = -0.6 * self.kc * np.linalg.norm(velocity_base[0] - vx)
+        ctrl_cost = -0.005 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.2
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + vel_reward
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, vel_reward])
+
+        return reward, other_rewards
+    def reward_fun28(self, velocity_base, v_commdand, action, obs):
+        v_e = np.concatenate((velocity_base[:2], velocity_base[-1:])) - v_commdand  # x, y, yaw
+        vxy = v_commdand[:2]
+        wyaw = v_commdand[2]
+        q_vel = obs[19:32]
+        orien = obs[3:6]
+
+        vx = v_commdand[0]
+        vy = v_commdand[1]
+        orien = obs[3:6]
+        xy_pose = obs[:2]
+        R = 0.5
+        w_goal = 0.15/R
+
+
+
+        center_point = np.array([R * math.sin(w_goal * self.c_index*self.dt), R * (1 - math.cos(w_goal * self.c_index*self.dt))])
+
+        if self.c_index % 10 ==0:
+            self.model.site_pos[1] = [center_point[0], center_point[1], 0]
+        forward_reward = -0.5 * np.linalg.norm(center_point - xy_pose)
+
+        # vel_reward = -0.6 * self.kc * np.linalg.norm(velocity_base[0] - vx)
+        ctrl_cost = -0  # 0.005 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.2
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost ])
+
+        return reward, other_rewards
+    def reward_fun29(self, velocity_base, v_commdand, action, obs):
+        rien = obs[3:6]
+        x_pose = obs[0]
+        y_pose = obs[1]
+
+        goal_vel = 0.10
+
+        forward_reward = -1.0 * abs(velocity_base[0] - goal_vel)
+        # y_cost = -0.5 * K_kernel6(y_pose)
+        y_cost = -0.5 * np.linalg.norm(y_pose)
+
+        ctrl_cost = 0  # -0.5 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.0
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+        return reward, other_rewards
+    def reward_fun30(self, velocity_base, v_commdand, action, obs):
+        rien = obs[3:6]
+        x_pose = obs[0]
+        y_pose = obs[1]
+
+        #goal_vel = 0.10
+
+        forward_reward = -1.0 * abs(velocity_base[0] - v_commdand[0])
+        # y_cost = -0.5 * K_kernel6(y_pose)
+        y_cost = -0.5 * np.linalg.norm(y_pose)
+
+        ctrl_cost = 0  # -0.5 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.0
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+        return reward, other_rewards
+
+    def reward_fun31(self, velocity_base, v_commdand, action, obs):
+        rien = obs[3:6]
+        x_pose = obs[0]
+        y_pose = obs[1]
+
+        #goal_vel = 0.10
+
+        forward_reward = -1 * K_kernel3(velocity_base[0] - v_commdand[0])
+        # y_cost = -0.5 * K_kernel6(y_pose)
+        y_cost = -0.5 * np.linalg.norm(y_pose)
+
+        ctrl_cost = 0  # -0.5 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.0
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+        return reward, other_rewards
+
+
+    def reward_fun32(self, velocity_base, v_commdand, action, obs):
+        v_e = np.concatenate((velocity_base[:2], velocity_base[-1:])) - v_commdand  # x, y, yaw
+        vxy = v_commdand[:2]
+        wyaw = v_commdand[2]
+        q_vel = obs[19:32]
+        orien = obs[3:6]
+
+        vx = v_commdand[0]
+        vy = v_commdand[1]
+        orien = obs[3:6]
+        xy_pose = obs[:2]
+        R = v_commdand[0]
+        w_goal = 0.15 / R
+
+        center_point = np.array(
+            [R * math.sin(w_goal * self.c_index * self.dt), R * (1 - math.cos(w_goal * self.c_index * self.dt))])
+
+        if self.c_index % 10 == 0:
+            self.model.site_pos[1] = [center_point[0], center_point[1], 0]
+        forward_reward = -0.5 * np.linalg.norm(center_point - xy_pose)
+
+        # vel_reward = -0.6 * self.kc * np.linalg.norm(velocity_base[0] - vx)
+        ctrl_cost = -0  # 0.005 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.2
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost])
+
+        return reward, other_rewards
+    def reward_fun33(self, velocity_base, v_commdand, action, obs):
+        v_e = np.concatenate((velocity_base[:2], velocity_base[-1:])) - v_commdand  # x, y, yaw
+        vxy = v_commdand[:2]
+        wyaw = v_commdand[2]
+        q_vel = obs[19:32]
+        orien = obs[3:6]
+
+        vx = v_commdand[0]
+        vy = v_commdand[1]
+        orien = obs[3:6]
+        xy_pose = obs[:2]
+        R = v_commdand[0]
+        w_goal = v_commdand[1] / R
+
+        center_point = np.array(
+            [R * math.sin(w_goal * self.c_index * self.dt), R * (1 - math.cos(w_goal * self.c_index * self.dt))])
+
+        if self.c_index % 10 == 0:
+            self.model.site_pos[1] = [center_point[0], center_point[1], 0]
+        forward_reward = -0.5 * np.linalg.norm(center_point - xy_pose)
+
+        # vel_reward = -0.6 * self.kc * np.linalg.norm(velocity_base[0] - vx)
+        ctrl_cost = -0  # 0.005 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.2
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost])
+
+        return reward, other_rewards
 def K_kernel(x):
     x = np.linalg.norm(x)
     K = -1 / (np.exp(x) + 2 + np.exp(-x))

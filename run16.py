@@ -45,21 +45,19 @@ class VG(VariantGenerator):
 
     @variant
     def tau(self):
-        return [0.98]
+        return [0.995]
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [1e7]
  ##----------------------------------------------------
 
     @variant
     def action_dim(self):
-        return [ 2, 3,13 ]#2,3,13
-
+        return [ 2  ]#2,3,13
     @variant
     def reward_fun_choice(self):
-        return [ 21]
-
+        return [ 28]
     @variant
     def num_buffer(self):
         return [0]
@@ -97,16 +95,16 @@ class VG(VariantGenerator):
 
 
 
-exp_id = 15
+exp_id = 26
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-ssh_FLAG = True
+ssh_FLAG = False
 AWS_logpath = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files/AWS_logfiles/'
-n_cpu = 32 #8
-num_threads = 32
+n_cpu =  8
+num_threads = 0
 
 
 # print choices

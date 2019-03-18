@@ -335,8 +335,8 @@ class CPG_network_Sinusoid(object):
             gain_left = np.clip(fi_l[0], -max_factor, max_factor)
             gain_right =np.clip(fi_l[1], -max_factor, max_factor)
 
-            gain_left = np.clip(fi_l[0], 0, 1) *2
-            gain_right = np.clip(fi_l[1], 0, 1)*2
+            gain_left = np.clip(fi_l[0], 0, 1) #*2
+            gain_right = np.clip(fi_l[1], 0, 1)#*2
 
 
             self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * gain_left

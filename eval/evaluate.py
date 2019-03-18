@@ -26,19 +26,19 @@ args = parser.parse_args()
 root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
-seed = 12
+seed = 17
 # 实验数据原始目录
 ENV_name = 'CellrobotEnvCPG4-v0'
-group_dir = 'log-files/Mar_16_PPO_RL_Exp12'
-exp_id = 12
-exp_no_list= [1]
-num_enjoy = 1
+group_dir = 'log-files/Mar_17_PPO_RL_Exp29'
+exp_id = 29
+exp_no_list= [1 ]
+num_enjoy = 3
 
 
-model_save_num = 0
+model_save_num = None
 monitor = args.monitor
 render = not monitor
-render = False
+render = True
 
 if args.env_name is None:
     ENV_name = ENV_name
