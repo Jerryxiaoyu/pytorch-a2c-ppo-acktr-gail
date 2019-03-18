@@ -33,7 +33,7 @@ obs_high = 19
 CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
-
+from utils.Logger import IO
 
 class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
@@ -308,7 +308,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
     def reset_model(self, command = None, reward_fun_choice = None):
         T = np.ones(self.model.nq)
         T[2] = 0
-        qpos = self.init_qpos # +  self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)*T
+        qpos = self.init_qpos  #+  self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)*T
         qvel = self.init_qvel # +  self.np_random.randn(self.model.nv) * .1
         self.set_state(qpos, qvel)
         self.goal_theta = pi / 4.0
@@ -330,6 +330,11 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
                                              wyaw_range=(self.command_wz_low, self.command_wz_high), render=False)
         else:
             self.command = command
+
+        global_command = os.getenv('GLOBAL_CMD')
+        if global_command is not None:
+            self.command = IO('data/cmd_{}.pkl'.format(global_command)).read_pickle()
+            print('Global command is selected, cmd_{}'.format(global_command))
 
         #global reward_choice
         if self.reward_choice is None:
@@ -1505,7 +1510,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
         xy_pose = obs[:2]
         R = v_commdand[0]
         w_goal = 0.15 / R
-
+        #print(v_commdand[0])
         center_point = np.array(
             [R * math.sin(w_goal * self.c_index * self.dt), R * (1 - math.cos(w_goal * self.c_index * self.dt))])
 

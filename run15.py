@@ -46,11 +46,11 @@ class VG(VariantGenerator):
 
     @variant
     def tau(self):
-        return [0.995]
+        return [0.995,]
 
     @variant
     def num_env_steps(self):
-        return [1e7]
+        return [5e6]
 
     ##----------------------------------------------------
 
@@ -64,7 +64,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [2]
+        return [0]
 
     @variant
     def command_mode(self):
@@ -103,7 +103,7 @@ class VG(VariantGenerator):
         return [0]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
 
 
-exp_id = 29
+exp_id = 31
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -240,33 +240,33 @@ for v in variants:
             print('export TURING_FLAG={}'.format(os.getenv('TURING_FLAG')))
 
 
-    # os.system("python3 main.py "  +
-    #
-    #           " --env-name " + str(env_name) +
-    #           " --algo " + str(algo) +
-    #           " --use-gae "  +
-    #           " --log-interval " + str(log_interval) +
-    #           " --num-steps " + str(num_steps) +
-    #           " --num-processes " + str(n_cpu) +
-    #           " --lr " + str(learning_rate) +
-    #           " --entropy-coef " + str(entropy_coef) +
-    #           " --value-loss-coef " + str(value_loss_coef) +
-    #           " --ppo-epoch " + str(ppo_epoch) +
-    #           " --num-mini-batch " + str(num_mini_batch) +
-    #           " --num-env-steps " + str(num_env_steps) +
-    #
-    #
-    #           " --gamma " + str(gamma) +
-    #           " --tau " + str(tau) +
-    #           " --use-linear-lr-decay " +
-    #             " --use-proper-time-limits " +
-    #
-    #           " --save-interval " + str(save_model_interval) +
-    #
-    #           " --log-dir " + str(log_dir) +
-    #           " --save-dir " + str(save_dir)
-    #
-    #           )
+    os.system("python3 main.py "  +
+
+              " --env-name " + str(env_name) +
+              " --algo " + str(algo) +
+              " --use-gae "  +
+              " --log-interval " + str(log_interval) +
+              " --num-steps " + str(num_steps) +
+              " --num-processes " + str(n_cpu) +
+              " --lr " + str(learning_rate) +
+              " --entropy-coef " + str(entropy_coef) +
+              " --value-loss-coef " + str(value_loss_coef) +
+              " --ppo-epoch " + str(ppo_epoch) +
+              " --num-mini-batch " + str(num_mini_batch) +
+              " --num-env-steps " + str(num_env_steps) +
+
+
+              " --gamma " + str(gamma) +
+              " --tau " + str(tau) +
+              " --use-linear-lr-decay " +
+                " --use-proper-time-limits " +
+
+              " --save-interval " + str(save_model_interval) +
+
+              " --log-dir " + str(log_dir) +
+              " --save-dir " + str(save_dir)
+
+              )
 
 
     print("python3 main.py "  +

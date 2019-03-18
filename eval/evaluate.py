@@ -26,13 +26,14 @@ args = parser.parse_args()
 root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
-seed = 17
+seed = 17# 11
+global_command = None  #s1
 # 实验数据原始目录
 ENV_name = 'CellrobotEnvCPG4-v0'
-group_dir = 'log-files/Mar_17_PPO_RL_Exp29'
-exp_id = 29
-exp_no_list= [1 ]
-num_enjoy = 3
+group_dir = 'log-files/Mar_17_PPO_RL_Exp20'
+exp_id = 20
+exp_no_list= [1  ]
+num_enjoy = 1
 
 
 model_save_num = None
@@ -106,7 +107,7 @@ for exp_no in exp_no_list:
     plot_learning_curve(reward_res, save_plot_path1, exp_no )
 
     # evaluate
-    evaluate_fun(result_path, parms,model_save_num , num_enjoy , render = render, monitor = monitor, seed=seed)
+    evaluate_fun(result_path, parms,model_save_num , num_enjoy=num_enjoy ,global_command=global_command, render = render, monitor = monitor, seed=seed)
 
     eval_path = os.path.join(result_path, 'evaluate')
     eval_data_path = os.path.join(eval_path, 'log_data.csv')

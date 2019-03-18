@@ -26,16 +26,19 @@ def GA_runner(num_times):
     action_dim = 2
     CPG_enable = 1
     reward_choice= 26
+    state_mode = 'pos'
     os.environ["REWARD_CHOICE"] = str(reward_choice)
     os.environ["ACTION_DIM"] = str(action_dim)
     os.environ["CPG_ENABLE"] = str(CPG_enable)
+    os.environ["STATE_MODE"] = str(state_mode)
+
     env = gym.make('CellrobotEnvCPG4-v0')
 
 
 
     command =  command_generator(10000, 0.01, 100, vx_range=(0.5, 1), vy_range = (0,0), wyaw_range = (0,0))
 
-    render = False
+    render = True
 
     num_enjoy = 1
 
@@ -45,7 +48,9 @@ def GA_runner(num_times):
     env._max_episode_steps = 2000
     for i in range(num_times):
         num_episodes = 0
-        logger = LoggerCsv(result_dir, csvname='log_data{}'.format(i))
+        #logger = LoggerCsv(result_dir, csvname='log_data{}'.format(i))
+        logger = None
+
         env.seed(i*2+seed)
         obs = env.reset()
 
@@ -60,6 +65,11 @@ def GA_runner(num_times):
 
         while True:
             # Obser reward and next obs
+
+
+            #action = position_PID(obs , action)
+
+
             obs, reward, done, log_info = env.step(action)
 
 
@@ -95,8 +105,25 @@ def GA_runner(num_times):
                 logger.write(display=False)
 
 
-
-# get original data from pure GA
-GA_runner(5)
+# def position_PID(obs, action ):
+#     #target_angles = target_angles.reshape((-1, 1))
+#
+#     #q = cur_angles.reshape((-1, 1))
+#
+#     kp =  5
+#     error = obs[1] - 0
+#     # action[0] = action[0] - kp *(error)
+#     # action[1] = action[1] + kp * (error)
+#     #
+#
+#     action[0] = 1 -  kp *(error)
+#     action[0] = 1 + kp * (error)
+#
+#     action = np.clip(action, 0, 1.5)
+#     #action = np.array(action)
+#
+#     return action.reshape((1, -1))[0]
+# # get original data from pure GA
+# GA_runner(1)
 
 

@@ -36,6 +36,7 @@ parser.add_argument('--non-det', action='store_true', default=False,
 args = parser.parse_args()
 num_enjoy = 1
 
+
 if args.result_dir is None:
     result_dir = 'tmp'
     os.makedirs(result_dir,exist_ok=True)
@@ -87,6 +88,7 @@ command_lists = []
 reward_lists = []
 num_episodes_lists =[]
 obs_lists = []
+action_list = []
 num_episodes = 0
 
 while True:
@@ -96,6 +98,7 @@ while True:
 
     # Obser reward and next obs
     obs, reward, done, log_info = env.step(action)
+
 
 
     masks.fill_(0.0 if done else 1.0)
@@ -108,6 +111,7 @@ while True:
         reward_lists.append(log_info[0]['rewards'])
         num_episodes_lists.append(num_episodes)
         obs_lists.append(log_info[0]['obs'])
+        action_list.append(action.numpy()[0])
     if num_episodes == num_enjoy:
         break
 
@@ -127,8 +131,9 @@ if logger is not None:
     rewards = np.array(reward_lists, dtype=np.float64)
     num_episodes_lists = np.array(num_episodes_lists, dtype=np.float64).reshape((-1,1))
     obs_lists = np.array(obs_lists, dtype=np.float64)
+    action_list = np.array(action_list, dtype=np.float64)
 
-    data = np.concatenate((num_episodes_lists , velocity_base, commands,  obs_lists, rewards  ), axis=1)
+    data = np.concatenate((num_episodes_lists , velocity_base, commands,  obs_lists, rewards, action_list  ), axis=1)
 
     trajectory = {}
     for j in range(data.shape[0]):
