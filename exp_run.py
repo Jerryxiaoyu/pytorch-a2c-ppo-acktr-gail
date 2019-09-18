@@ -11,7 +11,7 @@ class VG(VariantGenerator):
     def seed(self): #random seed (default: 1)
         return [123]
     @variant
-    def env_name(self): #environment to train on (default: PongNoFrameskip-v4)
+    def env_name(self):  #environment to train on (default: PongNoFrameskip-v4)
         return ['Reacher-v2']
     @variant
     def algo(self):
