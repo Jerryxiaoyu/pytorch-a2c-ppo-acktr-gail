@@ -3,6 +3,7 @@ import glob
 import os
 import time
 from collections import deque
+from tqdm import tqdm
 
 import gym
 import numpy as np
@@ -19,6 +20,7 @@ from a2c_ppo_acktr.model import Policy
 from a2c_ppo_acktr.storage import RolloutStorage
 from evaluation import evaluate
 
+from tensorboardX import SummaryWriter
 
 def main():
     args = get_args()
@@ -37,6 +39,9 @@ def main():
 
     torch.set_num_threads(1)
     device = torch.device("cuda:0" if args.cuda else "cpu")
+
+    summary_name = args.log_dir + '/{0}_{1}'
+    writer = SummaryWriter(summary_name.format(args.env_name, 'tflog'))
 
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                          args.gamma, args.log_dir, device, False)
@@ -100,7 +105,9 @@ def main():
     start = time.time()
     num_updates = int(
         args.num_env_steps) // args.num_steps // args.num_processes
-    for j in range(num_updates):
+
+    print('Total num updates:', num_updates)
+    for j in tqdm(range(num_updates)):
 
         if args.use_linear_lr_decay:
             # decrease learning rate linearly
@@ -158,6 +165,11 @@ def main():
         value_loss, action_loss, dist_entropy = agent.update(rollouts)
 
         rollouts.after_update()
+
+        writer.add_scalar("Value loss", value_loss, j)
+        writer.add_scalar("action loss", action_loss, j)
+        writer.add_scalar("dist entropy loss", dist_entropy, j)
+        writer.add_scalar("Episode rewards", np.mean(episode_rewards), j)
 
         # save for every interval-th episode or for the last epoch
         if (j % args.save_interval == 0
