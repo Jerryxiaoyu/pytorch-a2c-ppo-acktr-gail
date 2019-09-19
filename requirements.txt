@@ -16,6 +16,6 @@ tensorboardX==1.8
 PyYAML==5.1.2
 
 #baselines ==0.1.5
--e git+https://github.com/Jerryxiaoyu/baselines.git@800adf8727201b27b2aa81299d2f05ee828abb58
+-e git://github.com/Jerryxiaoyu/baselines.git@800adf8727201b27b2aa81299d2f05ee828abb58
 # ottermodels ==0.0.3
--e git+https://github.com/Jerryxiaoyu/ottermodels.git@586e64ab00997ae51f0dcad404e782b1770365dc
+-e git://github.com/Jerryxiaoyu/ottermodels.git@586e64ab00997ae51f0dcad404e782b1770365dc
