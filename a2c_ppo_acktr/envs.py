@@ -28,14 +28,22 @@ try:
 except ImportError:
     pass
 
+try:
+    import ottermodels
+    ottermodels.register_all_envs()
+except ImportError:
+    pass
 
-def make_env(env_id, seed, rank, log_dir, allow_early_resets):
+def make_env(env_id, seed, rank, log_dir, allow_early_resets, isRender=None):
     def _thunk():
         if env_id.startswith("dm"):
             _, domain, task = env_id.split('.')
             env = dm_control2gym.make(domain_name=domain, task_name=task)
         else:
-            env = gym.make(env_id)
+            if isRender is None:
+                env = gym.make(env_id)
+            else:
+                env = gym.make(env_id, isRender=isRender)
 
         is_atari = hasattr(gym.envs, 'atari') and isinstance(
             env.unwrapped, gym.envs.atari.atari_env.AtariEnv)
@@ -81,9 +89,10 @@ def make_vec_envs(env_name,
                   log_dir,
                   device,
                   allow_early_resets,
-                  num_frame_stack=None):
+                  num_frame_stack=None,
+                  isRender=None):
     envs = [
-        make_env(env_name, seed, i, log_dir, allow_early_resets)
+        make_env(env_name, seed, i, log_dir, allow_early_resets, isRender)
         for i in range(num_processes)
     ]
 

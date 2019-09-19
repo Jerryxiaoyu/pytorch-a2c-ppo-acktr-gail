@@ -12,7 +12,7 @@ class VG(VariantGenerator):
         return [123]
     @variant
     def env_name(self):  #environment to train on (default: PongNoFrameskip-v4)
-        return ['Reacher-v2']
+        return ['KinovaReacherTorqueXYZEnv-v0','KinovaReacherJointXYZEnv-v0' , 'KinovaReacherXYZ-v0']
     @variant
     def algo(self):
         return ['ppo']
@@ -90,9 +90,9 @@ class VG(VariantGenerator):
 
  ##----------------------------------------------------
 
-exp_id = 1
+exp_id = 3
 
-EXP_NAME ='Reacher-v2'
+EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
           " "
@@ -137,7 +137,7 @@ with open(group_dir + '/readme.txt', 'wt') as f:
 
 
 
-log_interval = 1
+log_interval = 10
 save_model_interval = 10
 
 

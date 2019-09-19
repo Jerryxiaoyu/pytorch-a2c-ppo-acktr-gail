@@ -21,20 +21,27 @@ parser.add_argument(
     help='log interval, one log per n updates (default: 10)')
 parser.add_argument(
     '--env-name',
-    default='PongNoFrameskip-v4',
+    default='KinovaReacherTorqueXYZEnv-v0',
     help='environment to train on (default: PongNoFrameskip-v4)')
 parser.add_argument(
     '--load-dir',
-    default='./trained_models/',
+    default='/home/drl/PycharmProjects/JerryRepos/pytorch-a2c-ppo-acktr-gail/logs-files/20190918-Kinova_Exp2/No_1_KinovaReacherTorqueXYZEnv-v0_ppo-2019-09-18_214536/model/ppo/KinovaReacherTorqueXYZEnv-v0.20.pt',
     help='directory to save agent logs (default: ./trained_models/)')
 parser.add_argument(
     '--non-det',
     action='store_true',
     default=False,
     help='whether to use a non-deterministic policy')
+parser.add_argument(
+    '--isRender',
+    action='store_true',
+    default=True,
+    help='whether to render in Pybullet')
+
 args = parser.parse_args()
 
 args.det = not args.non_det
+isRender = args.isRender
 
 env = make_vec_envs(
     args.env_name,
@@ -42,15 +49,16 @@ env = make_vec_envs(
     1,
     None,
     None,
-    device='cpu',
-    allow_early_resets=False)
+    device='cuda:0',
+    allow_early_resets=False,
+    isRender=isRender)
 
 # Get a render function
 render_func = get_render_func(env)
 
 # We need to use the same statistics for normalization as used in training
 actor_critic, ob_rms = \
-            torch.load(os.path.join(args.load_dir, args.env_name + ".pt"))
+            torch.load(os.path.join(args.load_dir))
 
 vec_norm = get_vec_normalize(env)
 if vec_norm is not None:
