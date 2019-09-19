@@ -7,12 +7,11 @@ import shutil
 import glob
 import yaml
 import time
-from  utils  import ssh
+import utils.ssh as ssh
 
 
 remote_FLAG = True
 AWS_logpath = '/home/drl/PycharmProjects/JerryRepos/pytorch-a2c-ppo-acktr-gail/logs-files/AWS_logfiles/'
-
 
 
 exp_group_dir = "20190919-Kinova_Exp5"
