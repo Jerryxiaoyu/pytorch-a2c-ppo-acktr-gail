@@ -1,3 +1,20 @@
-gym
-matplotlib
-pybullet
+torch==1.1.0
+paramiko==2.4.2
+h5py==2.8.0
+tqdm==4.32.1
+numpy==1.16.4
+setuptools==41.0.1
+matplotlib==3.0.2
+pandas==0.24.2
+gym==0.14.0
+pybullet==2.5.0
+
+python_dateutil==2.8.0
+roboschool==1.0.48
+tensorboardX==1.8
+PyYAML==5.1.2
+
+#baselines ==0.1.5
+-e git+https://github.com/Jerryxiaoyu/baselines.git@800adf8727201b27b2aa81299d2f05ee828abb58
+# ottermodels ==0.0.3
+-e git+https://github.com/Jerryxiaoyu/ottermodels.git@586e64ab00997ae51f0dcad404e782b1770365dc
