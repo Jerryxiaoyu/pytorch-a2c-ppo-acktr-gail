@@ -12,3 +12,15 @@
              np.uint8: ctypes.c_char,
              np.bool: ctypes.c_bool}
    ```
+   
+   
+   On a server:
+   ```buildoutcfg
+    cd jerry/otters_pro/
+    git clone https://github.com/Jerryxiaoyu/pytorch-a2c-ppo-acktr-gail.git
+    cd pytorch-a2c-ppo-acktr-gail
+    git checkout run_exps_eval
+    
+    ssource activate otter_p36
+    
+    ```
