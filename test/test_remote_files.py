@@ -1,12 +1,13 @@
 import sys,os
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+print(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 import os
 from datetime import datetime
 import shutil
 import glob
 import yaml
 import time
-from utils  import ssh
+from  utils  import ssh
 
 
 remote_FLAG = True
