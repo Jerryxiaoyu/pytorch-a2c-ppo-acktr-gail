@@ -12,7 +12,7 @@ class VG(VariantGenerator):
         return [123]
     @variant
     def env_name(self):  #environment to train on (default: PongNoFrameskip-v4) #'KinovaReacherTorqueXYZEnv-v0',
-        return ['KinovaReacherJointXYZEnv-v0' , 'KinovaReacherXYZ-v0']
+        return ['KinovaReacherJointXYZEnv-v0' , 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0']
     @variant
     def algo(self):
         return ['ppo']
@@ -39,7 +39,7 @@ class VG(VariantGenerator):
         return [5]
     @variant
     def entropy_coef(self): #'entropy term coefficient (default: 0.01)'
-        return [0.01, 0]
+        return [0.01 ]
     @variant
     def value_loss_coef(self):#'value loss coefficient (default: 0.5)'
         return [0.5]
@@ -89,8 +89,7 @@ class VG(VariantGenerator):
  ##----------------------------------------------------
     @variant
     def reward_fun_choice(self):
-        return [2]
-
+        return [0,1,2,3]
 
 exp_id = 4
 

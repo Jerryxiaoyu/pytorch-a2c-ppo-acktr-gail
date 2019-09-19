@@ -21,6 +21,6 @@
     cd pytorch-a2c-ppo-acktr-gail
     git checkout run_exps_eval
     
-    ssource activate otter_p36
+    source activate otter_p36
     
     ```
