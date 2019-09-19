@@ -30,7 +30,7 @@ except ImportError:
 
 try:
     import ottermodels
-    ottermodels.register_all_envs()
+    ottermodels.register_pybullet_envs()
 except ImportError:
     pass
 

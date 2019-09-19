@@ -11,8 +11,8 @@ class VG(VariantGenerator):
     def seed(self): #random seed (default: 1)
         return [123]
     @variant
-    def env_name(self):  #environment to train on (default: PongNoFrameskip-v4)
-        return ['KinovaReacherTorqueXYZEnv-v0','KinovaReacherJointXYZEnv-v0' , 'KinovaReacherXYZ-v0']
+    def env_name(self):  #environment to train on (default: PongNoFrameskip-v4) #'KinovaReacherTorqueXYZEnv-v0',
+        return ['KinovaReacherJointXYZEnv-v0' , 'KinovaReacherXYZ-v0']
     @variant
     def algo(self):
         return ['ppo']
@@ -86,11 +86,13 @@ class VG(VariantGenerator):
     @variant
     def gail_flag(self):  # do imitation learning with gail
         return [False]
-
-
  ##----------------------------------------------------
+    @variant
+    def reward_fun_choice(self):
+        return [2]
 
-exp_id = 3
+
+exp_id = 4
 
 EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
@@ -135,11 +137,8 @@ with open(group_dir + '/readme.txt', 'wt') as f:
     print("Welcome to Jerry's lab\n", file=f)
     print(group_note, file=f)
 
-
-
 log_interval = 10
 save_model_interval = 10
-
 
 
 full_output = True
@@ -203,6 +202,10 @@ for v in variants:
 
     others_str = ''.join(others_str)
 
+
+    #--------custom enviornment variables---------------
+    os.environ["REWARD_CHOICE"] = str(v['reward_fun_choice'])
+    print('REWARD_CHOICE = ', os.getenv('REWARD_CHOICE'))
 
 
 #os.system

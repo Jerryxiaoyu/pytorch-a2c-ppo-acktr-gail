@@ -19,7 +19,7 @@ root_path = os.path.dirname(os.path.abspath(__file__))
 group_dir = 'logs-files/20190919-Kinova_Exp3'
 exp_id = 3
 seed = 1
-exp_no_list= [ 2,   ]
+exp_no_list= [ 5,   ]
 isRender = True
 num_enjoy = 1
 
