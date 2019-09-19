@@ -91,7 +91,7 @@ class VG(VariantGenerator):
     def reward_fun_choice(self):
         return [0,1,2,3]
 
-exp_id = 4
+exp_id = 5
 
 EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
@@ -208,7 +208,7 @@ for v in variants:
 
 
 #os.system
-    os.system("python main.py "  +
+    print("python main.py "  +
 
               " --algo " + str(algo) +
 
