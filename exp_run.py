@@ -12,7 +12,7 @@ class VG(VariantGenerator):
         return [123]
     @variant
     def env_name(self):  #environment to train on (default: PongNoFrameskip-v4) #'KinovaReacherTorqueXYZEnv-v0',
-        return ['KinovaReacherJointXYZEnv-v0' , 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0']
+        return ['KinovaReacherJointXYZEnv-v0' ,]# 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0'
     @variant
     def algo(self):
         return ['ppo']
@@ -89,7 +89,7 @@ class VG(VariantGenerator):
  ##----------------------------------------------------
     @variant
     def reward_fun_choice(self):
-        return [0,1,2,3]
+        return [0] #,1,2,3
 
 exp_id = 5
 remote_FLAG = False
