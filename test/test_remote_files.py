@@ -16,7 +16,7 @@ AWS_logpath = '/home/drl/PycharmProjects/JerryRepos/pytorch-a2c-ppo-acktr-gail/l
 
 
 exp_group_dir = "20190919-Kinova_Exp5"
-group_dir = os.path.join('logs-files', exp_group_dir)
+group_dir = os.path.join('../logs-files', exp_group_dir)
 os.makedirs(group_dir)
 
 # SSH Config
