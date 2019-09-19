@@ -92,14 +92,14 @@ class VG(VariantGenerator):
         return [0,1,2,3]
 
 exp_id = 5
-
+remote_FLAG = False
 EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
           " "
 
-ssh_FLAG = False
-AWS_logpath = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files/AWS_logfiles/'
+
+AWS_logpath = '/home/drl/PycharmProjects/JerryRepos/pytorch-a2c-ppo-acktr-gail/logs-files/AWS_logfiles/'
 
 
 # print choices
@@ -145,8 +145,8 @@ evaluate_monitor = False
 
 
 # SSH Config
-if ssh_FLAG:
-    hostname = '2402:f000:6:3801:15f4:4e92:4b69:87da'
+if remote_FLAG:
+    hostname = 'fe80::6ca2:7e30:9ca3:a287'
     username = 'drl'
     key_path = '/home/ubuntu/.ssh/id_rsa_dl'
     port = 22
@@ -208,7 +208,7 @@ for v in variants:
 
 
 #os.system
-    print("python main.py "  +
+    os.system("python main.py "  +
 
               " --algo " + str(algo) +
 
@@ -248,7 +248,7 @@ for v in variants:
               others_str
               )
 
-    if ssh_FLAG:
+    if remote_FLAG:
         local_dir = os.path.abspath(group_dir)
         remote_dir = AWS_logpath + exp_group_dir + '/'
         ssh.upload(local_dir, remote_dir, hostname=hostname, port=port, username=username,

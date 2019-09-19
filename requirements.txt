@@ -8,7 +8,7 @@ matplotlib==3.0.2
 pandas==0.24.2
 gym==0.14.0
 pybullet==2.5.0
-
+visdom==0.1.8.9
 python_dateutil==2.8.0
 roboschool==1.0.48
 tensorflow-gpu==1.12.0
