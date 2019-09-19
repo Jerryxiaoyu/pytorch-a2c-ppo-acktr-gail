@@ -5,7 +5,7 @@ import shutil
 import glob
 import yaml
 import time
-import utils.ssh as ssh
+from ..utils  import ssh
 
 
 remote_FLAG = True
