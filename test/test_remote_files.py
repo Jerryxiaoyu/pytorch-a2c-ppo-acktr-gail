@@ -23,7 +23,7 @@ group_dir = os.path.join(root_path, 'logs-files', exp_group_dir)
 if remote_FLAG:
     hostname = '2600:1f16:e7a:a088:afdb:b3bf:96e1:cec1'
     username = 'drl'
-    key_path = '/home/ubuntu/.ssh/id_rsa_dl'
+    key_path = '/home/ubuntu/.ssh/id_rsa.pub'
     port = 22
 
 if remote_FLAG:
