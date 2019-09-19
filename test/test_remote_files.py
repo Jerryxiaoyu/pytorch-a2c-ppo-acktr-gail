@@ -1,11 +1,11 @@
-from utils.instrument import VariantGenerator, variant, IO
+
 import os
 from datetime import datetime
 import shutil
 import glob
 import yaml
 import time
-from ..utils  import ssh
+from utils  import ssh
 
 
 remote_FLAG = True
