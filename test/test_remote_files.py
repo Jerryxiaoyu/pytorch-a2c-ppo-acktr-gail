@@ -25,7 +25,7 @@ if remote_FLAG:
     username = 'drl'
     key_path = '/home/ubuntu/.ssh/id_rsa'
 
-    port = 80
+    port = 22
 
 if remote_FLAG:
     local_dir = os.path.abspath(group_dir)
