@@ -19,7 +19,6 @@ root_path = os.path.abspath( os.path.dirname(__file__))
 group_dir = os.path.join(root_path, 'logs-files', exp_group_dir)
 #os.makedirs(group_dir)
 
-
 # SSH Config
 if remote_FLAG:
     hostname = "101.6.57.83"
