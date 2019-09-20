@@ -4,17 +4,14 @@ import datetime
 import os
 
 
-def upload(local_dir, remote_dir, hostname, port, username, pkey_path, host_key = None):
-    if host_key is not None:
-        hostkey = host_key
+def upload(local_dir, remote_dir, hostname, port, username, pkey_path ):
+
     pkey = paramiko.RSAKey.from_private_key_file(pkey_path)
+    print(pkey)
     try:
         t = paramiko.Transport((hostname, port))
+        t.connect(username=username, pkey=pkey)
 
-        if host_key is not None:
-            t.connect(username=username, hostkey=hostkey)
-        else:
-            t.connect(username=username, pkey=pkey)
         sftp = paramiko.SFTPClient.from_transport(t)
         print('upload file start %s ' % datetime.datetime.now())
         for root, dirs, files in os.walk(local_dir):
