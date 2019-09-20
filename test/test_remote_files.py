@@ -27,6 +27,7 @@ if remote_FLAG:
 
     port = 22
 
+
 if remote_FLAG:
     local_dir = os.path.abspath(group_dir)
     remote_dir = AWS_logpath + exp_group_dir + '/'
