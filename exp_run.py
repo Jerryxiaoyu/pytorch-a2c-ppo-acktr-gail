@@ -12,7 +12,7 @@ class VG(VariantGenerator):
         return [123]
     @variant
     def env_name(self):  #environment to train on (default: PongNoFrameskip-v4) #'KinovaReacherTorqueXYZEnv-v0',
-        return ['KinovaReacherJointXYZEnv-v0' ,]# 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0'
+        return ['KinovaReacherXYZ-v0' ,]# 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0'
     @variant
     def algo(self):
         return ['ppo']
@@ -63,7 +63,7 @@ class VG(VariantGenerator):
         return [0.5]
     @variant
     def num_processes(self): # CPU processes to use (default: 16)
-        return [8]
+        return [36]
     @variant
     def clip_param(self):  # ppo clip parameter (default: 0.2)
         return [0.2]
@@ -89,9 +89,9 @@ class VG(VariantGenerator):
  ##----------------------------------------------------
     @variant
     def reward_fun_choice(self):
-        return [ 1,2,3] #,1,2,3
+        return [ 0,1,2,3] #,1,2,3
 
-exp_id = 8
+exp_id = 9
 remote_FLAG = False
 EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
@@ -142,7 +142,6 @@ save_model_interval = 10
 
 full_output = True
 evaluate_monitor = False
-
 
 # SSH Config
 if remote_FLAG:
