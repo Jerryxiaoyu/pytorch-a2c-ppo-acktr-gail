@@ -16,10 +16,10 @@ args = parser.parse_args()
 root_path = os.path.dirname(os.path.abspath(__file__))
 
 # 实验数据原始目录
-group_dir = 'logs-files/20190919-Kinova_Exp5'
-exp_id = 5
+group_dir = 'logs-files/20190919-Kinova_Exp6'
+exp_id = 6
 seed = 1
-exp_no_list= [ 1,  ]
+exp_no_list= [ 2,  ]
 isRender = True
 num_enjoy = 1
 

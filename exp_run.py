@@ -89,9 +89,9 @@ class VG(VariantGenerator):
  ##----------------------------------------------------
     @variant
     def reward_fun_choice(self):
-        return [0] #,1,2,3
+        return [ 1,2,3] #,1,2,3
 
-exp_id = 5
+exp_id = 8
 remote_FLAG = False
 EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \

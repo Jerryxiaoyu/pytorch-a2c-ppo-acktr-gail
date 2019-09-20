@@ -24,10 +24,11 @@ if remote_FLAG:
     hostname = '101.6.57.83'
     username = 'drl'
     key_path = '/home/ubuntu/.ssh/id_rsa'
+    hostkey = '/home/ubuntu/.ssh/id_rsa'
     port = 22
 
 if remote_FLAG:
     local_dir = os.path.abspath(group_dir)
     remote_dir = AWS_logpath + exp_group_dir + '/'
     ssh.upload(local_dir, remote_dir, hostname=hostname, port=port, username=username,
-               pkey_path=key_path)
+               pkey_path=key_path, host_key=hostkey)

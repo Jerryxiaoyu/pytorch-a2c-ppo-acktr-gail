@@ -39,6 +39,7 @@ def main():
 
     torch.set_num_threads(1)
     device = torch.device("cuda:0" if args.cuda else "cpu")
+    print("Device :", device)
 
     summary_name = args.log_dir + '/{0}_{1}'
     writer = SummaryWriter(summary_name.format(args.env_name, 'tflog'))
