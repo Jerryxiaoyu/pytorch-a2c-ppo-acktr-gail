@@ -7,7 +7,7 @@ import os
 def upload(local_dir, remote_dir, hostname, port, username, pkey_path ):
 
     pkey = paramiko.RSAKey.from_private_key_file(pkey_path)
-    print(pkey)
+
     try:
         t = paramiko.Transport((hostname, port))
         t.connect(username=username, pkey=pkey)
