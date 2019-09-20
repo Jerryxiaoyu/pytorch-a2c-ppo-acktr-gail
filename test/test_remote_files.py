@@ -21,7 +21,7 @@ group_dir = os.path.join(root_path, 'logs-files', exp_group_dir)
 
 # SSH Config
 if remote_FLAG:
-    hostname = '101.6.57.83'
+    hostname = "fe80::6ca2:7e30:9ca3:a287"
     username = 'drl'
     key_path = '/home/ubuntu/.ssh/id_rsa'
 
