@@ -9,10 +9,10 @@ import utils.ssh as ssh
 class VG(VariantGenerator):
     @variant
     def seed(self): #random seed (default: 1)
-        return [123]
+        return [123, ]
     @variant
     def env_name(self):  #environment to train on (default: PongNoFrameskip-v4) #'KinovaReacherTorqueXYZEnv-v0',
-        return ['KinovaReacherXYZ-v0' ,]# 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0'
+        return ["KinovaObjectPusherRandShapeKPEnv-v1", 'KinovaObjectPusherRandShapeEnv-v1' ]# "KinovaCupPusherJointEnv-v0" 'KinovaReacherXYZ-v0','KinovaReacherTorqueXYZEnv-v0', "KinovaReacherJointXYZEnv-v0"
     @variant
     def algo(self):
         return ['ppo']
@@ -27,7 +27,7 @@ class VG(VariantGenerator):
         return [1e-5]
     @variant
     def num_steps(self): #number of forward steps in A2C (default: 5)
-        return [2048 ]
+        return [  4096 ]
     @variant
     def gail_batch_size(self): #'gail batch size (default: 128)'
         return [128]
@@ -57,13 +57,11 @@ class VG(VariantGenerator):
         return [0.95]
     @variant
     def num_env_steps(self): #number of environment steps to train (default: 10e6)
-        return [1e7]
+        return [5e6]
     @variant
     def max_grad_norm(self): # max norm of gradients (default: 0.5)
         return [0.5]
-    @variant
-    def num_processes(self): # CPU processes to use (default: 16)
-        return [36]
+
     @variant
     def clip_param(self):  # ppo clip parameter (default: 0.2)
         return [0.2]
@@ -89,15 +87,18 @@ class VG(VariantGenerator):
  ##----------------------------------------------------
     @variant
     def reward_fun_choice(self):
-        return [ 0,1,2,3] #,1,2,3
+        return [ 0] #,1,2,3
 
-exp_id = 9
+    @variant
+    def num_processes(self):  # CPU processes to use (default: 16)
+        return [8]
+
+exp_id = 16
 remote_FLAG = False
 EXP_NAME ='Kinova'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
           " "
-
 
 AWS_logpath = '/home/drl/PycharmProjects/JerryRepos/pytorch-a2c-ppo-acktr-gail/logs-files/AWS_logfiles/'
 

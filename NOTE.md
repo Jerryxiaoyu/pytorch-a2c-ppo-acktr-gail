@@ -27,3 +27,5 @@
     
     python main.py  --algo ppo --gail-experts-dir ./gail_experts --gail-batch-size 128 --gail-epoch 5 --lr 0.0003 --eps 1e-05 --alpha 0.99 --entropy-coef 0.01 --value-loss-coef 0.5 --max-grad-norm 0.5 --seed 123 --env-name KinovaReacherJointXYZEnv-v0 --num-env-steps 10000000 --num-processes 8 --num-steps 2048 --ppo-epoch 10 --num-mini-batch 32 --clip-param 0.2 --gae-lambda 0.95 --gamma 0.99 --save-interval 10 --log-interval 10 --log-dir logs-files/20190919-Kinova_Exp5/No_1_KinovaReacherJointXYZEnv-v0_ppo-2019-09-19_163540 --save-dir logs-files/20190919-Kinova_Exp5/No_1_KinovaReacherJointXYZEnv-v0_ppo-2019-09-19_163540/model  --use-gae  --use-proper-time-limits  --use-linear-lr-decay 
  
+
+scp -r -i ~/.ssh/aws_ohio.pem ubuntu@ec2-3-19-218-119.us-east-2.compute.amazonaws.com:/home/ubuntu/Nvidia_Cloud_EU

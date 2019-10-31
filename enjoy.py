@@ -49,7 +49,7 @@ env = make_vec_envs(
     1,
     None,
     None,
-    device='cuda:0',
+    device='cuda:0', #cpu
     allow_early_resets=False,
     isRender=isRender)
 
