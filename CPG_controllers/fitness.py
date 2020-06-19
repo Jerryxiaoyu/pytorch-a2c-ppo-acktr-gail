@@ -1,5 +1,5 @@
 import numpy as np
-from utils import log
+from utils import *
 
 
 def hart6sc(position_vector, **kwargs):

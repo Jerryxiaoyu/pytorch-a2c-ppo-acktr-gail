@@ -3,6 +3,7 @@ path = '/opt/ros/kinetic/lib/python2.7/dist-packages'
 if path in sys.path:
     sys.path.remove(path)
 
+import tqdm
 import copy
 import glob
 import os
@@ -97,8 +98,9 @@ def main():
 
     episode_rewards = deque(maxlen=10)
 
+    print('total num_updates:', num_updates)
     start = time.time()
-    for j in range(num_updates):
+    for j in tqdm.tqdm(range(num_updates)):
         set_iter_rl(j)
         if args.use_linear_lr_decay:
             # decrease learning rate linearly

@@ -45,6 +45,13 @@ register(
     max_episode_steps=2000,
     reward_threshold=6000.0,
 )
+
+register(
+    id='CellrobotEnvCPG4-v1',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG4 ',
+    max_episode_steps=4000,
+    reward_threshold=6000.0,
+)
 register(
     id='MyAnt-v2',
     entry_point='my_envs.mujoco:MyAntEnv',

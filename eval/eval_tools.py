@@ -1,7 +1,6 @@
 import os
 
 
-
 def find_ExpPath(n, exp_dir_list):
     exp_path = []
     for p in exp_dir_list:
@@ -16,7 +15,8 @@ def find_ExpPath(n, exp_dir_list):
         raise Exception("Cannot find the path of EXP No.{}".format(n))
     return exp_path[0]
 
-def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_enjoy =1, render = True, monitor = False, seed=0):
+def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_enjoy =1, render = True, monitor = False, rand_init = None ,
+                 seed=0, data_name =None, contact_log = None):
     # save_plot_path=os.path.abspath(os.path.join(results_dir,'No_{}-Curve'.format(exp_no)))
     # reward_fun_choice = parms['reward_fun_choice']
     # load_path = os.path.abspath(os.path.join(result_path, 'model/modelmodel'))
@@ -106,6 +106,20 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
         if parms['turing_flag'] is not None:
             os.environ["TURING_FLAG"] = str(parms['turing_flag'])
             print('TURING_FLAG = ', os.getenv('TURING_FLAG'))
+    if 'xml_name' in parms.keys():
+        if parms['xml_name'] is not None:
+            os.environ["XML_NAME"] = str(parms['xml_name'])
+            print('XML_NAME = ', os.getenv('XML_NAME'))
+
+
+    if rand_init is None:
+        if 'rand_init' in parms.keys():
+            if parms['rand_init'] is not None:
+                os.environ["RAND_INIT"] = str(parms['RAND_INIT'])
+                print('RAND_INIT = ', os.getenv('RAND_INIT'))
+    else:
+        os.environ["RAND_INIT"] = str(rand_init)
+        print('RAND_INIT = ', os.getenv('RAND_INIT'))
 
     if global_command is not None:
 
@@ -118,9 +132,10 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
               " --load-dir " + str(load_dir) +
               " --log-interval " + str(log_interval) +
               " --load-file-dir " + str(model_path)+
-            " --result-dir " + str(evaluate_path) +
-            " --num-enjoy " + str(num_enjoy)
-
+             " --result-dir " + str(evaluate_path) +
+             " --num-enjoy " + str(num_enjoy)+
+             " --data-name " +str(data_name) +
+              ' --contact-log='+str(contact_log)
               # " --gpu-index " + str(gpu_index) +
               # " --store_data " + str(store_data) +
               # " --exp_group_dir " + str(exp_group_dir) +

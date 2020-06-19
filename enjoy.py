@@ -12,10 +12,17 @@ import torch
 from a2c_ppo_acktr.envs import VecPyTorch, make_vec_envs
 from a2c_ppo_acktr.utils import get_render_func, get_vec_normalize
 
-from utils import LoggerCsv
+from utils import LoggerCsv,IO
 # workaround to unpickle olf model files
 import sys
 sys.path.append('a2c_ppo_acktr')
+
+# action_dim = 2
+# CPG_enable = 1
+# reward_choice= 26
+# os.environ["REWARD_CHOICE"] = str(reward_choice)
+# os.environ["ACTION_DIM"] = str(action_dim)
+# os.environ["CPG_ENABLE"] = str(CPG_enable)
 
 parser = argparse.ArgumentParser(description='RL')
 parser.add_argument('--seed', type=int, default=1,
@@ -33,17 +40,24 @@ parser.add_argument('--add-timestep', action='store_true', default=False,
                     help='add timestep to observations')
 parser.add_argument('--non-det', action='store_true', default=False,
                     help='whether to use a non-deterministic policy')
+parser.add_argument('--data-name',type=str,default=None)
+parser.add_argument('--contact-log',type=str,default=None)
 args = parser.parse_args()
 num_enjoy = 1
-
+contact_log = args.contact_log
 
 if args.result_dir is None:
     result_dir = 'tmp'
     os.makedirs(result_dir,exist_ok=True)
 else:
     result_dir = args.result_dir
-logger = LoggerCsv(result_dir, csvname='log_data')
+if args.data_name is None:
+    data_name = '0'
+else:
+    data_name = args.data_name
 
+logger = LoggerCsv(result_dir, csvname='log_data_{}'.format(data_name))
+logger = None
 
 args.det = not args.non_det
 
@@ -90,7 +104,28 @@ num_episodes_lists =[]
 obs_lists = []
 action_list = []
 num_episodes = 0
+contact_infos =[]
 
+def get_contact_info(env, verbose=False):
+    d = env.venv.venv.envs[0].unwrapped.data
+
+    # print(d.ncon)
+    geom_list = []
+    for coni in range(d.ncon):
+        con = d.contact[coni]
+        if con.geom1 == 0:
+            geom_list.append(con.geom2)
+        if verbose:
+            print('  Contact %d:' % (coni,))
+            print('    dist     = %0.3f' % (con.dist,))
+            print('    pos      = %s' % ((con.pos),))
+            print('    frame    = %s' % ((con.frame),))
+            print('    friction = %s' % ((con.friction),))
+            print('    dim      = %d' % (con.dim,))
+            print('    geom1    = %d' % (con.geom1,))
+            print('    geom2    = %d' % (con.geom2,))
+
+    return geom_list
 while True:
     with torch.no_grad():
         value, action, _, recurrent_hidden_states = actor_critic.act(
@@ -99,7 +134,9 @@ while True:
     # Obser reward and next obs
     obs, reward, done, log_info = env.step(action)
 
-
+    if contact_log is not None:
+        contact_info = get_contact_info(env)
+        contact_infos.append(contact_info)
 
     masks.fill_(0.0 if done else 1.0)
 
@@ -141,3 +178,6 @@ if logger is not None:
             trajectory[i] = data[j][i]
         logger.log(trajectory)
         logger.write(display=False)
+if contact_log is not None:
+    contact_log = result_dir
+    IO(os.path.join(contact_log , 'log_contact_{}.pkl'.format(data_name))).to_pickle(contact_infos)

@@ -10,7 +10,7 @@ def plot_velocity_curve(v_e, c_command, max_step = 100, dt =0.01, save_plot_path
     ax1 = plt.subplot(311)
     plt.plot(t, c_command[:max_step, 0], color='red', label='ref')
     plt.plot(t, v_e[:max_step, 0], '-g', label='real')
-    plt.ylim((-0.5,0.8))
+    plt.ylim((-0,0.3))
     plt.grid()
     plt.title('Vx')
 

@@ -5,7 +5,7 @@ import matplotlib
 
 import matplotlib.pyplot as plt
 import time
-from utils import log
+from utils import *
 
 import os
 import gym

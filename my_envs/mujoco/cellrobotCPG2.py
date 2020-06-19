@@ -8,7 +8,7 @@ from CPG_controllers.CPG_process  import  position_PID
 from my_envs.base.ExperienceDataset import DataBuffer
 from my_envs.base.command_generator import command_generator
 import os
-from utils.fir_filter import fir_filter
+from utils import fir_filter
 import time
 state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],

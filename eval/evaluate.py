@@ -1,5 +1,7 @@
-from utils.instrument import VariantGenerator, variant, IO
-import os
+import sys
+sys.path.append('/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr')
+
+
 from datetime import datetime
 import shutil
 import glob
@@ -13,6 +15,7 @@ import os
 import argparse
 import ast
 from baselines.common import plot_util as pu
+from eval.instrument import IO
 
 parser = argparse.ArgumentParser(description='Evaluation')
 parser.add_argument('--env_name', default=None, metavar='G' )
@@ -21,18 +24,27 @@ parser.add_argument('--exp_id', type= int, default=None )
 parser.add_argument('--full_output', type= ast.literal_eval, default=False )
 parser.add_argument('--monitor', type=ast.literal_eval, default=False )
 
+parser.add_argument('--data_name', type= str, default=None, )
+parser.add_argument('--global_command', type= str, default=None, )
+parser.add_argument('--rand_init', type= int, default=None )
+parser.add_argument('--seed', type= int, default=None )
+parser.add_argument('--contact_log', type= str, default=None, )
 args = parser.parse_args()
 
 root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
-seed = 17# 11
-global_command = None  #s1
+seed = 18# 11
+global_command = 's1'
+rand_init = 0 #
+data_name = None#
+contact_log = None
+
 # 实验数据原始目录
 ENV_name = 'CellrobotEnvCPG4-v0'
-group_dir = 'log-files/Mar_17_PPO_RL_Exp20'
-exp_id = 20
-exp_no_list= [1  ]
+group_dir = 'log-files/Jun_18_PPO_RL_Exp59'
+exp_id = 59
+exp_no_list= [ 2 ]
 num_enjoy = 1
 
 
@@ -56,7 +68,31 @@ if args.exp_id is None:
 else:
     exp_id = args.exp_id
 
+if args.data_name is None:
+    data_name = data_name
+    if data_name is None:
+        data_name = '0'
+else:
+    data_name = args.data_name
 
+if args.contact_log is None:
+    contact_log = contact_log
+
+else:
+    data_name = args.data_name
+
+if args.global_command is None:
+    global_command = global_command
+else:
+    global_command = args.global_command
+if args.rand_init is None:
+    rand_init = rand_init
+else:
+    rand_init = args.rand_init
+if args.seed is None:
+    seed = seed
+else:
+    seed = args.seed
 
 exp_path = os.path.join(root_path, group_dir  )
 exp_dir_list = os.listdir(exp_path)
@@ -107,10 +143,11 @@ for exp_no in exp_no_list:
     plot_learning_curve(reward_res, save_plot_path1, exp_no )
 
     # evaluate
-    evaluate_fun(result_path, parms,model_save_num , num_enjoy=num_enjoy ,global_command=global_command, render = render, monitor = monitor, seed=seed)
+    evaluate_fun(result_path, parms,model_save_num , num_enjoy=num_enjoy ,global_command=global_command,
+                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log)
 
     eval_path = os.path.join(result_path, 'evaluate')
-    eval_data_path = os.path.join(eval_path, 'log_data.csv')
+    eval_data_path = os.path.join(eval_path, 'log_data_{}.csv'.format(data_name))
     eval_data_df = pd.read_csv(eval_data_path)
 
    # if parms['reward_fun_choice'] == 11:

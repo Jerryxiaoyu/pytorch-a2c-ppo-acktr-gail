@@ -20,9 +20,10 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 result_dir = 'eval/results_any'
-seed =111
+seed =122
 
 def GA_runner(num_times):
+    rand_init = 1
     action_dim = 2
     CPG_enable = 1
     reward_choice= 26
@@ -31,7 +32,7 @@ def GA_runner(num_times):
     os.environ["ACTION_DIM"] = str(action_dim)
     os.environ["CPG_ENABLE"] = str(CPG_enable)
     os.environ["STATE_MODE"] = str(state_mode)
-
+    os.environ["RAND_INIT"] = str(rand_init)
     env = gym.make('CellrobotEnvCPG4-v0')
 
 
@@ -48,8 +49,8 @@ def GA_runner(num_times):
     env._max_episode_steps = 2000
     for i in range(num_times):
         num_episodes = 0
-        #logger = LoggerCsv(result_dir, csvname='log_data{}'.format(i))
-        logger = None
+        logger = LoggerCsv(result_dir, csvname='log_data{}'.format(i))
+        #logger = None
 
         env.seed(i*2+seed)
         obs = env.reset()
@@ -124,6 +125,6 @@ def GA_runner(num_times):
 #
 #     return action.reshape((1, -1))[0]
 # # get original data from pure GA
-# GA_runner(1)
+GA_runner(1)
 
 

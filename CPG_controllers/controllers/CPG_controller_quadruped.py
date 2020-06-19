@@ -104,13 +104,21 @@ class CPG_network_Sinusoid(object):
         max_factor = 2
         self.kesi = 1
         #factor_cpg = fi_l
+        # if len(fi_l) ==39:  old
+        #     #factor_cpg = np.clip(fi_l, -max_factor, max_factor)
+        #     factor_cpg = np.clip(fi_l, 0, 1)
+        #     for i in range(self.num_Cell):
+        #         self.CPG_list[i+1].parm['R1'] = self.parm_list[i+1][3] * factor_cpg[i*3]
+        #         self.CPG_list[i + 1].parm['X1'] = self.parm_list[i + 1][4] * factor_cpg[i*3+1]
+        #         self.CPG_list[i + 1].parm['f12'] = self.parm_list[i + 1][5] * factor_cpg[i*3+2]
         if len(fi_l) ==39:
             #factor_cpg = np.clip(fi_l, -max_factor, max_factor)
-            factor_cpg = np.clip(fi_l, 0, 1)
+            factor_cpg = np.clip(fi_l, -1, 1)
             for i in range(self.num_Cell):
-                self.CPG_list[i+1].parm['R1'] = self.parm_list[i+1][3] * factor_cpg[i*3]
-                self.CPG_list[i + 1].parm['X1'] = self.parm_list[i + 1][4] * factor_cpg[i*3+1]
-                self.CPG_list[i + 1].parm['f12'] = self.parm_list[i + 1][5] * factor_cpg[i*3+2]
+                self.CPG_list[i+1].parm['R1'] = self.parm_list[i+1][3] + 0.5* factor_cpg[i*3]
+                self.CPG_list[i + 1].parm['X1'] = self.parm_list[i + 1][4] + 0.5* factor_cpg[i*3+1]
+                self.CPG_list[i + 1].parm['f12'] = self.parm_list[i + 1][5]+ 0.5 * factor_cpg[i*3+2]
+
 
         elif len(fi_l) == 40:
             factor_cpg = np.clip(fi_l, 0, 1)
@@ -386,36 +394,61 @@ class CPG_network_Sinusoid(object):
             for i in range(self.num_Cell+1):
                 self.CPG_list[i ].parm['kf'] = self.kf * kf_f
 
-
         elif len(fi_l) == 4:
 
+            # gain_left = 1 - (0.5 - fi_l[0]) * self.kesi
+            # gain_right = 1 - (0.5 - fi_l[1]) * self.kesi
+
+            g1 = np.clip(fi_l[0], -max_factor, max_factor)
+            g2 =np.clip(fi_l[1], -max_factor, max_factor)
+            g3 = np.clip(fi_l[2], -max_factor, max_factor)
+            g4 = np.clip(fi_l[3], -max_factor, max_factor)
 
 
-            gain_left = np.clip(fi_l[0], 0, 1)
-            gain_right = np.clip(fi_l[1], 0, 1)
-            kf_f1 = (np.clip(fi_l[2], 0, 1)*2 + 0.0)
-            kf_f2 = (np.clip(fi_l[3], 0, 1) * 2 + 0.0)
+            self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * g1
+            self.CPG_list[6].parm['R1'] = self.parm_list[6][3] * g1
+            self.CPG_list[7].parm['R1'] = self.parm_list[7][3] * g1
 
-            self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * gain_left
-            self.CPG_list[6].parm['R1'] = self.parm_list[6][3] * gain_left
-            self.CPG_list[7].parm['R1'] = self.parm_list[7][3] * gain_left
+            self.CPG_list[3].parm['R1'] = self.parm_list[3][3] * g2
+            self.CPG_list[8].parm['R1'] = self.parm_list[8][3] * g2
+            self.CPG_list[9].parm['R1'] = self.parm_list[9][3] * g2
 
-            self.CPG_list[3].parm['R1'] = self.parm_list[3][3] * gain_left
-            self.CPG_list[8].parm['R1'] = self.parm_list[8][3] * gain_left
-            self.CPG_list[9].parm['R1'] = self.parm_list[9][3] * gain_left
+            self.CPG_list[4].parm['R1'] = self.parm_list[4][3] * g3
+            self.CPG_list[10].parm['R1'] = self.parm_list[10][3] * g3
+            self.CPG_list[11].parm['R1'] = self.parm_list[11][3] * g3
 
-            self.CPG_list[4].parm['R1'] = self.parm_list[4][3] * gain_right
-            self.CPG_list[10].parm['R1'] = self.parm_list[10][3] * gain_right
-            self.CPG_list[11].parm['R1'] = self.parm_list[11][3] * gain_right
-
-            self.CPG_list[5].parm['R1'] = self.parm_list[5][3] * gain_right
-            self.CPG_list[12].parm['R1'] = self.parm_list[12][3] * gain_right
-            self.CPG_list[13].parm['R1'] = self.parm_list[13][3] * gain_right
-
-            for i in [0,2,6,7,3,8,9]:
-                self.CPG_list[i ].parm['kf'] = self.kf * kf_f1
-            for i in [4,10,11,5,12,13]:
-                self.CPG_list[i ].parm['kf'] = self.kf * kf_f2
+            self.CPG_list[5].parm['R1'] = self.parm_list[5][3] * g4
+            self.CPG_list[12].parm['R1'] = self.parm_list[12][3] * g4
+            self.CPG_list[13].parm['R1'] = self.parm_list[13][3] * g4
+        # elif len(fi_l) == 4:
+        #
+        #
+        #
+        #     gain_left = np.clip(fi_l[0], 0, 1)
+        #     gain_right = np.clip(fi_l[1], 0, 1)
+        #     kf_f1 = (np.clip(fi_l[2], 0, 1) + 0.0)
+        #     kf_f2 = (np.clip(fi_l[3], 0, 1)  + 0.0)
+        #
+        #     self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * gain_left
+        #     self.CPG_list[6].parm['R1'] = self.parm_list[6][3] * gain_left
+        #     self.CPG_list[7].parm['R1'] = self.parm_list[7][3] * gain_left
+        #
+        #     self.CPG_list[3].parm['R1'] = self.parm_list[3][3] * gain_left
+        #     self.CPG_list[8].parm['R1'] = self.parm_list[8][3] * gain_left
+        #     self.CPG_list[9].parm['R1'] = self.parm_list[9][3] * gain_left
+        #
+        #     self.CPG_list[4].parm['R1'] = self.parm_list[4][3] * gain_right
+        #     self.CPG_list[10].parm['R1'] = self.parm_list[10][3] * gain_right
+        #     self.CPG_list[11].parm['R1'] = self.parm_list[11][3] * gain_right
+        #
+        #     self.CPG_list[5].parm['R1'] = self.parm_list[5][3] * gain_right
+        #     self.CPG_list[12].parm['R1'] = self.parm_list[12][3] * gain_right
+        #     self.CPG_list[13].parm['R1'] = self.parm_list[13][3] * gain_right
+        #
+        #     for i in [0,2,6,7,3,8,9]:
+        #         self.CPG_list[i ].parm['kf'] = self.kf * kf_f1
+        #     for i in [4,10,11,5,12,13]:
+        #         self.CPG_list[i ].parm['kf'] = self.kf * kf_f2
 
         elif len(fi_l) == 5:
 

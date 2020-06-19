@@ -29,7 +29,7 @@ def get_args():
                         help='random seed (default: 1)')
     parser.add_argument('--cuda-deterministic', action='store_true', default=False,
                         help="sets flags for determinism when using CUDA (potentially slow!)")
-    parser.add_argument('--num-processes', type=int, default=2,
+    parser.add_argument('--num-processes', type=int, default=1,
                         help='how many training CPU processes to use (default: 16)')
     parser.add_argument('--num-steps', type=int, default=16,
                         help='number of forward steps in A2C (default: 5)')
