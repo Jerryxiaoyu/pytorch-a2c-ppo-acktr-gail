@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [2e2]
  ##----------------------------------------------------
 
     @variant
@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['full',    ]  #full, error, no
+        return ['full',  ]  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -99,18 +99,18 @@ class VG(VariantGenerator):
     def xml_name(self):
         return ['cellrobot_Quadruped_float_limit.xml']
 
-exp_id = 62
+exp_id = 63
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-sync_s3 = False
+sync_s3 = True
 
-n_cpu = 8 #8
+n_cpu = 1 #8
 num_threads = 8
 
-bucket_path = "s3://jaco-bair/cellrobot/AWS_logfiles"
+bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
 
 # print choices
 variants = VG().variants()
@@ -153,12 +153,7 @@ full_output = True
 evaluate_monitor = False
 
 
-# SSH Config
-if ssh_FLAG:
-    hostname = '2402:f000:6:3801:15f4:4e92:4b69:87da' #'2600:1f16:e7a:a088:805d:16d6:f387:62e5'
-    username = 'drl'
-    key_path = '/home/ubuntu/.ssh/id_rsa_dl'
-    port = 22
+
 
 # run
 num_exp =0
@@ -278,7 +273,7 @@ for v in variants:
 
     if sync_s3 and bucket_path is not None:
         local_dir = os.path.abspath(group_dir)
-        bucket_dir = bucket_path + local_dir.split('/')[-1]
+        bucket_dir = bucket_path+'/' + local_dir.split('/')[-1]
         cmd = "aws s3 cp {} s3://{}   --recursive".format(os.path.abspath(local_dir), bucket_dir)
         os.system(cmd)
 
