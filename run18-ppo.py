@@ -58,7 +58,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [ 41]
+        return [ 44]
 
     @variant
     def num_buffer(self):
@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['no'  ]  #full, error, no
+        return ['full',    ]  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -89,27 +89,28 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [0,1 ]
+        return [1,0 ]
 
     @variant
     def turing_flag(self):
-        return [1 ]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
+        return [0 ]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
 
     @variant
     def xml_name(self):
         return ['cellrobot_Quadruped_float_limit.xml']
 
-exp_id = 59
+exp_id = 62
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-ssh_FLAG = False
-AWS_logpath = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files/AWS_logfiles/'
+sync_s3 = False
+
 n_cpu = 8 #8
 num_threads = 8
 
+bucket_path = "s3://jaco-bair/cellrobot/AWS_logfiles"
 
 # print choices
 variants = VG().variants()
@@ -269,10 +270,16 @@ for v in variants:
 
               )
 
-    if ssh_FLAG:
+    # if ssh_FLAG:
+    #     local_dir = os.path.abspath(group_dir)
+    #     remote_dir = AWS_logpath + exp_group_dir + '/'
+    #     ssh.upload(local_dir, remote_dir, hostname=hostname, port=port, username=username,
+    #                pkey_path=key_path)
+
+    if sync_s3 and bucket_path is not None:
         local_dir = os.path.abspath(group_dir)
-        remote_dir = AWS_logpath + exp_group_dir + '/'
-        ssh.upload(local_dir, remote_dir, hostname=hostname, port=port, username=username,
-                   pkey_path=key_path)
+        bucket_dir = bucket_path + local_dir.split('/')[-1]
+        cmd = "aws s3 cp {} s3://{}   --recursive".format(os.path.abspath(local_dir), bucket_dir)
+        os.system(cmd)
 
 

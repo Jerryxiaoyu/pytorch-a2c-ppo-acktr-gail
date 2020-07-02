@@ -359,6 +359,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
 
         if command is  None:
 
+
             self.command = command_generator(self.command_max_step , self.dt, self.command_duration, vx_range=(self.command_vx_low, self.command_vx_high),
                                              vy_range=(self.command_vy_low, self.command_vy_high),
                                              wyaw_range=(self.command_wz_low, self.command_wz_high), render=False)
@@ -468,6 +469,10 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
             self.Calc_Reward = self.reward_fun41
         elif reward_fun_choice == 42:
             self.Calc_Reward = self.reward_fun42
+        elif reward_fun_choice == 43:
+            self.Calc_Reward = self.reward_fun43
+        elif reward_fun_choice == 44:
+            self.Calc_Reward = self.reward_fun44
         elif reward_fun_choice is None:
             self.Calc_Reward = self.reward_fun1
             reward_fun_choice = 1
@@ -1797,7 +1802,7 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def reward_fun41(self, velocity_base, v_commdand, action, obs):
         """
-         dd survive
+         dd survive   直线
         :param velocity_base:
         :param v_commdand:
         :param action:
@@ -1854,8 +1859,84 @@ class CellRobotEnvCPG4(mujoco_env.MujocoEnv, utils.EzPickle):
         other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
 
 
+        #print(other_rewards)
+        return reward, other_rewards
+
+    def reward_fun43(self, velocity_base, v_commdand, action, obs):
+        """
+                same as 30, add survive  for limit cellrobot
+                :param velocity_base:
+                :param v_commdand:
+                :param action:
+                :param obs:
+                :return:
+                """
+        rien = obs[3:6]
+        x_pose = obs[0]
+        y_pose = obs[1]
+
+        # goal_vel = 0.10
+
+        #forward_reward = -10.0 * abs(velocity_base[0] - v_commdand[0])
+        print(velocity_base[0] - v_commdand[0])
+        forward_reward = K_kernel_new(velocity_base[0] - v_commdand[0])
+        # y_cost = -0.5 * K_kernel6(y_pose)
+        y_cost = -5 * np.linalg.norm(y_pose)
+
+        ctrl_cost =-0.01 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.2
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+
         print(other_rewards)
         return reward, other_rewards
+
+    def reward_fun44(self, velocity_base, v_commdand, action, obs):
+        """
+                same as 30, add survive  for limit cellrobot
+                :param velocity_base:
+                :param v_commdand:
+                :param action:
+                :param obs:
+                :return:
+                """
+        rien = obs[3:6]
+        x_pose = obs[0]
+        y_pose = obs[1]
+
+        # goal_vel = 0.10
+
+        #forward_reward = -10.0 * abs(velocity_base[0] - v_commdand[0])
+        #print(velocity_base[0] - v_commdand[0])
+        forward_reward = K_kernel_new2(velocity_base[0] - v_commdand[0])
+        # y_cost = -0.5 * K_kernel6(y_pose)
+        y_cost = -5 * np.linalg.norm(y_pose)
+
+        ctrl_cost =-0.001 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.2
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+        #print(other_rewards)
+        return reward, other_rewards
+
+
+
+def K_kernel_new2(x):
+   # x = np.linalg.norm(x)
+    K =  1 / (np.exp(x / 0.02) + 2 + np.exp(-x / 0.02))
+    return K
+
+def K_kernel_new(x):
+    x = np.abs(x)
+    K = 5* 1 / (np.exp(x / 0.08) + 2 + np.exp(-x / 0.08))
+    return K
+
 
 def K_kernel(x):
     x = np.linalg.norm(x)

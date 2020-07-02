@@ -57,7 +57,7 @@ else:
     data_name = args.data_name
 
 logger = LoggerCsv(result_dir, csvname='log_data_{}'.format(data_name))
-logger = None
+#logger = None
 
 args.det = not args.non_det
 
