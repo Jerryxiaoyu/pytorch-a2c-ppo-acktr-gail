@@ -41,15 +41,15 @@ class VG(VariantGenerator):
 
     @variant
     def gamma(self):
-        return [0.9985]
+        return [0.9985, 0.999]
 
     @variant
     def tau(self):
-        return [0.98]
+        return [0.98, 0.995]
 
     @variant
     def num_env_steps(self):
-        return [2e2]
+        return [1e7]
  ##----------------------------------------------------
 
     @variant
@@ -77,7 +77,7 @@ class VG(VariantGenerator):
 
     @variant
     def state_mode(self):
-        return [ 'vel', ]  # vel , pos, vel_f
+        return ['vel', ]  # vel , pos, vel_f
     @variant
     def command_vx_high(self):
         return [0.2]
@@ -89,7 +89,7 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [1,0 ]
+        return [1  ]
 
     @variant
     def turing_flag(self):
@@ -99,7 +99,7 @@ class VG(VariantGenerator):
     def xml_name(self):
         return ['cellrobot_Quadruped_float_limit.xml']
 
-exp_id = 63
+exp_id = 64
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -107,7 +107,7 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 sync_s3 = True
 
-n_cpu = 1 #8
+n_cpu = 8 #8
 num_threads = 8
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
