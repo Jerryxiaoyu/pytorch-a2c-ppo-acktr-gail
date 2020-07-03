@@ -60,8 +60,19 @@ register(
     reward_threshold=6000.0,
 )
 
+
+
 register(
     id='CellrobotEnvCPG5-v0',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG5',
+    max_episode_steps=1000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=0)
+)
+
+register(
+    id='CellrobotEnvCPG5-v1',
     entry_point='my_envs.mujoco:CellRobotEnvCPG5',
     max_episode_steps=1000,
     reward_threshold=6000.0,
