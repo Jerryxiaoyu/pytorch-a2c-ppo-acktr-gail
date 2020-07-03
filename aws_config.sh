@@ -2,7 +2,7 @@
 
 
 cd /home/ubuntu
-sh install.sh 410014
+sh install.sh 410.104
 nvidia-smi
 
 
