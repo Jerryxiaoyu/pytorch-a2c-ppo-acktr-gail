@@ -63,6 +63,9 @@ def get_args():
                         help='use a linear schedule on the learning rate')
     parser.add_argument('--use-linear-clip-decay', action='store_true', default=False,
                         help='use a linear schedule on the ppo clipping parameter')
+    parser.add_argument('--base', default=None,
+                        help='Policy Network')
+
     args = parser.parse_args()
 
     args.cuda = not args.no_cuda and torch.cuda.is_available()

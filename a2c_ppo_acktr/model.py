@@ -25,6 +25,14 @@ class Policy(nn.Module):
             else:
                 raise NotImplementedError
 
+        if base == 'CellRobotMLPBase':
+            print('Policy base :', base)
+            base = CellRobotMLPBase
+        elif base == 'MLPBase':
+            print('Policy base :', base)
+            base = MLPBase
+
+
         self.base = base(obs_shape[0], **base_kwargs)
 
         if action_space.__class__.__name__ == "Discrete":
@@ -235,6 +243,52 @@ class MLPBase(NNBase):
         )
 
         self.critic_linear = init_(nn.Linear(hidden_size, 1))
+
+        self.train()
+
+    def forward(self, inputs, rnn_hxs, masks):
+        x = inputs
+
+        if self.is_recurrent:
+            x, rnn_hxs = self._forward_gru(x, rnn_hxs, masks)
+
+        hidden_critic = self.critic(x)
+        hidden_actor = self.actor(x)
+
+        return self.critic_linear(hidden_critic), hidden_actor, rnn_hxs
+
+class CellRobotMLPBase(NNBase):
+    def __init__(self, num_inputs, recurrent=False, hidden_size=256, hidden_sizes= [256,256,256]):
+        super(CellRobotMLPBase, self).__init__(recurrent, num_inputs, hidden_size)
+
+        if recurrent:
+            num_inputs = hidden_size
+
+        init_ = lambda m: init(m,
+            nn.init.orthogonal_,
+            lambda x: nn.init.constant_(x, 0),
+            np.sqrt(2))
+
+
+        self.actor = nn.Sequential(
+            init_(nn.Linear(num_inputs, hidden_sizes[0])),
+            nn.ReLU(),
+            init_(nn.Linear(hidden_sizes[0], hidden_sizes[1])),
+            nn.ReLU(),
+            init_(nn.Linear(hidden_sizes[1], hidden_sizes[2])),
+            nn.Tanh()
+        )
+
+        self.critic = nn.Sequential(
+            init_(nn.Linear(num_inputs, hidden_sizes[0])),
+            nn.ReLU(),
+            init_(nn.Linear(hidden_sizes[0], hidden_sizes[1])),
+            nn.ReLU(),
+            init_(nn.Linear(hidden_sizes[1], hidden_sizes[2])),
+            nn.Tanh()
+        )
+
+        self.critic_linear = init_(nn.Linear(hidden_sizes[2], 1))
 
         self.train()
 

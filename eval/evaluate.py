@@ -42,9 +42,9 @@ contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellrobotEnvCPG4-v0'
-group_dir = 'log-files/Jun_18_PPO_RL_Exp59'
-exp_id = 59
-exp_no_list= [ 2 ]
+group_dir = 'log-files/AWS_logfiles/Jul_03_PPO_RL_Exp66'
+exp_id = 66
+exp_no_list= [ 1 ]
 num_enjoy = 1
 
 

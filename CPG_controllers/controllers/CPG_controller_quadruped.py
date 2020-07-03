@@ -6,7 +6,7 @@ from CPG_controllers.neutrons.Matsuoka import CPG_MatsuokaNeutron
 import numpy as np
 
 class CPG_network_Sinusoid(object):
-    def __init__(self, CPG_node_num,position_vector, dt):
+    def __init__(self, CPG_node_num,position_vector, dt, mode = None):
        # print('CPG_nework type :  Sinusoid / Quadruped ')
 
         self.num_Cell = CPG_node_num
@@ -83,6 +83,9 @@ class CPG_network_Sinusoid(object):
         #self.w_ms_list = [None, 1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 ]
         self.w_ms_list = [None, 1, 1, -1, - 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         self.master_list = [None,  0,1,1,1,1,2,2,3,3,4,4,5,5]
+
+
+        self.mode = mode
         
         
         for i in range(self.num_CPG):
@@ -136,7 +139,12 @@ class CPG_network_Sinusoid(object):
 
         elif len(fi_l) == 13:
 
-            factor_cpg = np.clip(fi_l, 0, 1) *2
+            if self.mode is None or self.mode == 0:
+                factor_cpg = np.clip(fi_l, -1, 1) *2
+            elif self.mode == 1:
+                factor_cpg = np.clip(fi_l, -1, 1) +1
+            else:
+                raise NotImplementedError
 
 
             # gain_left = np.clip(fi_l[0], -max_factor, max_factor)
