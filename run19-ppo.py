@@ -73,7 +73,7 @@ class VG(VariantGenerator):
         return [1]
     @variant
     def CPG_enable(self):
-        return [0]
+        return [1]
 
     @variant
     def state_mode(self):
@@ -89,7 +89,7 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [0,1  ]
+        return [0, 1  ]
 
     @variant
     def turing_flag(self):
@@ -103,7 +103,7 @@ class VG(VariantGenerator):
     def base(self):
         return ['MLPBase']
 
-exp_id = 1
+exp_id = 2
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
