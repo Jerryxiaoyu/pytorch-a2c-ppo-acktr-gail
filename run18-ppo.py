@@ -41,11 +41,11 @@ class VG(VariantGenerator):
 
     @variant
     def gamma(self):
-        return [0.9985 ]
+        return [0.9985, 0.999 ]
 
     @variant
     def tau(self):
-        return [0.98 ]
+        return [0.98, 0.005 ]
 
     @variant
     def num_env_steps(self):
@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['error',  ]  #full, error, no
+        return ['full',  ]  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -77,7 +77,7 @@ class VG(VariantGenerator):
 
     @variant
     def state_mode(self):
-        return ['vel','pos' ]  # vel , pos, vel_f
+        return ['pos']  # vel , pos, vel_f
     @variant
     def command_vx_high(self):
         return [0.2]
@@ -99,7 +99,7 @@ class VG(VariantGenerator):
     def xml_name(self):
         return ['cellrobot_Quadruped_float_limit.xml']
 
-exp_id = 65
+exp_id = 64
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
