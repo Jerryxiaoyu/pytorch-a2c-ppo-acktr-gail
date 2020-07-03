@@ -41,11 +41,11 @@ class VG(VariantGenerator):
 
     @variant
     def gamma(self):
-        return [0.9985, 0.999 ]
+        return [0.9985  ]
 
     @variant
     def tau(self):
-        return [0.98, 0.005 ]
+        return [0.98  ]
 
     @variant
     def num_env_steps(self):
@@ -66,11 +66,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['full',  ]  #full, error, no
+        return ['error',  ]  #full, error, no
 
     @variant
     def buffer_mode(self):
-        return [1]
+        return [2, 3]
     @variant
     def CPG_enable(self):
         return [0]
@@ -99,7 +99,7 @@ class VG(VariantGenerator):
     def xml_name(self):
         return ['cellrobot_Quadruped_float_limit.xml']
 
-exp_id = 64
+exp_id = 66
 EXP_NAME ='_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -107,8 +107,8 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 sync_s3 = True
 
-n_cpu = 8 #8
-num_threads = 8
+n_cpu = 32 #8
+num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
 
