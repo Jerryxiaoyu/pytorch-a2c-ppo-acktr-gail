@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellrobotEnvCPG5-v0']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellrobotEnvCPG5-v0', 'CellrobotEnvCPG5-v0']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -22,7 +22,7 @@ class VG(VariantGenerator):
 
     @variant
     def learning_rate(self):
-        return [1e-4]  #1e-3
+        return [3e-4]  #1e-3
 
     @variant
     def entropy_coef(self):
@@ -41,15 +41,15 @@ class VG(VariantGenerator):
 
     @variant
     def gamma(self):
-        return [0.9985  ]
+        return [0.99   ] #0.9985
 
     @variant
     def tau(self):
-        return [0.98  ]
+        return [0.95 ]  #0.98
 
     @variant
     def num_env_steps(self):
-        return [1e7]
+        return [2e7]
  ##----------------------------------------------------
 
     @variant
@@ -77,7 +77,7 @@ class VG(VariantGenerator):
 
     @variant
     def state_mode(self):
-        return ['pos', 'vel', ]  # vel , pos, vel_f
+        return ['pos'  ]  # vel , pos, vel_f
     @variant
     def command_vx_high(self):
         return [0.2]
@@ -89,7 +89,7 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [0, 1  ]
+        return [0   ]
 
     @variant
     def turing_flag(self):
@@ -103,7 +103,7 @@ class VG(VariantGenerator):
     def base(self):
         return ['MLPBase']
 
-exp_id = 2
+exp_id = 3
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

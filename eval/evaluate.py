@@ -35,16 +35,16 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 18# 11
-global_command = 's1'
+global_command = None#'s1'
 rand_init = 0 #
 data_name = None#
 contact_log = None
 
 # 实验数据原始目录
-ENV_name = 'CellrobotEnvCPG4-v0'
-group_dir = 'log-files/AWS_logfiles/Jul_03_PPO_RL_Exp66'
-exp_id = 66
-exp_no_list= [ 1 ]
+ENV_name = 'CellrobotEnvCPG5-v0'
+group_dir = 'log-files-SMC/AWS_logfiles/Jul_03_SMC_PPO_RL_Exp2'
+exp_id = 2
+exp_no_list= [3 ]
 num_enjoy = 1
 
 
