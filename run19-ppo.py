@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['error' ]  #full, error, no
+        return ['full' ]  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -103,7 +103,7 @@ class VG(VariantGenerator):
     def base(self):
         return ['MLPBase']
 
-exp_id = 4
+exp_id = 5
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
