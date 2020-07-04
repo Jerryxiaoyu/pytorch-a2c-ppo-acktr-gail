@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellrobotEnvCPG5-v0', 'CellrobotEnvCPG5-v1']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [  'CellrobotEnvCPG5-v1']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -66,7 +66,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['no',  ]  #full, error, no
+        return ['error' ]  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -77,7 +77,7 @@ class VG(VariantGenerator):
 
     @variant
     def state_mode(self):
-        return ['pos'  ]  # vel , pos, vel_f
+        return ['pos' , 'vel', 'vel_f' ]  # vel , pos, vel_f
     @variant
     def command_vx_high(self):
         return [0.2]
@@ -89,7 +89,7 @@ class VG(VariantGenerator):
         return [0]  # vel , pos
     @variant
     def vel_filtered(self):
-        return [0   ]
+        return [0]
 
     @variant
     def turing_flag(self):
@@ -103,7 +103,7 @@ class VG(VariantGenerator):
     def base(self):
         return ['MLPBase']
 
-exp_id = 3
+exp_id = 4
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

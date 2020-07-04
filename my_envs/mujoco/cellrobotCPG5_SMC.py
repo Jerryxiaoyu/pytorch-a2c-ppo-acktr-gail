@@ -637,20 +637,7 @@ class CellRobotEnvCPG5(mujoco_env.MujocoEnv, utils.EzPickle):
         return state
 
     def reward_fun1(self, velocity_base, v_commdand, action, obs):
-            # v_e = np.concatenate((velocity_base[:2], velocity_base[-1:])) - v_commdand  # x, y, yaw
-            # vxy = v_commdand[:2]
-            # wyaw = v_commdand[2]
-            #
-            # c_f = -1
-            # c_f2 = -0.2
-            # forward_reward = c_f * np.linalg.norm(velocity_base[0:2] - vxy) + c_f2 * np.linalg.norm(
-            #     velocity_base[2] - wyaw)
-            #
-            # ctrl_cost = -0.005 * np.square(action).sum()
-            # contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
-            # survive_reward = 0.2
-            # reward = forward_reward + ctrl_cost + contact_cost + survive_reward
-            # other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+            ## line
 
             forward_reward = velocity_base[0]
 
@@ -663,6 +650,25 @@ class CellRobotEnvCPG5(mujoco_env.MujocoEnv, utils.EzPickle):
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
             #print(other_rewards)
             return reward, other_rewards
+
+    def reward_fun2(self, velocity_base, v_commdand, action, obs):
+        rien = obs[3:6]
+        x_pose = obs[0]
+        y_pose = obs[1]
+        #goal_vel = 0.10
+
+        forward_reward = -1.0 * abs(velocity_base[0] - v_commdand[0])
+        # y_cost = -0.5 * K_kernel6(y_pose)
+        y_cost = -0.5 * np.linalg.norm(y_pose)
+
+        ctrl_cost = 0  # -0.5 * np.square(action).sum()
+        contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+        survive_reward = 0.0
+
+        reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+        other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+        return reward, other_rewards
 
 
 
