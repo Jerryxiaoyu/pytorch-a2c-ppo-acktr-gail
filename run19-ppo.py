@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [1e7]
  ##----------------------------------------------------
 
     @variant
@@ -58,15 +58,15 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [1]
+        return [2]
 
     @variant
     def num_buffer(self):
-        return [0, ]
+        return [0,]
 
     @variant
     def command_mode(self):
-        return ['full' ]  #full, error, no
+        return ['error' ]  #full, error, no
 
     @variant
     def buffer_mode(self):
@@ -103,7 +103,7 @@ class VG(VariantGenerator):
     def base(self):
         return ['MLPBase']
 
-exp_id = 5
+exp_id = 4
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
