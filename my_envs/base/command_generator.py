@@ -147,6 +147,29 @@ def command_evaluate_generator(max_step,dt,  hold_time, render = False):
 
     return  command
 
+def plot_command(command):
+    command_vx = command[:,0]
+    command_vy = command[:,1]
+    command_wyaw = command[:,2]
+    ax1 = plt.subplot(311)
+    plt.plot(command_vx, color='red', label='o_1')
+    plt.grid()
+    plt.title('Vx')
+
+
+    ax2 = plt.subplot(312, sharex=ax1, sharey=ax1)
+    plt.plot(command_vy, color='red', label='o_1')
+    plt.grid()
+    plt.title('Vy')
+
+    ax2 = plt.subplot(313, sharex=ax1, sharey=ax1)
+    plt.plot(command_wyaw, color='red', label='o_1')
+    plt.grid()
+    plt.title('Wyaw')
+
+
+    plt.show()
+
 #
 # for n, g in enumerate(command_generator(1000, 0.01,  2)):
 #     plt.scatter(n,g)

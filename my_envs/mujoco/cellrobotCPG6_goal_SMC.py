@@ -6,7 +6,7 @@ from transformations import quaternion_inverse, quaternion_multiply, euler_from_
 from CPG_controllers.controllers.CPG_controller_quadruped import CPG_network_Sinusoid
 from CPG_controllers.CPG_process  import  position_PID
 from my_envs.base.ExperienceDataset import TrajectoryBuffer
-from my_envs.base.command_generator import command_generator
+from my_envs.base.command_generator import command_generator, plot_command
 import os
 from utils.fir_filter import fir_filter
 import math
@@ -34,6 +34,8 @@ CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
 from utils.Logger import IO
+
+proj_dir = "/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr"
 
 class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
     """
@@ -409,10 +411,10 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         global_command = os.getenv('GLOBAL_CMD')
         if global_command is not None:
-            self.command = IO('data/cmd_{}.pkl'.format(global_command)).read_pickle()
+            self.command = IO('{}/data/cmd_{}.pkl'.format(proj_dir, global_command)).read_pickle()
             print('Global command is selected, cmd_{}'.format(global_command))
 
-
+       # plot_command(self.command)
 
     def reset_model(self, command = None,  ):
         # reset init robot

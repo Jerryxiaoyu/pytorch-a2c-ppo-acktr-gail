@@ -14,6 +14,8 @@ os.environ["COMMAND_MODE"] = "FandE"
 os.environ["VEL_FILTER"] = str(0)
 
 
+os.environ["GLOBAL_CMD"] = 's1'
+
 
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2
 env = gym.make("CellRobotEnvCPG6Goal-v1"  )

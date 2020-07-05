@@ -51,18 +51,14 @@ class VG(VariantGenerator):
     def num_env_steps(self):
         return [1e7]
 
-    @variant
-    def base(self):
-        return ['CellRobotMLPBase'] #CellRobotMLPBase
+
 
     @variant
     def recurrent(self):
         return [0]
  ##----------------------------------------------------
 
-    @variant
-    def action_dim(self):
-        return [13 ]#2,3,13
+
 
     @variant
     def state_mode(self):
@@ -94,16 +90,24 @@ class VG(VariantGenerator):
 #----------------------------------------------
 
     @variant
+    def base(self):
+        return ['CellRobotMLPBase']  # CellRobotMLPBase
+
+    @variant
+    def action_dim(self):
+        return [2]  # 2,3,13
+
+    @variant
     def CPG_enable(self):
         return [1]
 
     @variant
     def num_buffer(self):
-        return [5 ]
+        return [5]
 
     @variant
     def command_mode(self):
-        return ['error' ]  #full, error, no FandE
+        return ['full', 'error' ]  #full, error, no FandE
 
     @variant
     def reward_fun_choice(self):
@@ -111,10 +115,10 @@ class VG(VariantGenerator):
 
     @variant
     def vel_filtered(self):
-        return [0, 1]
+        return [1]
 
 
-exp_id = 8
+exp_id = 9
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

@@ -35,7 +35,7 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 16# 11
-global_command = 'c5'
+global_command =  'cons100'
 rand_init = 0 #
 data_name = None#
 contact_log = None
@@ -43,9 +43,12 @@ contact_log = None
 # 实验数据原始目录
 ENV_name = 'CellrobotEnvCPG5-v1'
 group_dir = 'log-files-SMC/AWS_logfiles/Jul_04_SMC_PPO_RL_Exp5'
-exp_id = 5
-exp_no_list= [1 ]
+exp_id =5
+exp_no_list= [3 ]
 num_enjoy = 1
+dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
+max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
+
 
 
 model_save_num = None
@@ -157,11 +160,11 @@ for exp_no in exp_no_list:
     # else:
     #     raise Exception('Setting parsing ')
 
-    max_step = 2000
+
     save_plot_path2 = os.path.join(eval_path, 'No_{}'.format(exp_no))
     for save_plot_path in [save_plot_path1, save_plot_path2]:
-        plot_velocity_curve(v_e, c_command, max_step, save_plot_path=save_plot_path)
-        plot_position_time(xyz, max_step, save_plot_path=save_plot_path)
-        plot_traj_xy(xyz, max_step, save_plot_path=save_plot_path)
-        plot_traj_xy_cmd(xyz,c_command , max_step, save_plot_path=save_plot_path)
+        plot_velocity_curve(v_e, c_command, max_step, dt =dt, save_plot_path=save_plot_path)
+        plot_position_time(xyz, max_step, dt =dt,save_plot_path=save_plot_path)
+        plot_traj_xy(xyz, max_step, dt =dt,save_plot_path=save_plot_path)
+        plot_traj_xy_cmd(xyz,c_command , max_step, dt =dt,save_plot_path=save_plot_path)
 
