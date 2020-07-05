@@ -258,7 +258,9 @@ class MLPBase(NNBase):
         return self.critic_linear(hidden_critic), hidden_actor, rnn_hxs
 
 class CellRobotMLPBase(NNBase):
-    def __init__(self, num_inputs, recurrent=False, hidden_size=256, hidden_sizes= [256,256,256]):
+    def __init__(self, num_inputs, recurrent=False, hidden_size=256, hidden_sizes= [512,512,256]):
+
+        hidden_size = hidden_sizes[-1]
         super(CellRobotMLPBase, self).__init__(recurrent, num_inputs, hidden_size)
 
         if recurrent:

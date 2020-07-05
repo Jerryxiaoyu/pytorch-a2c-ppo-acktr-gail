@@ -99,7 +99,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [0, ]
+        return [0 ]
 
     @variant
     def command_mode(self):
@@ -111,18 +111,18 @@ class VG(VariantGenerator):
 
     @variant
     def vel_filtered(self):
-        return [0]
+        return [0,1]
 
 
-exp_id = 2
-EXP_NAME ='_SMC_PPO_RL'
+exp_id = 6
+EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
 sync_s3 = False
 
-n_cpu = 8 #8
+n_cpu = 32 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
