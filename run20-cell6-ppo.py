@@ -53,7 +53,7 @@ class VG(VariantGenerator):
 
     @variant
     def base(self):
-        return ['MLPBase']
+        return ['CellRobotMLPBase'] #CellRobotMLPBase
 
     @variant
     def recurrent(self):
@@ -99,7 +99,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [0 ]
+        return [5 ]
 
     @variant
     def command_mode(self):
@@ -114,7 +114,7 @@ class VG(VariantGenerator):
         return [0,1]
 
 
-exp_id = 6
+exp_id = 7
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -122,7 +122,7 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 sync_s3 = True
 
-n_cpu = 32 #8
+n_cpu = 8 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
