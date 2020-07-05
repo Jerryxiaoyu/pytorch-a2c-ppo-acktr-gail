@@ -122,7 +122,7 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 sync_s3 = True
 
-n_cpu = 8 #8
+n_cpu = 32 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
