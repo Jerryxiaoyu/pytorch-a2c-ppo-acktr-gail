@@ -6,6 +6,7 @@ cd /home/ubuntu
 nvidia-smi
 
 
+
 cd jerry/projects/pytorch-a2c-ppo-acktr-gail
 
 pip install tensorflow==1.12
