@@ -405,7 +405,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command = command_generator(self.command_max_step , self.dt, self.command_duration,
                                              vx_range=(self.command_vx_low, self.command_vx_high),
                                              vy_range=(self.command_vy_low, self.command_vy_high),
-                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=True)
+                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=False)
         else:
             self.command = command
 
@@ -705,7 +705,7 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost, direction_reward])
 
-            print(other_rewards)
+          #  print(other_rewards)
         else:
             raise NotImplementedError
         #print(other_rewards)

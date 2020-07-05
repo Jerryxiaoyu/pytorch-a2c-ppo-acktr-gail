@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return [  'CellRobotEnvCPG6Traj-v1']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [ 'CellRobotEnvCPG6Goal-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -41,7 +41,7 @@ class VG(VariantGenerator):
 
     @variant
     def gamma(self):
-        return [0.99   ] #0.9985
+        return [0.99] #0.9985
 
     @variant
     def tau(self):
@@ -95,7 +95,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2,13]  # 2,3,13
+        return [2,13 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -107,7 +107,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['full','FandE' ]  #full, error, no FandE
+        return [ 'full', 'FandE' ]  #full, error, no FandE
 
     @variant
     def reward_fun_choice(self):
@@ -118,13 +118,13 @@ class VG(VariantGenerator):
         return [0]
 
 
-exp_id = 10
+exp_id = 8
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-sync_s3 = True
+sync_s3 = True#True
 
 n_cpu = 32 #8
 num_threads = n_cpu
