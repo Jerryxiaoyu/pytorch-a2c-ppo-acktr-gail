@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return [  'CellrobotEnvCPG5-v1']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [  'CellRobotEnvCPG6Goal-v1']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -50,6 +50,14 @@ class VG(VariantGenerator):
     @variant
     def num_env_steps(self):
         return [1e7]
+
+    @variant
+    def base(self):
+        return ['MLPBase']
+
+    @variant
+    def recurrent(self):
+        return [0]
  ##----------------------------------------------------
 
     @variant
@@ -57,64 +65,64 @@ class VG(VariantGenerator):
         return [13 ]#2,3,13
 
     @variant
-    def reward_fun_choice(self):
-        return [2]
-
-    @variant
-    def num_buffer(self):
-        return [0,]
-
-    @variant
-    def command_mode(self):
-        return ['full' ]  #full, error, no
-
-    @variant
-    def buffer_mode(self):
-        return [1]
-    @variant
-    def CPG_enable(self):
-        return [1]
-
-    @variant
     def state_mode(self):
-        return ['pos' , 'vel', 'vel_f' ]  # vel , pos, vel_f
+        return ['meiyong', ]  # vel , pos, vel_f
+
     @variant
     def command_vx_high(self):
         return [0.2]
+
     @variant
     def command_vy_high(self):
         return [0]
+
     @variant
     def command_wz_high(self):
         return [0]  # vel , pos
-    @variant
-    def vel_filtered(self):
-        return [0]
 
     @variant
     def turing_flag(self):
-        return [0 ]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
+        return [0]  # 2 line tracking for 5s, 3 for 20s, 1 turning tracking
 
     @variant
     def xml_name(self):
         return ['cellrobot_Quadruped_float_limit.xml']
 
     @variant
-    def base(self):
-        return ['MLPBase']
-    @variant
-    def recurrent(self):
-            return [0]
+    def buffer_mode(self):
+        return ['meiyong']
+#----------------------------------------------
 
-exp_id = 5
+    @variant
+    def CPG_enable(self):
+        return [1]
+
+    @variant
+    def num_buffer(self):
+        return [0, ]
+
+    @variant
+    def command_mode(self):
+        return ['no' ]  #full, error, no FandE
+
+    @variant
+    def reward_fun_choice(self):
+        return [0]
+
+    @variant
+    def vel_filtered(self):
+        return [0]
+
+
+exp_id = 2
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-sync_s3 = True
+sync_s3 = False
 
-n_cpu = 32 #8
+n_cpu = 8 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"

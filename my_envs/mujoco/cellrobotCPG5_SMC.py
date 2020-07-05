@@ -172,7 +172,7 @@ class CellRobotEnvCPG5(mujoco_env.MujocoEnv, utils.EzPickle):
 
         self.num_joint = 13
         policy_a_dim = 13  # networt output
-        self.command = command_generator(10000, 0.01, 2)
+        self.command = command_generator(10000, 0.01, 2, render = True)
         self.c_index = 0
         self.c_index_max = 10000
         self.action_pre = 0
@@ -367,11 +367,10 @@ class CellRobotEnvCPG5(mujoco_env.MujocoEnv, utils.EzPickle):
         self.fir_wz.reset()
 
         if command is  None:
-
-
-            self.command = command_generator(self.command_max_step , self.dt, self.command_duration, vx_range=(self.command_vx_low, self.command_vx_high),
+            self.command = command_generator(self.command_max_step , self.dt, self.command_duration,
+                                             vx_range=(self.command_vx_low, self.command_vx_high),
                                              vy_range=(self.command_vy_low, self.command_vy_high),
-                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=False)
+                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=True)
         else:
             self.command = command
 

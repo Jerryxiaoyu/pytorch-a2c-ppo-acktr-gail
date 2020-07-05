@@ -34,17 +34,17 @@ args = parser.parse_args()
 root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
-seed = 18# 11
-global_command = None#'s1'
+seed = 16# 11
+global_command = 'c5'
 rand_init = 0 #
 data_name = None#
 contact_log = None
 
 # 实验数据原始目录
-ENV_name = 'CellrobotEnvCPG5-v0'
-group_dir = 'log-files-SMC/AWS_logfiles/Jul_03_SMC_PPO_RL_Exp2'
-exp_id = 2
-exp_no_list= [3 ]
+ENV_name = 'CellrobotEnvCPG5-v1'
+group_dir = 'log-files-SMC/AWS_logfiles/Jul_04_SMC_PPO_RL_Exp5'
+exp_id = 5
+exp_no_list= [1 ]
 num_enjoy = 1
 
 

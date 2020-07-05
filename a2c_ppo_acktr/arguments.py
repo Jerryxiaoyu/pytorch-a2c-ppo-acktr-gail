@@ -47,7 +47,7 @@ def get_args():
                         help='eval interval, one eval per n updates (default: None)')
     parser.add_argument('--num-env-steps', type=int, default=10e6,
                         help='number of environment steps to train (default: 10e6)')
-    parser.add_argument('--env-name', default='CellrobotEnvCPG4-v0',
+    parser.add_argument('--env-name', default='CellRobotEnvCPG6Goal-v1',
                         help='environment to train on (default: PongNoFrameskip-v4)')
     parser.add_argument('--log-dir', default='/tmp/gym/',
                         help='directory to save agent logs (default: /tmp/gym)')
