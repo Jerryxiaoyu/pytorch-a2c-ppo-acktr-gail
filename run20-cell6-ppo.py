@@ -103,18 +103,18 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ['no' ]  #full, error, no FandE
+        return ['error' ]  #full, error, no FandE
 
     @variant
     def reward_fun_choice(self):
-        return [0]
+        return [1]
 
     @variant
     def vel_filtered(self):
-        return [0,1]
+        return [0, 1]
 
 
-exp_id = 7
+exp_id = 8
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
