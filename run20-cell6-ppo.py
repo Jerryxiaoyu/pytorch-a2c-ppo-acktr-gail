@@ -118,7 +118,7 @@ class VG(VariantGenerator):
         return [0]
 
 
-exp_id = 8
+exp_id = 10
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
