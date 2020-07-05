@@ -12,13 +12,16 @@ os.environ["CPG_ENABLE"] = str(1)
 os.environ["NUM_BUFFER"] = str(0)
 os.environ["COMMAND_MODE"] = "FandE"
 os.environ["VEL_FILTER"] = str(0)
-
+os.environ["REWARD_CHOICE"] = str(1)
 
 os.environ["GLOBAL_CMD"] = 's1'
 
+os.environ["COMMAND_Y"] = str(0.2)
+os.environ["COMMAND_Z"] = str(0)
 
-#HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2
-env = gym.make("CellRobotEnvCPG6Goal-v1"  )
+
+#HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1
+env = gym.make("CellRobotEnvCPG6Traj-v1"  )
 
 
 obs = env.reset()

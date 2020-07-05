@@ -176,7 +176,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self._t_step = 0
         self.c_index_max = 10000
         self.action_pre = 0
-        dt = 0.01
+
         self.goal_orien_yaw = 0
         self.goal_x = 0
         self.goal_y = 0
@@ -191,7 +191,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.command_vx_high = float(self.command_vx_high)
         self.command_vy_low = 0
         self.command_vy_high = float(self.command_vy_high)
-        self.command_wz_low =0
+        self.command_wz_low = -float(self.command_wz_high)
         self.command_wz_high = float(self.command_wz_high)
 
         self.command_max_step = 10000  # steps
@@ -214,9 +214,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command_vy_low = 0.05
             self.command_duration = 20
 
-
+        dt = 0.01
         self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint,
-                                                 position_vector=position_vector, dt=dt,
+                                                 position_vector=position_vector, dt= dt,
                                                  mode = self.cpg_mode)
 
         self.robot_state_dim = 38
@@ -226,7 +226,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim, max_trajectory=self.trajectory_length)
 
         cutoff_hz = 10 #Hz
-        self.reward_fir= fir_filter(int(1/dt),cutoff_hz,10)
+     #   self.reward_fir= fir_filter(int(1/dt),cutoff_hz,10)
 
 
         self.filter_fun_list  = [
@@ -260,8 +260,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         v_commdand = self.command[self._t_step, :3]
 
         # self.goal_orien_yaw += v_commdand[-1]*self.dt
-        # self.goal_x += v_commdand[0]*self.dt
-        # self.goal_y += v_commdand[1]*self.dt
+        self.goal_x += v_commdand[0]*self.dt
+        self.goal_y += v_commdand[1]*self.dt
         # self.goal_xyyaw += v_commdand*self.dt
 
 
@@ -405,7 +405,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command = command_generator(self.command_max_step , self.dt, self.command_duration,
                                              vx_range=(self.command_vx_low, self.command_vx_high),
                                              vy_range=(self.command_vy_low, self.command_vy_high),
-                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=False)
+                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=True)
         else:
             self.command = command
 
@@ -425,6 +425,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.goal_y = 0
         self.goal_orien_yaw = 0
         self.goal_xyyaw = np.array([0.0, 0.0, 0.0])
+
+
+
 
         for i in range(6):
             self.filter_fun_list[i].reset()
@@ -601,9 +604,112 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
 
 
+class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
+    def __init__(self, **kwargs):
+
+        self.sample_count = 4
+        trajectory_length  = 40
+
+        os.environ["NUM_BUFFER"] = str(trajectory_length)
+        self.sample_interval = int( trajectory_length / self.sample_count)  # 40/4  10
+        self._pred_root_position = np.zeros((self.sample_count, 2), dtype=np.float32)
+
+        CellRobotEnvCPG6Goal.__init__(self, **kwargs)
+
+        self.trajectory_length = 40
+        if self.trajectory_length > 0:
+            self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim,
+                                                   max_trajectory=self.trajectory_length)
+
+    def _get_obs(self):
+        # get robot state
+        self._robot_state = self._get_robot_state()
 
 
+        # concat history state
+        if self.trajectory_length > 0:
+            obs = np.concatenate([
+                self._robot_state,
+                self.sampled_history_trajectory.flatten()
+            ])
+        else:
+            obs = self._robot_state
 
+
+        # concat cmd
+        cmd = self._get_goal_info()
+        if cmd is not None:
+            obs = np.concatenate([obs,
+                                  cmd])
+
+
+        pred_position = self._get_pred_root_position()
+        obs = np.concatenate([obs,
+                              pred_position])
+
+        return obs
+
+    def _get_pred_root_position(self):
+
+        x_pos = np.array([ self.root_position[0] + self.current_command[0]*self.sample_interval *self.dt*(i+1) for i in range(self.sample_count) ])
+        y_pos = np.array([self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in  range(self.sample_count)])
+
+
+        self._pred_root_position[:,0] = x_pos
+        self._pred_root_position[:,1] = y_pos
+        return self._pred_root_position.flatten()
+
+    @property
+    def sampled_history_trajectory(self):
+        sampled_index =np.arange(0, self.trajectory_length, step=self.sample_interval)
+        return self.history_buffer.buffer[sampled_index]
+
+    @property
+    def pred_root_positions(self):
+        return self._pred_root_position
+
+    @property
+    def future_root_position(self):
+        return np.array([self.goal_x, self.goal_y])
+
+
+    def compute_reward(self, velocity_base, v_commdand, action, obs):
+
+        if self.reward_choice == 0:
+            ## line
+            forward_reward = velocity_base[0]
+
+            ctrl_cost = .5 * np.square(action).sum()
+            contact_cost = 0.5 * 1e-4 * np.sum(
+                np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 1.0
+            reward = forward_reward - ctrl_cost - contact_cost + survive_reward
+
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+
+        elif self.reward_choice == 1:
+            y_pose = self.root_position[1]
+            # goal_vel = 0.10
+
+            forward_reward = -1.0 * abs(velocity_base[0] - v_commdand[0])-1.0 * abs(velocity_base[1] - v_commdand[1])
+
+            direction_reward = -0.5 *abs(self.root_euler[2] - v_commdand[2])
+
+
+            y_cost = -0.5 * np.linalg.norm(self.pred_root_positions - self.future_root_position)
+
+            ctrl_cost = 0  # -0.5 * np.square(action).sum()
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+            reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost, direction_reward])
+
+            print(other_rewards)
+        else:
+            raise NotImplementedError
+        #print(other_rewards)
+        return reward, other_rewards
 
 
 

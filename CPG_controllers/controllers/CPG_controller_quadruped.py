@@ -143,68 +143,125 @@ class CPG_network_Sinusoid(object):
                 factor_cpg = np.clip(fi_l, -1, 1) *2
             elif self.mode == 1:
                 factor_cpg = np.clip(fi_l, -1, 1) +1
+            elif self.mode ==2:
+                factor_cpg = np.clip(fi_l, -1, 1) * 2
             else:
                 raise NotImplementedError
 
-
             # gain_left = np.clip(fi_l[0], -max_factor, max_factor)
             # gain_right =np.clip(fi_l[1], -max_factor, max_factor)
+            if self.mode ==0 or self.mode == 1:
+                self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * factor_cpg[0]
+                self.CPG_list[6].parm['R1'] = self.parm_list[6][3] * factor_cpg[0]
+                self.CPG_list[7].parm['R1'] = self.parm_list[7][3] * factor_cpg[0]
 
-            self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * factor_cpg[0]
-            self.CPG_list[6].parm['R1'] = self.parm_list[6][3] * factor_cpg[0]
-            self.CPG_list[7].parm['R1'] = self.parm_list[7][3] * factor_cpg[0]
+                self.CPG_list[2].parm['X1'] = self.parm_list[2][4] * factor_cpg[1]
+                self.CPG_list[6].parm['X1'] = self.parm_list[6][4] * factor_cpg[1]
+                self.CPG_list[7].parm['X1'] = self.parm_list[7][4] * factor_cpg[1]
 
-            self.CPG_list[2].parm['X1'] = self.parm_list[2][4] * factor_cpg[1]
-            self.CPG_list[6].parm['X1'] = self.parm_list[6][4] * factor_cpg[1]
-            self.CPG_list[7].parm['X1'] = self.parm_list[7][4] * factor_cpg[1]
+                self.CPG_list[2].parm['f12'] = self.parm_list[2][5] * factor_cpg[2]
+                self.CPG_list[6].parm['f12'] = self.parm_list[6][5] * factor_cpg[2]
+                self.CPG_list[7].parm['f12'] = self.parm_list[7][5] * factor_cpg[2]
 
-            self.CPG_list[2].parm['f12'] = self.parm_list[2][5] * factor_cpg[2]
-            self.CPG_list[6].parm['f12'] = self.parm_list[6][5] * factor_cpg[2]
-            self.CPG_list[7].parm['f12'] = self.parm_list[7][5] * factor_cpg[2]
+                # ------------------------------------------
+                self.CPG_list[3].parm['R1'] = self.parm_list[3][3] * factor_cpg[3]
+                self.CPG_list[8].parm['R1'] = self.parm_list[8][3] * factor_cpg[3]
+                self.CPG_list[9].parm['R1'] = self.parm_list[9][3] * factor_cpg[3]
 
-            # ------------------------------------------
-            self.CPG_list[3].parm['R1'] = self.parm_list[3][3] * factor_cpg[3]
-            self.CPG_list[8].parm['R1'] = self.parm_list[8][3] * factor_cpg[3]
-            self.CPG_list[9].parm['R1'] = self.parm_list[9][3] * factor_cpg[3]
+                self.CPG_list[3].parm['X1'] = self.parm_list[3][4] * factor_cpg[4]
+                self.CPG_list[8].parm['X1'] = self.parm_list[8][4] * factor_cpg[4]
+                self.CPG_list[9].parm['X1'] = self.parm_list[9][4] * factor_cpg[4]
 
-            self.CPG_list[3].parm['X1'] = self.parm_list[3][4] * factor_cpg[4]
-            self.CPG_list[8].parm['X1'] = self.parm_list[8][4] * factor_cpg[4]
-            self.CPG_list[9].parm['X1'] = self.parm_list[9][4] * factor_cpg[4]
+                self.CPG_list[3].parm['f12'] = self.parm_list[3][5] * factor_cpg[5]
+                self.CPG_list[8].parm['f12'] = self.parm_list[8][5] * factor_cpg[5]
+                self.CPG_list[9].parm['f12'] = self.parm_list[9][5] * factor_cpg[5]
 
-            self.CPG_list[3].parm['f12'] = self.parm_list[3][5] * factor_cpg[5]
-            self.CPG_list[8].parm['f12'] = self.parm_list[8][5] * factor_cpg[5]
-            self.CPG_list[9].parm['f12'] = self.parm_list[9][5] * factor_cpg[5]
+                # ------------------------------------------
+                self.CPG_list[4].parm['R1'] = self.parm_list[4][3] * factor_cpg[6]
+                self.CPG_list[10].parm['R1'] = self.parm_list[10][3] * factor_cpg[6]
+                self.CPG_list[11].parm['R1'] = self.parm_list[11][3] * factor_cpg[6]
 
-            # ------------------------------------------
-            self.CPG_list[4].parm['R1'] = self.parm_list[4][3] * factor_cpg[6]
-            self.CPG_list[10].parm['R1'] = self.parm_list[10][3] * factor_cpg[6]
-            self.CPG_list[11].parm['R1'] = self.parm_list[11][3] * factor_cpg[6]
+                self.CPG_list[4].parm['X1'] = self.parm_list[4][4] * factor_cpg[7]
+                self.CPG_list[10].parm['X1'] = self.parm_list[10][4] * factor_cpg[7]
+                self.CPG_list[11].parm['X1'] = self.parm_list[11][4] * factor_cpg[7]
 
-            self.CPG_list[4].parm['X1'] = self.parm_list[4][4] * factor_cpg[7]
-            self.CPG_list[10].parm['X1'] = self.parm_list[10][4] * factor_cpg[7]
-            self.CPG_list[11].parm['X1'] = self.parm_list[11][4] * factor_cpg[7]
+                self.CPG_list[4].parm['f12'] = self.parm_list[4][5] * factor_cpg[8]
+                self.CPG_list[10].parm['f12'] = self.parm_list[10][5] * factor_cpg[8]
+                self.CPG_list[11].parm['f12'] = self.parm_list[11][5] * factor_cpg[8]
 
-            self.CPG_list[4].parm['f12'] = self.parm_list[4][5] * factor_cpg[8]
-            self.CPG_list[10].parm['f12'] = self.parm_list[10][5] * factor_cpg[8]
-            self.CPG_list[11].parm['f12'] = self.parm_list[11][5] * factor_cpg[8]
+                # ------------------------------------------
+                self.CPG_list[5].parm['R1'] = self.parm_list[5][3] * factor_cpg[9]
+                self.CPG_list[12].parm['R1'] = self.parm_list[12][3] * factor_cpg[9]
+                self.CPG_list[13].parm['R1'] = self.parm_list[13][3] * factor_cpg[9]
 
-            # ------------------------------------------
-            self.CPG_list[5].parm['R1'] = self.parm_list[5][3] * factor_cpg[9]
-            self.CPG_list[12].parm['R1'] = self.parm_list[12][3] * factor_cpg[9]
-            self.CPG_list[13].parm['R1'] = self.parm_list[13][3] * factor_cpg[9]
+                self.CPG_list[5].parm['X1'] = self.parm_list[5][4] * factor_cpg[10]
+                self.CPG_list[12].parm['X1'] = self.parm_list[12][4] * factor_cpg[10]
+                self.CPG_list[13].parm['X1'] = self.parm_list[13][4] * factor_cpg[10]
 
-            self.CPG_list[5].parm['X1'] = self.parm_list[5][4] * factor_cpg[10]
-            self.CPG_list[12].parm['X1'] = self.parm_list[12][4] * factor_cpg[10]
-            self.CPG_list[13].parm['X1'] = self.parm_list[13][4] * factor_cpg[10]
+                self.CPG_list[5].parm['f12'] = self.parm_list[5][5] * factor_cpg[11]
+                self.CPG_list[12].parm['f12'] = self.parm_list[12][5] * factor_cpg[11]
+                self.CPG_list[13].parm['f12'] = self.parm_list[13][5] * factor_cpg[11]
 
-            self.CPG_list[5].parm['f12'] = self.parm_list[5][5] * factor_cpg[11]
-            self.CPG_list[12].parm['f12'] = self.parm_list[12][5] * factor_cpg[11]
-            self.CPG_list[13].parm['f12'] = self.parm_list[13][5] * factor_cpg[11]
+                kf_f = (np.clip(fi_l[-1], 0, 1) * 2 + 0.0)
 
-            kf_f = (np.clip(fi_l[-1], 0, 1) * 2 + 0.0)
+                for i in range(self.num_Cell + 1):
+                    self.CPG_list[i].parm['kf'] = self.kf * kf_f
+            elif self.mode ==2:
 
-            for i in range(self.num_Cell + 1):
-                self.CPG_list[i].parm['kf'] = self.kf * kf_f
+
+                self.CPG_list[2].parm['R1'] = self.parm_list[2][3] + factor_cpg[0]
+                self.CPG_list[6].parm['R1'] = self.parm_list[6][3] + factor_cpg[0]
+                self.CPG_list[7].parm['R1'] = self.parm_list[7][3] + factor_cpg[0]
+
+                self.CPG_list[2].parm['X1'] = self.parm_list[2][4] + factor_cpg[1]
+                self.CPG_list[6].parm['X1'] = self.parm_list[6][4] + factor_cpg[1]
+                self.CPG_list[7].parm['X1'] = self.parm_list[7][4] + factor_cpg[1]
+
+                self.CPG_list[2].parm['f12'] = self.parm_list[2][5] + factor_cpg[2]
+                self.CPG_list[6].parm['f12'] = self.parm_list[6][5] + factor_cpg[2]
+                self.CPG_list[7].parm['f12'] = self.parm_list[7][5] + factor_cpg[2]
+
+                # ------------------------------------------
+                self.CPG_list[3].parm['R1'] = self.parm_list[3][3] + factor_cpg[3]
+                self.CPG_list[8].parm['R1'] = self.parm_list[8][3] + factor_cpg[3]
+                self.CPG_list[9].parm['R1'] = self.parm_list[9][3] + factor_cpg[3]
+
+                self.CPG_list[3].parm['X1'] = self.parm_list[3][4] + factor_cpg[4]
+                self.CPG_list[8].parm['X1'] = self.parm_list[8][4] + factor_cpg[4]
+                self.CPG_list[9].parm['X1'] = self.parm_list[9][4] + factor_cpg[4]
+
+                self.CPG_list[3].parm['f12'] = self.parm_list[3][5] + factor_cpg[5]
+                self.CPG_list[8].parm['f12'] = self.parm_list[8][5] + factor_cpg[5]
+                self.CPG_list[9].parm['f12'] = self.parm_list[9][5] + factor_cpg[5]
+
+                # ------------------------------------------
+                self.CPG_list[4].parm['R1'] = self.parm_list[4][3] + factor_cpg[6]
+                self.CPG_list[10].parm['R1'] = self.parm_list[10][3] + factor_cpg[6]
+                self.CPG_list[11].parm['R1'] = self.parm_list[11][3] + factor_cpg[6]
+
+                self.CPG_list[4].parm['X1'] = self.parm_list[4][4] + factor_cpg[7]
+                self.CPG_list[10].parm['X1'] = self.parm_list[10][4] + factor_cpg[7]
+                self.CPG_list[11].parm['X1'] = self.parm_list[11][4] + factor_cpg[7]
+
+                self.CPG_list[4].parm['f12'] = self.parm_list[4][5] + factor_cpg[8]
+                self.CPG_list[10].parm['f12'] = self.parm_list[10][5] + factor_cpg[8]
+                self.CPG_list[11].parm['f12'] = self.parm_list[11][5] + factor_cpg[8]
+
+                # ------------------------------------------
+                self.CPG_list[5].parm['R1'] = self.parm_list[5][3] + factor_cpg[9]
+                self.CPG_list[12].parm['R1'] = self.parm_list[12][3] + factor_cpg[9]
+                self.CPG_list[13].parm['R1'] = self.parm_list[13][3] + factor_cpg[9]
+
+                self.CPG_list[5].parm['X1'] = self.parm_list[5][4] + factor_cpg[10]
+                self.CPG_list[12].parm['X1'] = self.parm_list[12][4] + factor_cpg[10]
+                self.CPG_list[13].parm['X1'] = self.parm_list[13][4] + factor_cpg[10]
+
+                self.CPG_list[5].parm['f12'] = self.parm_list[5][5] + factor_cpg[11]
+                self.CPG_list[12].parm['f12'] = self.parm_list[12][5] + factor_cpg[11]
+                self.CPG_list[13].parm['f12'] = self.parm_list[13][5] + factor_cpg[11]
+
+
+
         elif len(fi_l) == 16:
 
             factor_cpg = np.clip(fi_l, 0, 1)
