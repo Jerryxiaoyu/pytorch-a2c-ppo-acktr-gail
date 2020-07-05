@@ -95,7 +95,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2,13 ]  # 2,3,13
+        return [13, 2 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
