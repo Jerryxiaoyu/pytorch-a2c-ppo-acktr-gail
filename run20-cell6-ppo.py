@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [1e7]
+        return [2e7]
 
 
 
