@@ -105,6 +105,7 @@ class VG(VariantGenerator):
     def num_buffer(self):
         return [0, 5]
 
+
     @variant
     def command_mode(self):
         return [ 'no' ]  #full, error, no FandE
