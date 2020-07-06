@@ -20,6 +20,9 @@ os.environ["COMMAND_Y"] = str(0.2)
 os.environ["COMMAND_Z"] = str(0)
 
 
+
+#os.environ["ACTION_DIM"] = str(39)
+
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1
 env = gym.make("CellRobotEnvCPG6Goal-v2"  )
 
