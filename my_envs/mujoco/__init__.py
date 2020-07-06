@@ -86,7 +86,7 @@ register(
 register(
     id='CellRobotEnvCPG6Goal-v1',
     entry_point='my_envs.mujoco:CellRobotEnvCPG6Goal',
-    max_episode_steps=1000,
+    max_episode_steps=2000,
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=1)

@@ -21,7 +21,7 @@ os.environ["COMMAND_Z"] = str(0)
 
 
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1
-env = gym.make("CellRobotEnvCPG6Traj-v1"  )
+env = gym.make("CellRobotEnvCPG6Goal-v2"  )
 
 
 obs = env.reset()

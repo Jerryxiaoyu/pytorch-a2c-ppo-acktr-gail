@@ -457,7 +457,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self._t_step = 0
 
         # reset something...
-        self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector, dt=self.dt)
+        self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector, dt=self.dt,
+                                                 mode=self.cpg_mode)
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
         return obs
