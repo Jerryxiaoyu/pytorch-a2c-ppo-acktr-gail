@@ -37,7 +37,7 @@ class VG(VariantGenerator):
         return [10]
     @variant
     def num_mini_batch(self):
-        return [32]
+        return [64]
 
     @variant
     def gamma(self):
@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [1e5]
+        return [2e7]
 
     @variant
     def recurrent(self):
@@ -108,7 +108,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [1]
+        return [1, 2]
 
     @variant
     def vel_filtered(self):
@@ -116,7 +116,7 @@ class VG(VariantGenerator):
 
 
 
-exp_id = 17
+exp_id = 18
 
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \

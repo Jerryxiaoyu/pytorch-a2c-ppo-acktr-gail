@@ -1,6 +1,15 @@
 ## AWS 部署说明
 
+AWS 
+1. 启动AWS 模板
+2. 上传mujoco key
+3. 运行下列代码
+```buildoutcfg
+source activate tensorflow_p36
+cd ~/jerry/projects/pytorch-a2c-ppo-acktr-gail
 
+nohup python run-cell6-ppo > ~/.jupyter/jupyter.log 2>&1 &
+```
 
 
 
