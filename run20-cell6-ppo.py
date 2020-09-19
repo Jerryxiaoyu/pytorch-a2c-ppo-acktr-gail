@@ -101,7 +101,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [0 ]
+        return [2]
 
 
     @variant
