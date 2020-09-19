@@ -100,8 +100,20 @@ class CPG_network_Sinusoid(object):
         for cpg_n in self.CPG_list:
             cpg_n.next_output(f1=0, f2=0)
             output_list.append(cpg_n.parm['o'])
-        
+
         return output_list
+
+    # def output(self, state):
+    #     output_list = []
+    #     for idx, cpg_n in enumerate(self.CPG_list):
+    #         if idx != 0:
+    #             cpg_n.next_output(f1=state[(idx-1)*2], f2=state[(idx-1)*2 +1])
+    #             output_list.append(cpg_n.parm['o'])
+    #         else:
+    #             cpg_n.next_output(f1=0, f2=0)
+    #             output_list.append(cpg_n.parm['o'])
+    #
+    #     return output_list
 
     def update(self, fi_l):
         max_factor = 2
@@ -136,9 +148,7 @@ class CPG_network_Sinusoid(object):
             for i in range(self.num_Cell + 1):
                 self.CPG_list[i].parm['kf'] = self.kf * kf_f
 
-
         elif len(fi_l) == 13:
-
             if self.mode is None or self.mode == 0:
                 factor_cpg = np.clip(fi_l, -1, 1) *2
             elif self.mode == 1:
@@ -207,8 +217,6 @@ class CPG_network_Sinusoid(object):
                 for i in range(self.num_Cell + 1):
                     self.CPG_list[i].parm['kf'] = self.kf * kf_f
             elif self.mode ==2:
-
-
                 self.CPG_list[2].parm['R1'] = self.parm_list[2][3] + factor_cpg[0]
                 self.CPG_list[6].parm['R1'] = self.parm_list[6][3] + factor_cpg[0]
                 self.CPG_list[7].parm['R1'] = self.parm_list[7][3] + factor_cpg[0]
@@ -335,10 +343,7 @@ class CPG_network_Sinusoid(object):
             for i in [5,12,13]:
                 self.CPG_list[i ].parm['kf'] = self.kf * kf_f4
 
-
-
         elif len(fi_l) == 12:
-
             # gain_left = 1 - (0.5 - fi_l[0]) * self.kesi
             # gain_right = 1 - (0.5 - fi_l[1]) * self.kesi
             factor_cpg = np.clip(fi_l, -0, 1) *2
@@ -608,12 +613,21 @@ class CPG_network_Sinusoid_Mix(object):
                 self.CPG_list.append(CPG_SinNeutron(i, master_nuron=self.CPG_list[self.master_list[i]],
                                                     param=parm_list[i], dt = self.dt, kf=self.kf, w_ms=self.w_ms_list[i]))
     
+    # def output(self, state):
+    #     output_list = []
+    #     for cpg_n in self.CPG_list:
+    #         cpg_n.next_output(f1=0, f2=0)
+    #         output_list.append(cpg_n.parm['o'])
+    #
+    #     return output_list
+
     def output(self, state):
         output_list = []
-        for cpg_n in self.CPG_list:
-            cpg_n.next_output(f1=0, f2=0)
-            output_list.append(cpg_n.parm['o'])
-        
+        for idx, cpg_n in enumerate(self.CPG_list):
+            if idx != 0:
+                cpg_n.next_output(f1=state[(idx-1)*2], f2=state[(idx-1)*2 +1])
+                output_list.append(cpg_n.parm['o'])
+
         return output_list
 
 

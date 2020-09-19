@@ -48,14 +48,14 @@ class CPG_SinNeutron(object):
         self.master_nuron = master_nuron
         
         
-    def next_output(self,  f1, f2  ):
+    def next_output(self,  f1=0, f2 =0 ):
         
         if self.master_nuron is not None:
             u2 =  self.master_nuron.parm['u1']
             r2 =  self.master_nuron.parm['r1']
         else:
-            u2 = 0
-            r2 = 0
+            u2 = f1
+            r2 = f2
             
         
         self.parm['o'],self.parm['u1'], self.parm['r1']  = \

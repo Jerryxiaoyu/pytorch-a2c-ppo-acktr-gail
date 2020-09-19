@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Goal-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -22,7 +22,7 @@ class VG(VariantGenerator):
 
     @variant
     def learning_rate(self):
-        return [1e-3]  #1e-3
+        return [3e-4]  #1e-3
 
     @variant
     def entropy_coef(self):
@@ -57,8 +57,6 @@ class VG(VariantGenerator):
     def recurrent(self):
         return [0]
  ##----------------------------------------------------
-
-
 
     @variant
     def state_mode(self):
@@ -108,26 +106,26 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ 'no' ]  #full, error, no FandE
+        return [  "FandE" ]  #full, error, no FandE
 
     @variant
     def reward_fun_choice(self):
-        return [0]
+        return [1]
 
     @variant
     def vel_filtered(self):
-        return [0]
+        return [1]
 
 
-exp_id = 16
+exp_id = 17
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
 
-sync_s3 = True#True
+sync_s3 = False#True
 
-n_cpu = 32 #8
+n_cpu = 8 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"

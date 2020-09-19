@@ -426,14 +426,10 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.goal_orien_yaw = 0
         self.goal_xyyaw = np.array([0.0, 0.0, 0.0])
 
-
-
-
         for i in range(6):
             self.filter_fun_list[i].reset()
 
         self._sample_command(command)
-
 
         # reset something...
         if self.trajectory_length >0:
@@ -500,6 +496,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
             reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+            #print(other_rewards)
         else:
             raise NotImplementedError
         #print(other_rewards)
@@ -509,8 +507,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
     def CPG_transfer(self, RL_output, CPG_controller ):
         # update the params of CPG
         CPG_controller.update(RL_output)
+        #print('action :', RL_output)
         # adjust CPG_neutron parm using RL_output
-        output_list = CPG_controller.output(state=None)
+        output_list = CPG_controller.output(state=RL_output)
 
         joint_postion_ref = np.array(output_list[1:])
         cur_angles = self.joint_position
@@ -707,6 +706,23 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost, direction_reward])
 
           #  print(other_rewards)
+        elif self.reward_choice == 2:
+            y_pose = self.root_position[1]
+            # goal_vel = 0.10
+
+            forward_reward = -1.0 * np.linalg.norm(velocity_base[:2] - v_commdand[:2])
+            # y_cost = -0.5 * K_kernel6(y_pose)
+            y_cost = -0.1 * np.linalg.norm(y_pose)
+
+            ctrl_cost = 0  # -0.5 * np.square(action).sum()
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+            reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+            #print("test",other_rewards)
+
         else:
             raise NotImplementedError
         #print(other_rewards)
