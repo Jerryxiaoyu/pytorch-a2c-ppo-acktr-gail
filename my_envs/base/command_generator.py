@@ -3,7 +3,7 @@ from matplotlib.pylab import plt
 
 
 
-def command_generator(max_step,dt,  hold_time, delta=0.025, vx_range = (-0.8, 0.8), vy_range = (-0.8, 0.8), wyaw_range = (-0.8, 0.8),render = False, seed = None):
+def command_generator(max_step, dt,  hold_time, delta=0.025, vx_range = (-0.8, 0.8), vy_range = (-0.8, 0.8), wyaw_range = (-0.8, 0.8),render = False, seed = None):
     if seed is not None:
         np.random.seed(seed)
     vx_range = vx_range

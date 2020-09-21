@@ -101,7 +101,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [13]  # 2,3,13
+        return [2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -117,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [1, 2, ]
+        return [2,3 ]
 
     @variant
     def vel_filtered(self):

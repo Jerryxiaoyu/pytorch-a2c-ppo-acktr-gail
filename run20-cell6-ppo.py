@@ -68,7 +68,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0]
+        return [0.2]
 
     @variant
     def command_wz_high(self):
@@ -93,7 +93,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [13 ]  # 2,3,13
+        return [2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -110,14 +110,14 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [1]
+        return [2,3]
 
     @variant
     def vel_filtered(self):
         return [1]
 
 
-exp_id = 17
+exp_id = 18
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

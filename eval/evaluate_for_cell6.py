@@ -35,7 +35,7 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 16# 11
-global_command = 's1' #'cons100'  's1'
+global_command = 's2-cell6-10' #'cons100'  's1'
 rand_init = 0 #
 data_name = None#
 contact_log = None
@@ -154,9 +154,9 @@ for exp_no in exp_no_list:
     eval_data_df = pd.read_csv(eval_data_path)
 
    # if parms['reward_fun_choice'] == 11:
-    v_e = eval_data_df.loc[:, '1':'6'].values
-    c_command = eval_data_df.loc[:, '7':'9'].values
-    xyz = eval_data_df.loc[:, '10':'12'].values
+    v_e = eval_data_df.loc[:, '1':'3'].values
+    c_command = eval_data_df.loc[:, '4':'6'].values
+    xyz = eval_data_df.loc[:, '7':'9'].values
     # else:
     #     raise Exception('Setting parsing ')
 

@@ -194,7 +194,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.command_wz_low = -float(self.command_wz_high)
         self.command_wz_high = float(self.command_wz_high)
 
-        self.command_max_step = 10000  # steps
+        self.command_max_step = 20000  # steps
         self.command_duration = 5 # second
 
         if self.turing_flag == 1:
@@ -269,7 +269,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             action = self.CPG_transfer(a, self.CPG_controller )
         self.do_simulation(action, self.frame_skip)
 
-        self._t_step += 1
+
         obs = self._get_obs()
 
         # print("step {}, next obs : position :{}, velocity:{} joint pos :{}, joint vel:{}".format(self._t_step, self.root_position,
@@ -290,6 +290,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
 
+        self._t_step += 1
         return obs, reward, done, dict(
             velocity_base=velocity_base,
             commands=v_commdand,
@@ -707,6 +708,9 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
           #  print(other_rewards)
         elif self.reward_choice == 2:
+            """
+            x direction velocity tracking
+            """
             y_pose = self.root_position[1]
             # goal_vel = 0.10
 
@@ -722,6 +726,48 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
 
             #print("test",other_rewards)
+        elif self.reward_choice == 3:
+            """
+            x, y direction velocity tracking
+            """
+
+            y_pose = self.root_position[1]
+            # goal_vel = 0.10
+
+            forward_reward = -1.0 * np.linalg.norm(velocity_base[:2] - v_commdand[:2])
+            # y_cost = -0.5 * K_kernel6(y_pose)
+            y_cost =0 # -0.1 * np.linalg.norm(y_pose)
+
+            ctrl_cost = 0  # -0.5 * np.square(action).sum()
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+            reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
+
+        elif self.reward_choice == 4:
+            """
+            yaw direction velocity tracking
+            """
+
+            #y_pose = self.root_position[1]
+
+            forward_reward = -1.0 * np.linalg.norm(velocity_base[0] - v_commdand[0])
+
+            direction_reward =  abs(self.root_euler[2] - v_commdand[2])
+
+            forward_reward = np.exp(forward_reward)
+            direction_reward = np.exp(np.cos(direction_reward) - 1)
+
+
+            ctrl_cost = 0  # -0.5 * np.square(action).sum()
+            contact_cost = 0#-0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+            reward = forward_reward * direction_reward
+            other_rewards = np.array([reward, forward_reward,direction_reward ])
+
+            #print(other_rewards)
 
         else:
             raise NotImplementedError

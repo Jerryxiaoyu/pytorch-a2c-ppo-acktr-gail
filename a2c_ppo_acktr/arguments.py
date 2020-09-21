@@ -65,6 +65,9 @@ def get_args():
                         help='use a linear schedule on the ppo clipping parameter')
     parser.add_argument('--base', default=None,
                         help='Policy Network')
+    parser.add_argument('--tained-mode-path', default=None,
+                        help='directory to trained model path, ..pt')
+
 
     args = parser.parse_args()
 

@@ -17,23 +17,25 @@ from utils import LoggerCsv,IO
 import sys
 sys.path.append('a2c_ppo_acktr')
 
-# action_dim = 2
+# action_dim = 13
 # CPG_enable = 1
-# reward_choice= 26
+# reward_choice= 1
+# os.environ["COMMAND_MODE"] = str("FandE")
 # os.environ["REWARD_CHOICE"] = str(reward_choice)
 # os.environ["ACTION_DIM"] = str(action_dim)
 # os.environ["CPG_ENABLE"] = str(CPG_enable)
+# os.environ["GLOBAL_CMD"] = 's2-cell6'
 
 parser = argparse.ArgumentParser(description='RL')
 parser.add_argument('--seed', type=int, default=1,
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10,
                     help='log interval, one log per n updates (default: 10)')
-parser.add_argument('--env-name', default='CellrobotEnvCPG4-v0',
+parser.add_argument('--env-name', default='CellRobotEnvCPG6Traj-v2',
                     help='environment to train on (default: PongNoFrameskip-v4)')
 parser.add_argument('--load-dir', default='./trained_models/',
                     help='directory to save agent logs (default: ./trained_models/)')
-parser.add_argument('--load-file-dir', default='log-files/Mar_16_PPO_RL_Exp7/No_1_CellrobotEnvCPG4-v0_PPO-2019-03-16_11:18:50/model/ppo/CellrobotEnvCPG4-v0_0.pt'   )
+parser.add_argument('--load-file-dir', default='log-files-SMC/AWS_logfiles/Sep_19_SMC_PPO_RL_Exp18/No_2_CellRobotEnvCPG6Traj-v2_PPO-2020-09-19_14:58:46/model/ppo/CellRobotEnvCPG6Traj-v2_304.pt'   )
 parser.add_argument('--result-dir', default=None   )
 parser.add_argument('--num-enjoy',type=int, default=1   )
 parser.add_argument('--add-timestep', action='store_true', default=False,
