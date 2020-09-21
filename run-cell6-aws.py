@@ -75,7 +75,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0.2]
+        return [0]
 
     @variant
     def command_wz_high(self):
@@ -101,7 +101,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [13, 2]  # 2,3,13
+        return [13 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -117,11 +117,15 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [3]
+        return [2,3]
 
     @variant
     def vel_filtered(self):
         return [1]
+
+    @variant
+    def trained_model_path(self):
+        return ["pre_models/CellRobotEnvCPG6Traj-v2_304.pt"]
 
 
 
@@ -268,6 +272,10 @@ for v in variants:
         other_str = " --recurrent-policy "
     else:
         other_str = " "
+
+    trained_model_path = v['trained_model_path']
+    if trained_model_path is not None:
+        other_str += (" --tained-mode-path " + str(trained_model_path) + " ")
 
     os.system("python3 main.py "  +
               " --env-name " + str(env_name) +

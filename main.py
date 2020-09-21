@@ -73,6 +73,7 @@ def main():
     if args.tained_mode_path is not None:
         model_path = args.tained_mode_path
         actor_critic, ob_rms = torch.load(model_path)
+        print("load pre-trained model from the path :", model_path)
     else:
         actor_critic = Policy(envs.observation_space.shape, envs.action_space, base=args.base,
             base_kwargs={'recurrent': args.recurrent_policy  })

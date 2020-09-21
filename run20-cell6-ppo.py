@@ -68,7 +68,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0.2]
+        return [0 ]
 
     @variant
     def command_wz_high(self):
@@ -93,7 +93,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2]  # 2,3,13
+        return [13]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -101,7 +101,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [2]
+        return [0]
 
 
     @variant
@@ -110,14 +110,18 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [2,3]
+        return [2 ]
 
     @variant
     def vel_filtered(self):
         return [1]
 
+    @variant
+    def trained_model_path(self):
+        return ["pre_models/CellRobotEnvCPG6Traj-v2_304.pt"]
 
-exp_id = 18
+
+exp_id = 20
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -125,7 +129,7 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 sync_s3 = False#True
 
-n_cpu = 8 #8
+n_cpu = 1 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
@@ -260,6 +264,10 @@ for v in variants:
     else:
         other_str = " "
 
+    trained_model_path = v['trained_model_path']
+    if  trained_model_path is not None:
+        other_str +=   (" --tained-mode-path "+str(trained_model_path)+ " ")
+
     os.system("python3 main.py "  +
               " --env-name " + str(env_name) +
               " --algo " + str(algo) +
@@ -284,6 +292,7 @@ for v in variants:
 
               " --log-dir " + str(log_dir) +
               " --save-dir " + str(save_dir) +
+
               " --base "  +str(base) + other_str
 
               )
