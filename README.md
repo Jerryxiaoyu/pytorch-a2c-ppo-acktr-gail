@@ -7,6 +7,7 @@ AWS
 ```buildoutcfg
 source activate tensorflow_p36
 cd ~/jerry/projects/pytorch-a2c-ppo-acktr-gail
+git pull
 
 nohup python run-cell6-aws.py --exp_id 18 --n_cpu 32 > log.log 2>&1 &
 ```
