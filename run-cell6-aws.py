@@ -75,7 +75,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0]
+        return [0.2]
 
     @variant
     def command_wz_high(self):
@@ -101,7 +101,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2]  # 2,3,13
+        return [13, 2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -117,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [2,3 ]
+        return [3]
 
     @variant
     def vel_filtered(self):
