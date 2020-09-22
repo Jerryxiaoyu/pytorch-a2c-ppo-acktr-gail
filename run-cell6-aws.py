@@ -58,7 +58,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [5e7]
+        return [3e7]
 
     @variant
     def recurrent(self):
