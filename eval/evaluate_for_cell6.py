@@ -42,9 +42,9 @@ contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6Traj-v2'
-group_dir = 'log-files-SMC/AWS_logfiles/Sep_19_SMC_PPO_RL_Exp18'
-exp_id =18
-exp_no_list= [2]
+group_dir = 'log-files-SMC/Sep_21_SMC_PPO_RL_CELL6_Exp19'
+exp_id =19
+exp_no_list= [1]
 num_enjoy = 1
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
 max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
@@ -167,4 +167,5 @@ for exp_no in exp_no_list:
         plot_position_time(xyz, max_step, dt =dt,save_plot_path=save_plot_path)
         plot_traj_xy(xyz, max_step, dt =dt,save_plot_path=save_plot_path)
         plot_traj_xy_cmd(xyz,c_command , max_step, dt =dt,save_plot_path=save_plot_path)
+        plot_cell6_vel_tracking(xyz, v_e, c_command, save_plot_path=save_plot_path)
 

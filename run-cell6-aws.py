@@ -58,7 +58,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [5e7]
 
     @variant
     def recurrent(self):
@@ -117,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [2,3]
+        return [2 ]
 
     @variant
     def vel_filtered(self):

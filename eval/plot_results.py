@@ -125,3 +125,50 @@ def plot_traj_xy_cmd(xyz,cmd, max_step = 100, dt =0.01,  save_plot_path=None,exp
         plt.savefig(save_plot_path + '-xy-cmd.jpg')
     else:
         plt.show()
+
+
+def plot_cell6_vel_tracking(xyz, v_e,c_command,  save_plot_path=None):
+    max_step = 2000
+    dt = 0.05
+
+
+    t = np.arange(0, max_step * dt, dt)
+
+    pos_f = []
+    for i in range(max_step):
+        if i == 0:
+            pos = c_command[i, 0]
+        else:
+            pos += c_command[i, 0] * dt
+        pos_f.append(pos)
+    pos_f = np.array(pos_f)
+
+    pos = xyz[:max_step, 0]
+    vel = v_e[:max_step, 0]
+    vel_f = c_command[:max_step, 0]
+    pos_error = np.sqrt((pos_f - pos) ** 2).mean()
+
+    fig, axs = plt.subplots(2, 1)
+    axs[0].plot(t, pos)
+    axs[0].plot(t, pos_f)
+    axs[0].set_xlabel('Time [s]')
+    axs[0].set_ylabel('X Distance[m]')
+    axs[0].grid(True)
+
+    vel_error = np.sqrt((vel_f - vel) ** 2).mean()
+    axs[1].plot(t, vel, label='v')
+    axs[1].plot(t, vel_f, label='ref')
+    axs[1].set_ylim(0, 0.3)
+    axs[1].set_xlabel('Time [s], pos err:{:.3f} vel err:{:.3f}'.format(pos_error, vel_error))
+    axs[1].set_ylabel('X Velocity [m/s]')
+    axs[1].grid(True)
+
+    # fig.tight_layout()
+
+    # plt.savefig(os.path.join(save_fig_path, 'EXP{}-No{}_f2{}.jpg'.format(exp_id, exp_i, exp_dir_list[exp_i])))
+    data = [pos_f, pos, vel, vel_f]
+    # IO(save_fig_path+'/EXP{}-No{}_f2{}.pkl'.format(exp_id, exp_i, exp_dir_list[exp_i])).to_pickle(data)
+    if save_plot_path is not None:
+        plt.savefig(save_plot_path + '-cell6-vel.jpg')
+    else:
+        plt.show()

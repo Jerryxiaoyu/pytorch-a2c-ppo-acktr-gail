@@ -5,9 +5,10 @@ AWS
 2. 上传mujoco key
 3. 运行下列代码
 ```buildoutcfg
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/.mujoco/mjpro150/bin
 source activate tensorflow_p36
 cd ~/jerry/projects/pytorch-a2c-ppo-acktr-gail
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/.mujoco/mjpro150/bin
+
 git pull
 
 nohup python run-cell6-aws.py --exp_id 18 --n_cpu 32 > log.log 2>&1 &
