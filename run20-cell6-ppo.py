@@ -37,7 +37,7 @@ class VG(VariantGenerator):
         return [10]
     @variant
     def num_mini_batch(self):
-        return [32]
+        return [64]
 
     @variant
     def gamma(self):
@@ -50,7 +50,6 @@ class VG(VariantGenerator):
     @variant
     def num_env_steps(self):
         return [2e7]
-
 
 
     @variant
@@ -68,7 +67,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0 ]
+        return [0.2 ]
 
     @variant
     def command_wz_high(self):
@@ -106,11 +105,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [  "FandE" ]  #full, error, no FandE
+        return [ "FandE" ]  #full, error, no FandE
 
     @variant
     def reward_fun_choice(self):
-        return [2 ]
+        return [3 ]
 
     @variant
     def vel_filtered(self):
@@ -118,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ["pre_models/CellRobotEnvCPG6Traj-v2_304.pt"]
+        return ["pre_models/CellRobotEnvCPG6Traj-v2_304_exp19.pt"]
 
 
 exp_id = 20

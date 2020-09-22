@@ -775,5 +775,23 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         return reward, other_rewards
 
 
+class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
+    def __init__(self, **kwargs):
+
+        self.sample_count = 4
+        trajectory_length  = 40
+
+        os.environ["NUM_BUFFER"] = str(trajectory_length)
+        self.sample_interval = int( trajectory_length / self.sample_count)  # 40/4  10
+        self._pred_root_position = np.zeros((self.sample_count, 2), dtype=np.float32)
+
+        CellRobotEnvCPG6Goal.__init__(self, **kwargs)
+
+        self.trajectory_length = 40
+        if self.trajectory_length > 0:
+            self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim,
+                                                   max_trajectory=self.trajectory_length)
+
+
 
 
