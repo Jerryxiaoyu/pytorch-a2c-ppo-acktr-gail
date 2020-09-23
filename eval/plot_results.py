@@ -172,3 +172,88 @@ def plot_cell6_vel_tracking(xyz, v_e,c_command,  save_plot_path=None):
         plt.savefig(save_plot_path + '-cell6-vel.jpg')
     else:
         plt.show()
+
+
+def plot_cell6_vel_tracking_xy(xyz, v_e,c_command,  save_plot_path=None):
+    max_step = 2000
+    dt = 0.05
+
+    t = np.arange(0, max_step * dt, dt)
+
+    pos_f = []
+    pos_fy = []
+    for i in range(max_step):
+        if i == 0:
+            pos = c_command[i, 0]
+            pos_y = c_command[i, 1]
+        else:
+            pos += c_command[i, 0] * dt
+            pos_y += c_command[i, 1] * dt
+        pos_f.append(pos)
+        pos_fy.append(pos_y)
+
+    pos_f = np.array(pos_f)
+    pos_fy = np.array(pos_fy)
+
+    pos = xyz[:max_step, 0]
+    pos_y = xyz[:max_step, 1]
+
+    vel = v_e[:max_step, 0]
+    vel_f = c_command[:max_step, 0]
+    vel_y = v_e[:max_step, 1]
+    vel_fy = c_command[:max_step, 1]
+
+    fig, axs = plt.subplots(4, 1)
+
+    pos_error = np.sqrt((pos_f - pos) ** 2).mean()
+    axs[0].plot(t, pos)
+    axs[0].plot(t, pos_f)
+    axs[0].set_xlabel('Time [s]')
+    axs[0].set_ylabel('X Distance[m]')
+    axs[0].grid(True)
+
+    vel_error = np.sqrt((vel_f - vel) ** 2).mean()
+    axs[1].plot(t, vel, label='v')
+    axs[1].plot(t, vel_f, label='ref')
+    axs[1].set_ylim(0, 0.3)
+    axs[1].set_xlabel('Time [s], pos err:{:.3f} vel err:{:.3f}'.format(pos_error, vel_error))
+    axs[1].set_ylabel('X Velocity [m/s]')
+    axs[1].grid(True)
+
+    pos_y_error = np.sqrt((pos_fy - pos_y) ** 2).mean()
+    axs[2].plot(t, pos_y)
+    axs[2].plot(t, pos_fy)
+    axs[2].set_xlabel('Time [s]')
+    axs[2].set_ylabel('X Distance[m]')
+    axs[2].grid(True)
+
+    vel_y_error = np.sqrt((vel_fy - vel_y) ** 2).mean()
+    axs[3].plot(t, vel_y, label='v')
+    axs[3].plot(t, vel_fy, label='ref')
+    axs[3].set_ylim(0, 0.3)
+    axs[3].set_xlabel('Time [s], pos err:{:.3f} vel err:{:.3f}'.format(pos_y_error, vel_y_error))
+    axs[3].set_ylabel('X Velocity [m/s]')
+    axs[3].grid(True)
+
+    # fig.tight_layout()
+
+
+    # IO(save_fig_path+'/EXP{}-No{}_f2{}.pkl'.format(exp_id, exp_i, exp_dir_list[exp_i])).to_pickle(data)
+    if save_plot_path is not None:
+        plt.savefig(save_plot_path + '-cell6-vel-xy.jpg')
+    else:
+        plt.show()
+
+    fig, axs = plt.subplots(1, 1, figsize=(8, 8))
+
+    axs.plot(pos_f, pos_fy, label='v')
+    axs.plot(pos, pos_y, label='ref')
+
+    axs.set_xlabel('X')
+    axs.set_ylabel('Y')
+    axs.grid(True)
+
+    if save_plot_path is not None:
+        plt.savefig(save_plot_path + '-cell6-xy-pos.jpg')
+    else:
+        plt.show()

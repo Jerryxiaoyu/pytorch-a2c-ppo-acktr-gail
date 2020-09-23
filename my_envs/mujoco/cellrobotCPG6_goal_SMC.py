@@ -240,6 +240,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         # old path :'cellrobot/cellrobot_Quadruped_float_simple.xml
 
+        self._reset_cnt = 0
         self.control_skip = control_skip
 
         mujoco_env.MujocoEnv.__init__(self, self.model_path,  self.control_skip , custom_action_space= self.custom_action_space)  # cellrobot_test_gen  CR_quadruped_v1_A001  'cellrobot/cellrobot_test_gen.xml' Atlas_v5/atlas_v5.xml
@@ -458,6 +459,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                                                  mode=self.cpg_mode)
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
+
+        self._reset_cnt += 1
         return obs
 
     def viewer_setup(self):
@@ -600,9 +603,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
     @property
     def current_command(self):
         return self.command[self._t_step]
-
-
-
 
 
 class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
@@ -769,6 +769,59 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
             #print(other_rewards)
 
+        elif self.reward_choice == 5:
+            """
+            x, y direction velocity tracking, considering positions
+            """
+
+
+            # goal_vel = 0.10
+
+            forward_reward = -1.0 * np.linalg.norm(velocity_base[:2] - v_commdand[:2])
+            position_reward =  -1.0 * np.linalg.norm(np.array([self.goal_x, self.goal_y]) - self.root_position[:2])
+
+
+            #print("reset cnt :", self._reset_cnt)
+
+            # y_cost = -0.5 * K_kernel6(y_pose)
+            y_cost =0 # -0.1 * np.linalg.norm(y_pose)
+
+            ctrl_cost = 0  # -0.5 * np.square(action).sum()
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+            reward = forward_reward + 0.1* position_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+            other_rewards = np.array([reward, forward_reward, position_reward, ctrl_cost, contact_cost, y_cost])
+
+            #print(other_rewards)
+            #1- np.exp(-0.01*x)
+
+        elif self.reward_choice == 6:
+            """
+            x, y direction velocity tracking, considering positions
+            """
+
+
+            # goal_vel = 0.10
+
+            forward_reward = -1.0 * np.linalg.norm(velocity_base[:2] - v_commdand[:2])
+            position_reward =  -1.0 * np.linalg.norm(np.array([self.goal_x, self.goal_y]) - self.root_position[:2])
+
+
+            kc = 1- np.exp(-0.02*self._reset_cnt)
+
+            # y_cost = -0.5 * K_kernel6(y_pose)
+            y_cost =0 # -0.1 * np.linalg.norm(y_pose)
+
+            ctrl_cost = 0  # -0.5 * np.square(action).sum()
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = 0.0
+
+            reward = forward_reward + kc* 0.2* position_reward + ctrl_cost + contact_cost + survive_reward + y_cost
+            other_rewards = np.array([reward, forward_reward, position_reward, ctrl_cost, contact_cost, y_cost])
+            # print("reset cnt :", self._reset_cnt)
+            # print("kc :", kc)
+            # print(other_rewards)
         else:
             raise NotImplementedError
         #print(other_rewards)
