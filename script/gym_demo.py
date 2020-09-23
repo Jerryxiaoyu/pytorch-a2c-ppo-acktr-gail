@@ -12,7 +12,7 @@ os.environ["CPG_ENABLE"] = str(1)
 os.environ["NUM_BUFFER"] = str(0)
 os.environ["COMMAND_MODE"] = "FandE"
 os.environ["VEL_FILTER"] = str(0)
-os.environ["REWARD_CHOICE"] = str(3)
+os.environ["REWARD_CHOICE"] = str(4)
 
 os.environ["GLOBAL_CMD"] = 's2-cell6'
 

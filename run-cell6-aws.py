@@ -58,7 +58,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [3e7]
+        return [5e7]
 
     @variant
     def recurrent(self):
@@ -75,7 +75,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0.2]
+        return [0. ]
 
     @variant
     def command_wz_high(self):
@@ -117,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [3 ]
+        return [2 ]
 
     @variant
     def vel_filtered(self):
@@ -125,7 +125,7 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ["pre_models/CellRobotEnvCPG6Traj-v2_304_exp19.pt"]
+        return ["pre_models/CellRobotEnvCPG6Traj-v2_761_aws_exp21_no1.pt"]
 
 
 

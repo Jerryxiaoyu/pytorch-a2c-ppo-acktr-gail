@@ -752,7 +752,7 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
             #y_pose = self.root_position[1]
 
-            forward_reward = -1.0 * np.linalg.norm(velocity_base[0] - v_commdand[0])
+            forward_reward = -1.0 * abs(np.linalg.norm(velocity_base[:2]) - v_commdand[0])
 
             direction_reward =  abs(self.root_euler[2] - v_commdand[2])
 
@@ -777,20 +777,27 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
 class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        self.sample_count = 4
-        trajectory_length  = 40
+    def sampel_goal(self):
+        if self.sample_mode == 0:
+            goal_points = []
+            for i in range(self.num_goals):
+                x = self.root_position[0] + np.random.uniform(-100, 100)
+                z = self.root_position[2] + np.random.uniform(-100, 100)
 
-        os.environ["NUM_BUFFER"] = str(trajectory_length)
-        self.sample_interval = int( trajectory_length / self.sample_count)  # 40/4  10
-        self._pred_root_position = np.zeros((self.sample_count, 2), dtype=np.float32)
+                goal_points.append([x, 0 + 0.2, z])
+        elif self.sample_mode == 1:
+            goal_points = []
+            for i in range(self.num_goals):
+                x = self.root_position[0] + np.random.uniform(-500, 500)
+                z = self.root_position[2] + np.random.uniform(-500, 500)
+                goal_points.append([x, 0 + 0.2, z])
 
-        CellRobotEnvCPG6Goal.__init__(self, **kwargs)
-
-        self.trajectory_length = 40
-        if self.trajectory_length > 0:
-            self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim,
-                                                   max_trajectory=self.trajectory_length)
+        else:
+            raise NotImplementedError
+        ## check outspace
+        return np.array(goal_points).flatten()
 
 
 

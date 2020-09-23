@@ -67,11 +67,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0.2 ]
+        return [0]
 
     @variant
     def command_wz_high(self):
-        return [0]  # vel , pos
+        return [1.5/2.]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -109,7 +109,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [3 ]
+        return [4 ]
 
     @variant
     def vel_filtered(self):
@@ -117,10 +117,10 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ["pre_models/CellRobotEnvCPG6Traj-v2_304_exp19.pt"]
+        return [None]
 
 
-exp_id = 20
+exp_id = 21
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -128,7 +128,7 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
 
 sync_s3 = False#True
 
-n_cpu = 1 #8
+n_cpu = 8 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
