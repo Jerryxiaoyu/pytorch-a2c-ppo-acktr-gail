@@ -3,10 +3,12 @@ from gym import utils
 from my_envs.mujoco import mujoco_env
 from math import pi, sin, cos
 from transformations import quaternion_inverse, quaternion_multiply, euler_from_quaternion
+import transformations
 from CPG_controllers.controllers.CPG_controller_quadruped import CPG_network_Sinusoid
 from CPG_controllers.CPG_process  import  position_PID
 from my_envs.base.ExperienceDataset import TrajectoryBuffer
 from my_envs.base.command_generator import command_generator, plot_command
+
 import os
 from utils.fir_filter import fir_filter
 import math
@@ -45,6 +47,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                  control_skip = 1,
                  cpg_mode = 0,
                  cpg_enable = 1,
+                 robot_state_dim = 38
                  ):
         print('test cpg2........................')
         self.reward_choice = os.getenv('REWARD_CHOICE')
@@ -70,8 +73,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         self.xml_name = os.getenv('XML_NAME')
 
-
-
         if self.num_buffer is None:
             self.num_buffer = 1
             print('num_buffer is not sepecified, so num_buffer is default  1.')
@@ -84,7 +85,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             print('command_mode is not sepecified, so command_mode is default  delta.')
         else:
             print('command_mode = ', self.command_mode)
-
 
         if self.CPG_enable is None:
             self.CPG_enable = 0
@@ -103,20 +103,16 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.custom_action_space =  int(self.action_dim)
             print('ACTION_DIM = ', self.custom_action_space)
 
-
-
         if self.command_vx_high is None:
             self.command_vx_high = 0.5
             print('command_vx_high is not sepecified, so command_vx_high = 0.5 .')
         else:
-
             print('command_vx_high = ', self.command_vx_high)
 
         if self.command_vy_high is None:
             self.command_vy_high = 0
             print('command_vy_high is not sepecified, so command_vy_high = 0 .')
         else:
-
             print('command_vy_high = ', self.command_vy_high)
 
 
@@ -124,14 +120,12 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command_vx_low = 0.
             print('command_vx_low is not sepecified, so command_vx_low = 0..')
         else:
-
             print('command_vx_low = ', self.command_vx_low)
 
         if self.command_vy_low is None:
             self.command_vy_low = 0
             print('command_vy_low is not sepecified, so command_vy_low = 0 .')
         else:
-
             print('command_vy_low = ', self.command_vy_low)
 
 
@@ -139,7 +133,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command_wz_high = 0
             print('command_wz_high is not sepecified, so command_wz_high = 0 .')
         else:
-
             print('command_wz_high = ', self.command_wz_high)
 
 
@@ -240,7 +233,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                                                  position_vector=position_vector, dt= dt,
                                                  mode = self.cpg_mode)
 
-        self.robot_state_dim = 38
+        self.obs_robot_state = np.zeros(robot_state_dim)
+        self.robot_state_dim = robot_state_dim
 
         self.trajectory_length = self.num_buffer
         if self.trajectory_length >0:
@@ -280,7 +274,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         action = a.copy()
 
         v_commdand = self.command[self._t_step, :3]
-
         # self.goal_orien_yaw += v_commdand[-1]*self.dt
         self.goal_x += v_commdand[0]*self.dt
         self.goal_y += v_commdand[1]*self.dt
@@ -291,13 +284,11 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             action = self.CPG_transfer(a, self.CPG_controller )
         self.do_simulation(action, self.frame_skip)
 
-
         obs = self._get_obs()
-
         # print("step {}, next obs : position :{}, velocity:{} joint pos :{}, joint vel:{}".format(self._t_step, self.root_position,
         #                                                              self.root_velocity, self.joint_position, self.joint_velocity))
         if self.trajectory_length>0:
-            self.history_buffer.push(self.robot_state)
+            self.history_buffer.push(self.obs_robot_state)
 
         velocity_base = self.root_velocity
         reward, other_rewards = self.compute_reward(velocity_base, v_commdand, action, obs)
@@ -326,6 +317,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         root_position = self.get_body_com("torso").flatten()
         root_euler = self.get_orien()
+
+        print('quat', self.root_quat)
+        print(root_euler)
         root_velocity = (root_position - self.last_root_position) / self.dt
 
         root_angluar_velocity = (root_euler - self.last_root_euler) / self.dt
@@ -379,20 +373,22 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             raise NotImplementedError
         return cmd
 
+
     def _get_obs(self):
         # get robot state
         self._robot_state = self._get_robot_state()
+
+        self.obs_robot_state = self._robot_state
 
 
         # concat history state
         if self.trajectory_length > 0:
             obs = np.concatenate([
-                self._robot_state,
+                self.obs_robot_state,
                 self.histroy_trajectory.flatten()
             ])
         else:
-            obs = self._robot_state
-
+            obs = self.obs_robot_state
 
         # concat cmd
         cmd = self._get_goal_info()
@@ -415,12 +411,21 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         self.set_state(qpos, qvel)
         self.goal_theta = pi / 4.0
-        self.model.site_pos[1] = [cos(self.goal_theta), sin(self.goal_theta), 0]
+        #self.model.site_pos[1] = [cos(self.goal_theta), sin(self.goal_theta), 0]
+
 
 
         # init positon and euler
         self._last_root_position = self.get_body_com("torso").flatten()
         self._last_root_euler = self.get_orien()
+
+    def _render_goal_position(self, position):
+        """
+
+        :param position: [x,y,z]
+        :return:
+        """
+        self.model.site_pos[1] = position
 
 
     def _sample_command(self, command):
@@ -442,6 +447,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
     def reset_model(self, command = None,  ):
         # reset init robot
         self._reset_robot_position()
+
 
         self.goal_orien_yaw =  0
         self.goal_x = 0
@@ -472,7 +478,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         obs = self._get_obs()
 
         if self.trajectory_length>0:
-            self.history_buffer.full_state(self.robot_state)
+            self.history_buffer.full_state(self.obs_robot_state)
         self._t_step = 0
 
         # reset something...
@@ -570,17 +576,27 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def get_orien(self):
         # pos = self.sim.data.qpos[:3]
-
         q_g2 = self.sim.data.qpos[3:7]
-
         q = np.array([0.5000, 0.5000, 0.5000, -0.5000])
-
         R_q = quaternion_multiply(q_g2, quaternion_inverse(q))
         # print(q_g2, q, R_q)
-
         orien = euler_from_quaternion(R_q, axes='sxyz')
-
         return np.array(orien)
+
+
+    @property
+    def root_quat(self):
+        return self.sim.data.qpos[3:7]
+    @property
+    def root_rotation(self):
+        """
+        alion to the globle frame
+        :return:
+        """
+        q = np.array([0.5000, 0.5000, 0.5000, -0.5000])
+        R_q = quaternion_multiply(self.root_quat,  quaternion_inverse(q))
+        return transformations.quaternion_matrix(R_q)[:3,:3]
+
 
     @property
     def robot_state(self):
@@ -648,15 +664,15 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         self._robot_state = self._get_robot_state()
 
 
+        self.obs_robot_state = self._robot_state
         # concat history state
         if self.trajectory_length > 0:
             obs = np.concatenate([
-                self._robot_state,
+                self.obs_robot_state,
                 self.sampled_history_trajectory.flatten()
             ])
         else:
-            obs = self._robot_state
-
+            obs = self.obs_robot_state
 
         # concat cmd
         cmd = self._get_goal_info()
@@ -664,18 +680,14 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             obs = np.concatenate([obs,
                                   cmd])
 
-
         pred_position = self._get_pred_root_position()
         obs = np.concatenate([obs,
                               pred_position])
-
         return obs
 
     def _get_pred_root_position(self):
-
         x_pos = np.array([ self.root_position[0] + self.current_command[0]*self.sample_interval *self.dt*(i+1) for i in range(self.sample_count) ])
         y_pos = np.array([self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in  range(self.sample_count)])
-
 
         self._pred_root_position[:,0] = x_pos
         self._pred_root_position[:,1] = y_pos
@@ -693,7 +705,6 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
     @property
     def future_root_position(self):
         return np.array([self.goal_x, self.goal_y])
-
 
     def compute_reward(self, velocity_base, v_commdand, action, obs):
 
@@ -849,29 +860,6 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         return reward, other_rewards
 
 
-class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def sampel_goal(self):
-        if self.sample_mode == 0:
-            goal_points = []
-            for i in range(self.num_goals):
-                x = self.root_position[0] + np.random.uniform(-100, 100)
-                z = self.root_position[2] + np.random.uniform(-100, 100)
-
-                goal_points.append([x, 0 + 0.2, z])
-        elif self.sample_mode == 1:
-            goal_points = []
-            for i in range(self.num_goals):
-                x = self.root_position[0] + np.random.uniform(-500, 500)
-                z = self.root_position[2] + np.random.uniform(-500, 500)
-                goal_points.append([x, 0 + 0.2, z])
-
-        else:
-            raise NotImplementedError
-        ## check outspace
-        return np.array(goal_points).flatten()
 
 
 

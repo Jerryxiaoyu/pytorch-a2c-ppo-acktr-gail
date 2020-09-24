@@ -19,7 +19,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return [  'CellRobotEnvCPG6Traj-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [  'CellRobotEnvCPG6Target-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -50,7 +50,7 @@ class VG(VariantGenerator):
 
     @variant
     def gamma(self):
-        return [0.99   ] #0.9985
+        return [0.99 ] #0.9985
 
     @variant
     def tau(self):
@@ -121,11 +121,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ["FandE"]  # full, error, no FandE
+        return ["point"]  # full, error, no FandE  point
 
     @variant
     def reward_fun_choice(self):
-        return [3 ]
+        return [0,1 ]
 
     @variant
     def vel_filtered(self):
