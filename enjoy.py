@@ -44,6 +44,8 @@ parser.add_argument('--non-det', action='store_true', default=False,
                     help='whether to use a non-deterministic policy')
 parser.add_argument('--data-name',type=str,default=None)
 parser.add_argument('--contact-log',type=str,default=None)
+parser.add_argument('--no-render', action='store_true', default=False,
+                    help='whether to render')
 args = parser.parse_args()
 num_enjoy = 1
 contact_log = args.contact_log
@@ -68,7 +70,8 @@ env = make_vec_envs(args.env_name, args.seed + 1000, 1,
                             allow_early_resets=False)
 
 # Get a render function
-render_func = get_render_func(env)
+if not args.no_render:
+    render_func = get_render_func(env)
 
 # We need to use the same statistics for normalization as used in training
 if args.load_file_dir is not None:
@@ -86,7 +89,7 @@ if vec_norm is not None:
 recurrent_hidden_states = torch.zeros(1, actor_critic.recurrent_hidden_state_size)
 masks = torch.zeros(1, 1)
 
-if render_func is not None:
+if (not args.no_render) and render_func is not None:
     render_func('human')
 
 obs = env.reset()
@@ -161,8 +164,9 @@ while True:
             humanPos, humanOrn = p.getBasePositionAndOrientation(torsoId)
             p.resetDebugVisualizerCamera(distance, yaw, -20, humanPos)
 
-    if render_func is not None:
-        render_func('human')
+    if (not args.no_render):
+        if render_func is not None:
+            render_func('human')
 
 if logger is not None:
     velocity_base = np.array(velocity_base_lists, dtype=np.float64)

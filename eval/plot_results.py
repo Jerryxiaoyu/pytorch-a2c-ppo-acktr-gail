@@ -216,7 +216,7 @@ def plot_cell6_vel_tracking_xy(xyz, v_e,c_command,  save_plot_path=None):
     axs[1].plot(t, vel, label='v')
     axs[1].plot(t, vel_f, label='ref')
     axs[1].set_ylim(0, 0.3)
-    axs[1].set_xlabel('Time [s], pos err:{:.3f} vel err:{:.3f}'.format(pos_error, vel_error))
+    #axs[1].set_xlabel('Time [s], pos err:{:.3f} vel err:{:.3f}'.format(pos_error, vel_error))
     axs[1].set_ylabel('X Velocity [m/s]')
     axs[1].grid(True)
 
@@ -231,7 +231,7 @@ def plot_cell6_vel_tracking_xy(xyz, v_e,c_command,  save_plot_path=None):
     axs[3].plot(t, vel_y, label='v')
     axs[3].plot(t, vel_fy, label='ref')
     axs[3].set_ylim(0, 0.3)
-    axs[3].set_xlabel('Time [s], pos err:{:.3f} vel err:{:.3f}'.format(pos_y_error, vel_y_error))
+    axs[3].set_xlabel('Time [s], pos[x,y] err:{:.3f},{:.3f} vel[x,y] err:{:.3f} {:.3f}'.format(pos_error,pos_y_error, vel_error, vel_y_error))
     axs[3].set_ylabel('X Velocity [m/s]')
     axs[3].grid(True)
 
@@ -249,9 +249,14 @@ def plot_cell6_vel_tracking_xy(xyz, v_e,c_command,  save_plot_path=None):
     axs.plot(pos_f, pos_fy, label='v')
     axs.plot(pos, pos_y, label='ref')
 
+    pos_ref = np.concatenate((pos_f[None], pos_fy[None]), axis= 0).transpose()
+    pos_true = np.concatenate((pos[None], pos_y[None]), axis=0).transpose()
+
+    tracking_error = np.linalg.norm(pos_ref - pos_true, axis= 1).mean()
     axs.set_xlabel('X')
     axs.set_ylabel('Y')
     axs.grid(True)
+    axs.set_title('error : {:.3f}'.format(tracking_error))
 
     if save_plot_path is not None:
         plt.savefig(save_plot_path + '-cell6-xy-pos.jpg')

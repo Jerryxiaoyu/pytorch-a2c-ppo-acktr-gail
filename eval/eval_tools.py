@@ -126,6 +126,12 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
             os.environ["GLOBAL_CMD"] = str(global_command)
             print('GLOBAL_CMD = ', os.getenv('GLOBAL_CMD'))
 
+
+    if not render:
+        other_str = ' --no-render'
+    else:
+        other_str = ' '
+
     os.system("python3 enjoy.py " +
               " --seed " + str(seed) +
               " --env-name " + str(env_name) +
@@ -135,7 +141,8 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
              " --result-dir " + str(evaluate_path) +
              " --num-enjoy " + str(num_enjoy)+
              " --data-name " +str(data_name) +
-              ' --contact-log='+str(contact_log)
+              ' --contact-log='+str(contact_log) +
+              other_str
               # " --gpu-index " + str(gpu_index) +
               # " --store_data " + str(store_data) +
               # " --exp_group_dir " + str(exp_group_dir) +

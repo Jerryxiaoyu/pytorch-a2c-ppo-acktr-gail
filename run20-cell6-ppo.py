@@ -67,11 +67,19 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0]
+        return [0.2]
+
+    @variant
+    def command_vx_low(self):
+        return [-0.2]
+
+    @variant
+    def command_vy_low(self):
+        return [-0.2]
 
     @variant
     def command_wz_high(self):
-        return [1.5/2.]  # vel , pos
+        return [0]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -92,7 +100,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [13]  # 2,3,13
+        return [2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -109,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [4 ]
+        return [3 ]
 
     @variant
     def vel_filtered(self):
@@ -120,7 +128,7 @@ class VG(VariantGenerator):
         return [None]
 
 
-exp_id = 21
+exp_id = 22
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -242,6 +250,15 @@ for v in variants:
     if v['command_vy_high'] is not None:
         os.environ["COMMAND_Y"] = str(v['command_vy_high'])
         print('COMMAND_Y = ', os.getenv('COMMAND_Y'))
+
+    if v['command_vx_low'] is not None:
+        os.environ["COMMAND_X_LOW"] = str(v['command_vx_low'])
+        print('COMMAND_X_LOW = ', os.getenv('COMMAND_X_LOW'))
+
+    if v['command_vy_low'] is not None:
+        os.environ["COMMAND_Y_LOW"] = str(v['command_vy_low'])
+        print('COMMAND_Y_LOW = ', os.getenv('COMMAND_Y_LOW'))
+
 
     if v['command_wz_high'] is not None:
         os.environ["COMMAND_Z"] = str(v['command_wz_high'])

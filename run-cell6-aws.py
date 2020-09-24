@@ -78,6 +78,14 @@ class VG(VariantGenerator):
         return [0.2 ]
 
     @variant
+    def command_vx_low(self):
+        return [-0.2]
+
+    @variant
+    def command_vy_low(self):
+        return [-0.2]
+
+    @variant
     def command_wz_high(self):
         return [0]  # vel , pos
 
@@ -117,7 +125,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [5,6 ]
+        return [3 ]
 
     @variant
     def vel_filtered(self):
@@ -252,6 +260,15 @@ for v in variants:
     if v['command_vy_high'] is not None:
         os.environ["COMMAND_Y"] = str(v['command_vy_high'])
         print('COMMAND_Y = ', os.getenv('COMMAND_Y'))
+
+    if v['command_vx_low'] is not None:
+        os.environ["COMMAND_X_LOW"] = str(v['command_vx_low'])
+        print('COMMAND_X_LOW = ', os.getenv('COMMAND_X_LOW'))
+
+    if v['command_vy_low'] is not None:
+        os.environ["COMMAND_Y_LOW"] = str(v['command_vy_low'])
+        print('COMMAND_Y_LOW = ', os.getenv('COMMAND_Y_LOW'))
+
 
     if v['command_wz_high'] is not None:
         os.environ["COMMAND_Z"] = str(v['command_wz_high'])

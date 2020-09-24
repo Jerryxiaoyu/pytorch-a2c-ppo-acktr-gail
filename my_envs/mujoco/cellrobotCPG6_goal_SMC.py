@@ -61,6 +61,10 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.command_vx_high = os.getenv('COMMAND_X')
         self.command_vy_high = os.getenv('COMMAND_Y')
         self.command_wz_high = os.getenv('COMMAND_Z')
+
+        self.command_vx_low = os.getenv('COMMAND_X_LOW')
+        self.command_vy_low = os.getenv('COMMAND_Y_LOW')
+
         self.vel_filtered = os.getenv('VEL_FILTER')
         self.turing_flag = os.getenv('TURING_FLAG')
 
@@ -114,6 +118,23 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         else:
 
             print('command_vy_high = ', self.command_vy_high)
+
+
+        if self.command_vx_low is None:
+            self.command_vx_low = 0.
+            print('command_vx_low is not sepecified, so command_vx_low = 0..')
+        else:
+
+            print('command_vx_low = ', self.command_vx_low)
+
+        if self.command_vy_low is None:
+            self.command_vy_low = 0
+            print('command_vy_low is not sepecified, so command_vy_low = 0 .')
+        else:
+
+            print('command_vy_low = ', self.command_vy_low)
+
+
         if self.command_wz_high is None:
             self.command_wz_high = 0
             print('command_wz_high is not sepecified, so command_wz_high = 0 .')
@@ -187,9 +208,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self._last_root_position = np.zeros(3)
         self._last_root_euler = np.zeros(3)
 
-        self.command_vx_low = 0
+        self.command_vx_low = float(self.command_vx_low)
         self.command_vx_high = float(self.command_vx_high)
-        self.command_vy_low = 0
+        self.command_vy_low = float(self.command_vy_low)
         self.command_vy_high = float(self.command_vy_high)
         self.command_wz_low = -float(self.command_wz_high)
         self.command_wz_high = float(self.command_wz_high)
