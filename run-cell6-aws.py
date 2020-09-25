@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return [  'CellRobotEnvCPG6Traj-v3']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [  'CellRobotEnvCPG6Target-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -88,7 +88,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_wz_high(self):
-        return [math.pi]  # vel , pos
+        return [0]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -122,11 +122,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ["dir_vel"]  # full, error, no FandE  point
+        return ["point"]  # full, error, no FandE  point
 
     @variant
     def reward_fun_choice(self):
-        return [4 ]
+        return [0,1 ]
 
     @variant
     def vel_filtered(self):
