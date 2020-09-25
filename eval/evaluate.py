@@ -42,7 +42,7 @@ contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6Traj-v2'
-group_dir = 'log-files-SMC/AWS_logfiles/Sep_19_SMC_PPO_RL_Exp18'
+group_dir = 'log-files-SMC/AWS_logfiles/Sep_24_SMC_PPO_RL_Exp18'
 exp_id =18
 exp_no_list= [2]
 num_enjoy = 1

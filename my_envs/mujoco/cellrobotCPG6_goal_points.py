@@ -197,11 +197,11 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         return robot_state
 
     def _get_obs(self):
-        # get robot state
-        self._robot_state = self._get_robot_state()
+
+        self.obs_robot_state = self._robot_state[6:]
 
         self.obs_robot_state = np.concatenate([
-            self._robot_state[6:],
+            self.obs_robot_state,
             self.root_rotation.flatten()
         ])
 

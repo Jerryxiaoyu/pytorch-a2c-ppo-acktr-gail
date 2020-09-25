@@ -11,7 +11,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ubuntu/.mujoco/mjpro150/bin
 
 git pull
 
-nohup python run-cell6-aws.py --exp_id 18 --n_cpu 32 > log.log 2>&1 &
 ```
 
 一般的时间估计

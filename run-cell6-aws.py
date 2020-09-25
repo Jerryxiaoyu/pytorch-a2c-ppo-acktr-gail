@@ -7,6 +7,7 @@ import paramiko
 import time
 import utils.ssh as ssh
 import argparse
+import math
 
 parser = argparse.ArgumentParser(description='Evaluation')
 parser.add_argument('--exp_id', type= int, default=18  )
@@ -19,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return [  'CellRobotEnvCPG6Target-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [  'CellRobotEnvCPG6Traj-v3']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -75,19 +76,19 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0.2 ]
+        return [0 ]
 
     @variant
     def command_vx_low(self):
-        return [-0.2]
+        return [0]
 
     @variant
     def command_vy_low(self):
-        return [-0.2]
+        return [0]
 
     @variant
     def command_wz_high(self):
-        return [0]  # vel , pos
+        return [math.pi]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -121,11 +122,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ["point"]  # full, error, no FandE  point
+        return ["dir_vel"]  # full, error, no FandE  point
 
     @variant
     def reward_fun_choice(self):
-        return [0,1 ]
+        return [4 ]
 
     @variant
     def vel_filtered(self):

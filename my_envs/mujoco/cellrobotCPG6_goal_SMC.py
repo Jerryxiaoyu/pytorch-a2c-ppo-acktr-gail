@@ -47,7 +47,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                  control_skip = 1,
                  cpg_mode = 0,
                  cpg_enable = 1,
-                 robot_state_dim = 38
+                 robot_state_dim = 38,
+                 isRootposNotInObs = False,
                  ):
         print('test cpg2........................')
         self.reward_choice = os.getenv('REWARD_CHOICE')
@@ -233,9 +234,14 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                                                  position_vector=position_vector, dt= dt,
                                                  mode = self.cpg_mode)
 
-        self.obs_robot_state = np.zeros(robot_state_dim)
+
         self.robot_state_dim = robot_state_dim
 
+        self.isRootposNotInObs = isRootposNotInObs
+        if self.isRootposNotInObs:
+            self.robot_state_dim -=3
+
+        self.obs_robot_state = np.zeros(self.robot_state_dim)
         self.trajectory_length = self.num_buffer
         if self.trajectory_length >0:
             self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim, max_trajectory=self.trajectory_length)
@@ -284,6 +290,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             action = self.CPG_transfer(a, self.CPG_controller )
         self.do_simulation(action, self.frame_skip)
 
+        # get robot state
+        self._robot_state = self._get_robot_state()
         obs = self._get_obs()
         # print("step {}, next obs : position :{}, velocity:{} joint pos :{}, joint vel:{}".format(self._t_step, self.root_position,
         #                                                              self.root_velocity, self.joint_position, self.joint_velocity))
@@ -292,7 +300,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         velocity_base = self.root_velocity
         reward, other_rewards = self.compute_reward(velocity_base, v_commdand, action, obs)
-
 
         # confirm if done
         q_state = self.state_vector()
@@ -318,10 +325,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         root_position = self.get_body_com("torso").flatten()
         root_euler = self.get_orien()
 
-        print('quat', self.root_quat)
-        print(root_euler)
+        # print('quat', self.root_quat)
+        # print(root_euler)
         root_velocity = (root_position - self.last_root_position) / self.dt
-
         root_angluar_velocity = (root_euler - self.last_root_euler) / self.dt
 
         if self.vel_filtered:
@@ -367,6 +373,11 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             cmd = np.concatenate([self.current_command[:2],
                                   self.current_command[:2] - self.root_velocity[:2]  # x y
                                   ])
+        elif self.command_mode =='dir_vel':
+            cmd = np.concatenate([self.current_command[0:0] - np.linalg.norm(self.root_velocity[:2]),
+                                  self.current_command[2:2]
+                                  ])
+
         elif self.command_mode == 'no':
             cmd =None
         else:
@@ -376,10 +387,10 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         # get robot state
-        self._robot_state = self._get_robot_state()
-
-        self.obs_robot_state = self._robot_state
-
+        if self.isRootposNotInObs:
+            self.obs_robot_state = self._robot_state[3:]
+        else:
+            self.obs_robot_state = self._robot_state
 
         # concat history state
         if self.trajectory_length > 0:
@@ -413,8 +424,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.goal_theta = pi / 4.0
         #self.model.site_pos[1] = [cos(self.goal_theta), sin(self.goal_theta), 0]
 
-
-
         # init positon and euler
         self._last_root_position = self.get_body_com("torso").flatten()
         self._last_root_euler = self.get_orien()
@@ -447,7 +456,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
     def reset_model(self, command = None,  ):
         # reset init robot
         self._reset_robot_position()
-
 
         self.goal_orien_yaw =  0
         self.goal_x = 0
@@ -500,7 +508,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         ])
 
     def compute_reward(self, velocity_base, v_commdand, action, obs):
-
         if self.reward_choice == 0:
             ## line
             forward_reward = velocity_base[0]
@@ -597,6 +604,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         R_q = quaternion_multiply(self.root_quat,  quaternion_inverse(q))
         return transformations.quaternion_matrix(R_q)[:3,:3]
 
+    @property
+    def root_direction(self):
+        return np.array([np.cos(self.root_euler[-1]), np.sin(self.root_euler[-1]), 0])
 
     @property
     def robot_state(self):
@@ -661,10 +671,10 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
     def _get_obs(self):
         # get robot state
-        self._robot_state = self._get_robot_state()
-
-
-        self.obs_robot_state = self._robot_state
+        if self.isRootposNotInObs:
+            self.obs_robot_state = self._robot_state[3:]
+        else:
+            self.obs_robot_state = self._robot_state
         # concat history state
         if self.trajectory_length > 0:
             obs = np.concatenate([
@@ -784,19 +794,23 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
             #y_pose = self.root_position[1]
 
-            forward_reward = -1.0 * abs(np.linalg.norm(velocity_base[:2]) - v_commdand[0])
+            cmd_direction = np.array([np.cos(v_commdand[2]), np.sin(v_commdand[2]), 0])
 
-            direction_reward =  abs(self.root_euler[2] - v_commdand[2])
+            forward_reward = -20.0 * abs(np.linalg.norm(velocity_base[:2]) - v_commdand[0])
+
+            direction_reward =  np.inner(cmd_direction, self.root_direction)
+
+            #print('angle: ', np.degrees(np.arccos(direction_reward)))
 
             forward_reward = np.exp(forward_reward)
-            direction_reward = np.exp(np.cos(direction_reward) - 1)
+            direction_reward = np.exp(direction_reward - 1)
 
 
             ctrl_cost = 0  # -0.5 * np.square(action).sum()
-            contact_cost = 0#-0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
             survive_reward = 0.0
 
-            reward = forward_reward * direction_reward
+            reward = forward_reward * direction_reward + contact_cost - 1
             other_rewards = np.array([reward, forward_reward,direction_reward ])
 
             #print(other_rewards)

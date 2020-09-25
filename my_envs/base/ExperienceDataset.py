@@ -58,7 +58,7 @@ class TrajectoryBuffer(object):
         self.num_size_per = num_size_per
 
     def push(self, D):
-        assert D.shape[0] == self.num_size_per
+        assert D.shape[0] == self.num_size_per, "the required the size is {}, but got {}".format(self.num_size_per, D.shape[0])
 
         self.buffer = np.delete(self.buffer, 0, axis= 0)
         self.buffer = np.concatenate((self.buffer, D.reshape((1,-1))))
