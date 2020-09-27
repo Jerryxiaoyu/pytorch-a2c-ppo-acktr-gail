@@ -13,6 +13,7 @@ git pull
 
 nohup  python run-cell6-aws.py --exp_id 10 --n_cpu 32  > log.log 2>&1 &
 ```
+aws s3  sync s3://jaco-bair/cellrobot/AWS_logfiles log-files-SMC/AWS_logfiles/
 
 一般的时间估计
 2e7 ～ 6+ hours

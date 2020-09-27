@@ -134,7 +134,6 @@ register(
                  )
 )
 
-
 register(
     id='CellRobotEnvCPG6Target-v2',
     entry_point='my_envs.mujoco:CellRobotEnvCPG6Target',
@@ -144,6 +143,6 @@ register(
                  cpg_mode=2,
                  max_steps = 400,
 
-                robot_state_dim = 41
+                 robot_state_dim = 41
                  )
 )
