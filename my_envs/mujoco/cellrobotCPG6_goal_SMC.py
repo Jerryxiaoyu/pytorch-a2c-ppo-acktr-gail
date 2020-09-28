@@ -312,6 +312,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         self._t_step += 1
         return obs, reward, done, dict(
+            root_position = self.root_position,
+            root_euler=self.root_euler,
             velocity_base=velocity_base,
             commands=v_commdand,
             rewards=other_rewards,
@@ -689,10 +691,13 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         if cmd is not None:
             obs = np.concatenate([obs,
                                   cmd])
+        if self.isRootposNotInObs:
+            pass
+        else:
+            pred_position = self._get_pred_root_position()
+            obs = np.concatenate([obs,
+                                  pred_position])
 
-        pred_position = self._get_pred_root_position()
-        obs = np.concatenate([obs,
-                              pred_position])
         return obs
 
     def _get_pred_root_position(self):

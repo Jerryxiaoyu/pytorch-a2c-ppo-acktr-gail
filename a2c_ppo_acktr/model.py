@@ -5,7 +5,7 @@ import numpy as np
 
 from a2c_ppo_acktr.distributions import Categorical, DiagGaussian, Bernoulli
 from a2c_ppo_acktr.utils import init
-
+from  functools import partial
 
 class Flatten(nn.Module):
     def forward(self, x):
@@ -31,6 +31,12 @@ class Policy(nn.Module):
         elif base == 'MLPBase':
             print('Policy base :', base)
             base = MLPBase
+
+        elif base == 'MLPBase256':
+            print('Policy base :', base)
+            base = partial(MLPBase, hidden_size=256)
+        else:
+            raise NotImplementedError("Not implementedError network")
 
 
         self.base = base(obs_shape[0], **base_kwargs)
@@ -220,6 +226,7 @@ class MLPBase(NNBase):
     def __init__(self, num_inputs, recurrent=False, hidden_size=64):
         super(MLPBase, self).__init__(recurrent, num_inputs, hidden_size)
 
+        print("hidden size :", hidden_size)
         if recurrent:
             num_inputs = hidden_size
 

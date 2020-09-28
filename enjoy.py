@@ -17,25 +17,25 @@ from utils import LoggerCsv,IO
 import sys
 sys.path.append('a2c_ppo_acktr')
 
-# action_dim = 13
+# action_dim = 2
 # CPG_enable = 1
-# reward_choice= 1
-# os.environ["COMMAND_MODE"] = str("FandE")
+# reward_choice= 0
+# os.environ["COMMAND_MODE"] = str("dir_vel")
 # os.environ["REWARD_CHOICE"] = str(reward_choice)
 # os.environ["ACTION_DIM"] = str(action_dim)
 # os.environ["CPG_ENABLE"] = str(CPG_enable)
-# os.environ["GLOBAL_CMD"] = 's2-cell6'
+# os.environ["GLOBAL_CMD"] = 's2-cell6-dir-vel'
 
 parser = argparse.ArgumentParser(description='RL')
 parser.add_argument('--seed', type=int, default=1,
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10,
                     help='log interval, one log per n updates (default: 10)')
-parser.add_argument('--env-name', default='CellRobotEnvCPG6Traj-v2',
+parser.add_argument('--env-name', default='CellRobotEnvCPG6Traj-v3',
                     help='environment to train on (default: PongNoFrameskip-v4)')
 parser.add_argument('--load-dir', default='./trained_models/',
                     help='directory to save agent logs (default: ./trained_models/)')
-parser.add_argument('--load-file-dir', default='log-files-SMC/AWS_logfiles/Sep_19_SMC_PPO_RL_Exp18/No_2_CellRobotEnvCPG6Traj-v2_PPO-2020-09-19_14:58:46/model/ppo/CellRobotEnvCPG6Traj-v2_304.pt'   )
+parser.add_argument('--load-file-dir', default='log-files-SMC/AWS_logfiles/Sep_25_SMC_PPO_RL_Exp26/No_1_CellRobotEnvCPG6Traj-v3_PPO-2020-09-25_02:50:51/model/ppo/CellRobotEnvCPG6Traj-v3_304.pt'   )
 parser.add_argument('--result-dir', default=None   )
 parser.add_argument('--num-enjoy',type=int, default=1   )
 parser.add_argument('--add-timestep', action='store_true', default=False,
@@ -110,6 +110,8 @@ obs_lists = []
 action_list = []
 num_episodes = 0
 contact_infos =[]
+root_positions_list  =[]
+root_euler_list = []
 
 def get_contact_info(env, verbose=False):
     d = env.venv.venv.envs[0].unwrapped.data
@@ -154,6 +156,11 @@ while True:
         num_episodes_lists.append(num_episodes)
         obs_lists.append(log_info[0]['obs'])
         action_list.append(action.numpy()[0])
+        if 'root_position' in log_info[0].keys():
+            root_positions_list.append(log_info[0]['root_position'])
+        if 'root_euler' in log_info[0].keys():
+            root_euler_list.append(log_info[0]['root_euler'])
+
     if num_episodes == num_enjoy:
         break
 
@@ -177,6 +184,12 @@ if logger is not None:
     action_list = np.array(action_list, dtype=np.float64)
 
     data = np.concatenate((num_episodes_lists , velocity_base, commands,  obs_lists, rewards, action_list  ), axis=1)
+
+    if 'root_position' in log_info[0].keys() and 'root_euler' in log_info[0].keys():
+        root_positions_list = np.array(root_positions_list, dtype=np.float64)
+        root_euler_list = np.array(root_euler_list,dtype=np.float64 )
+        data = np.concatenate((data, root_positions_list, root_euler_list ), axis=1)
+
 
     trajectory = {}
     for j in range(data.shape[0]):
