@@ -88,7 +88,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_wz_high(self):
-        return [0]  # vel , pos
+        return [math.pi/2]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -106,7 +106,7 @@ class VG(VariantGenerator):
 
     @variant
     def base(self):
-        return ['MLPBase256', 'MLPBase', ]  # CellRobotMLPBase MLPBase
+        return [  'MLPBase', ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
@@ -118,15 +118,15 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [0 ]
+        return [0,3 ]
 
     @variant
     def command_mode(self):
-        return ["FandE"]  # full, error, no FandE  point
+        return ["dir_vel"]  # full, error, no FandE  point
 
     @variant
     def reward_fun_choice(self):
-        return [3 ]
+        return [4]
 
     @variant
     def vel_filtered(self):
