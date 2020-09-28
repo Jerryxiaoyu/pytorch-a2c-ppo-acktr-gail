@@ -52,6 +52,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         self._isRenderGoal = isRenderGoal
         self.max_steps = max_steps
 
+
         self.goal_state = np.zeros(self.num_goals*3)
         super().__init__(**kwargs)
 
@@ -59,8 +60,8 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         if self.sample_mode == 0:
             goal_points = []
             for i in range(self.num_goals):
-                x = self.root_position[0] + np.random.uniform(-5, 5)
-                y = self.root_position[2] + np.random.uniform(-5, 5)
+                x = self.root_position[0] + np.random.uniform(-3, 3)
+                y = self.root_position[1] + np.random.uniform(-3, 3)
                 goal_points.append([x, y, 0])
         else:
             raise NotImplementedError
@@ -73,6 +74,8 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         return  goal_state
 
     def reset_model(self, command=None, ):
+
+
         # reset init robot
         self._reset_robot_position()
 
@@ -238,7 +241,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
     def compute_reward(self, velocity_base, v_commdand, action, obs):
         if self.reward_choice == 0:
             ## line
-            dis = np.linalg.norm(self.goal_state - self.root_position)
+            dis = np.linalg.norm(self.goal_state[:2] - self.root_position[:2])
             forward_reward = -dis
 
             if dis  < REACH_THRESHHOLD:
@@ -255,7 +258,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             #print(other_rewards)
         elif self.reward_choice == 1:
             ## line
-            dis = np.linalg.norm(self.goal_state - self.root_position)
+            dis = np.linalg.norm(self.goal_state[:2] - self.root_position[:2])
             forward_reward = -dis
 
             # if dis  < REACH_THRESHHOLD:
