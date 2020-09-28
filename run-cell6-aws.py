@@ -32,7 +32,7 @@ class VG(VariantGenerator):
 
     @variant
     def learning_rate(self):
-        return [3e-4]  #1e-3
+        return [3e-3]  #1e-3
 
     @variant
     def entropy_coef(self):
