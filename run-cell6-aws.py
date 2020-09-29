@@ -68,7 +68,6 @@ class VG(VariantGenerator):
  ##----------------------------------------------------
 
 
-
     @variant
     def state_mode(self):
         return ['meiyong', ]  # vel , pos, vel_f
