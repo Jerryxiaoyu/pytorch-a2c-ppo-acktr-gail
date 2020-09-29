@@ -35,15 +35,15 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 16# 11
-global_command = 's2-cell6-dir-vel' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
+global_command = 's2-cell6-xy10' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
 rand_init = 0 #
 data_name = None#
 contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6Traj-v3'
-group_dir = 'log-files-SMC/AWS_logfiles/Sep_25_SMC_PPO_RL_Exp26'
-exp_id = 26
+group_dir = 'log-files-SMC/AWS_logfiles/Sep_28_SMC_PPO_RL_Exp30'
+exp_id = 30
 exp_no_list= [1]
 num_enjoy = 1
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6

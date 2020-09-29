@@ -379,6 +379,13 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             cmd = np.concatenate([self.current_command[0:0] - np.linalg.norm(self.root_velocity[:2]),
                                   self.current_command[2:2]
                                   ])
+        elif self.command_mode =='conv_error':
+
+            conv_error = np.linalg.inv(self.root_rotation).dot(self.current_command  - self.root_velocity )
+            cmd = np.concatenate([conv_error[:2],
+                                  self.current_command[:2]
+                                  ])
+
 
         elif self.command_mode == 'no':
             cmd =None
@@ -692,7 +699,12 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             obs = np.concatenate([obs,
                                   cmd])
         if self.isRootposNotInObs:
-            pass
+            pred_position = self._get_pred_root_position()
+            obs = np.concatenate([obs,
+                                  pred_position,
+                                  self.root_rotation.flatten()
+                                  ])
+
         else:
             pred_position = self._get_pred_root_position()
             obs = np.concatenate([obs,
@@ -701,11 +713,25 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         return obs
 
     def _get_pred_root_position(self):
-        x_pos = np.array([ self.root_position[0] + self.current_command[0]*self.sample_interval *self.dt*(i+1) for i in range(self.sample_count) ])
-        y_pos = np.array([self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in  range(self.sample_count)])
 
-        self._pred_root_position[:,0] = x_pos
-        self._pred_root_position[:,1] = y_pos
+        if self.isRootposNotInObs:
+            x_pos = np.array(
+                [self.root_position[0] + self.current_command[0] * self.sample_interval * self.dt * (i + 1) for i in
+                 range(self.sample_count)])
+            y_pos = np.array(
+                [self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in
+                 range(self.sample_count)])
+            xyz_pos = np.concatenate((x_pos[None], y_pos[None], np.zeros_like(x_pos)[None]), axis=0).transpose() - self.root_position
+
+            xyz_pos = np.array([np.linalg.inv(self.root_rotation).dot(xyz_pos[_]) for _ in range(self.sample_count)])
+
+            self._pred_root_position = xyz_pos[:,0:2]
+        else:
+            x_pos = np.array([ self.root_position[0] + self.current_command[0]*self.sample_interval *self.dt*(i+1) for i in range(self.sample_count) ])
+            y_pos = np.array([self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in  range(self.sample_count)])
+
+            self._pred_root_position[:,0] = x_pos
+            self._pred_root_position[:,1] = y_pos
         return self._pred_root_position.flatten()
 
     @property
