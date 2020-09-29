@@ -7,6 +7,8 @@ import cv2
 from my_envs.mujoco import *
 #---
 
+os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit_ball.xml"
+
 os.environ["CPG_ENABLE"] = str(1)
 
 os.environ["NUM_BUFFER"] = str(0)

@@ -71,11 +71,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_vx_low(self):
-        return [-0.2]
+        return [0]
 
     @variant
     def command_vy_low(self):
-        return [-0.2]
+        return [0]
 
     @variant
     def command_wz_high(self):
@@ -117,7 +117,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [0 ]
+        return [0,1 ]
 
     @variant
     def vel_filtered(self):

@@ -49,7 +49,15 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                  cpg_enable = 1,
                  robot_state_dim = 38,
                  isRootposNotInObs = False,
+
+                 isAddDisturbance= False,
+                 disturb_time_list = [100, 200, 300, 400]
                  ):
+
+        self.isAddDisturbance = isAddDisturbance
+        self.disturb_time_list = disturb_time_list
+        self.disturb_cnt = 0
+
         print('test cpg2........................')
         self.reward_choice = os.getenv('REWARD_CHOICE')
         self.cpg_mode = cpg_mode
@@ -276,7 +284,54 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         print('State size :', self.observation_space.shape[0])
         print('Policy action size : ', self.action_space.shape[0] )
 
+    def get_one_disturbance(self):
+        v_bullet = np.random.uniform(3,5)
+
+        x = np.random.uniform(self.root_position[0] - 1, self.root_position[0] + 1)
+        y = np.random.uniform(self.root_position[1] - 1, self.root_position[1] + 1)
+        z = np.random.uniform(1, 2)
+        p_0 = np.array([x, y, z])
+        #
+        # x = np.random.uniform(self.root_position[0] - 0.03, self.root_position[0] + 0.03)
+        # y = np.random.uniform(self.root_position[1] - 0.03, self.root_position[1] + 0.03)
+        # z = np.random.uniform(self.root_position[1] - 0.1, self.root_position[1])
+        # p_target = np.array([x, y, z])
+        #
+
+        t = np.sqrt(p_0[1] ** 2 / abs((v_bullet ** 2 - np.linalg.norm(self.root_position[:2]) ** 2)))
+        p_target = self.root_position + np.array([self.root_velocity[0], self.root_velocity[1], 0]) * t
+
+
+        v = ( p_target -p_0 ) / np.linalg.norm(p_target - p_0) * v_bullet
+
+        return p_0, v
+
+    def addDisturbance(self):
+        if self._t_step == self.disturb_time_list[self.disturb_cnt]:
+            qpos = self.sim.data.qpos.ravel().copy()
+            qvel = self.sim.data.qvel.ravel().copy()
+
+            p_target, v = self.get_one_disturbance()
+
+            # x = np.random.uniform(self.root_position[0] - 0.05, self.root_position[0] + 0.05)
+            # y = np.random.uniform(self.root_position[1] - 0.05, self.root_position[1] + 0.05)
+            # z = np.random.uniform(0.5, 1)
+            # p_target =  np.array([x, y, z])#np.array([x, y, z])
+            # v = [0,0,0]
+
+            qpos[20:23] = p_target
+            qvel[19:22] =  v
+
+            self.set_state(qpos, qvel)
+
+            self.disturb_cnt += 1
+
+        if self.disturb_cnt == len(self.disturb_time_list):
+            self.disturb_cnt = 0
+
     def step(self, a):
+
+
         action = a.copy()
 
         v_commdand = self.command[self._t_step, :3]
@@ -310,6 +365,11 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
 
+
+        if self.isAddDisturbance:
+            self.addDisturbance()
+
+
         self._t_step += 1
         return obs, reward, done, dict(
             root_position = self.root_position,
@@ -321,8 +381,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         )
 
     def _get_robot_state(self):
-        joint_position = state_M.dot(self.sim.data.qpos[7:].reshape((-1, 1))).flatten()
-        joint_velocity = state_M.dot(self.sim.data.qvel[6:].reshape((-1, 1))).flatten()
+        joint_position = state_M.dot(self.sim.data.qpos[7:7+13].reshape((-1, 1))).flatten()
+        joint_velocity = state_M.dot(self.sim.data.qvel[6:6+13].reshape((-1, 1))).flatten()
 
         root_position = self.get_body_com("torso").flatten()
         root_euler = self.get_orien()
@@ -385,7 +445,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             cmd = np.concatenate([conv_error[:2],
                                   self.current_command[:2]
                                   ])
-
 
         elif self.command_mode == 'no':
             cmd =None
