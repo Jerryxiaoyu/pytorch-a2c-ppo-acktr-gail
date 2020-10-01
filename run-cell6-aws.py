@@ -106,7 +106,7 @@ class VG(VariantGenerator):
 
     @variant
     def base(self):
-        return [ 'MLPBase' ]  # CellRobotMLPBase MLPBase
+        return [ 'MLPBase256' ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
@@ -135,6 +135,12 @@ class VG(VariantGenerator):
     @variant
     def trained_model_path(self):
         return [None]
+
+    @variant
+    def sample_mode(self):
+        return [0,1]
+
+
 
 
 
@@ -285,6 +291,11 @@ for v in variants:
     if v['xml_name'] is not None:
             os.environ["XML_NAME"] = str(v['xml_name'])
             print('XML_NAME = ', os.getenv('XML_NAME'))
+
+    if v['sample_mode'] is not None:
+        os.environ["SAMPLE_MODE"] = str(v['sample_mode'])
+        print('SAMPLE_MODE = ', os.getenv('SAMPLE_MODE'))
+
 
     if v['recurrent'] == 1 :
         other_str = " --recurrent-policy "

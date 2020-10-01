@@ -12,6 +12,7 @@ from utils.fir_filter import fir_filter
 import math
 import time
 from .cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
+from my_envs.utils.goals import generate_point_in_arc_area
 
 state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
@@ -47,8 +48,19 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
                  sample_mode = 0,
                  **kwargs):
 
+        self.sample_mode = os.getenv('SAMPLE_MODE')
+        if self.sample_mode is None:
+            self.sample_mode = sample_mode
+            print('sample_mode is not sepecified, so sample_mode is default  {}'.format(sample_mode))
+        else:
+            self.sample_mode = int(self.sample_mode)
+            print('sample_mode = ', self.sample_mode)
+
+        self.reset_count = 0
+        self.hardReset_per_reset = 5
+
         self.num_goals = 1
-        self.sample_mode = sample_mode
+
         self._isRenderGoal = isRenderGoal
         self.max_steps = max_steps
 
@@ -63,6 +75,19 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
                 x = self.root_position[0] + np.random.uniform(-3, 3)
                 y = self.root_position[1] + np.random.uniform(-3, 3)
                 goal_points.append([x, y, 0])
+
+        elif self.sample_mode ==1:
+            goal_points = []
+            theta_list = [ np.deg2rad(60)]
+            dis_list = [(0.5, 3) ]
+
+            center_p = [self.root_position[0], 0, self.root_position[1]]
+            norm_dir = [self.root_direction[0], 0, self.root_direction[1]]
+
+            final_p = generate_point_in_arc_area(center_p, norm_dir, theta=theta_list[0], dis_range=dis_list[0])
+
+            goal_points.append([final_p[0], final_p[2], 0])
+
         else:
             raise NotImplementedError
         ## check outspace
@@ -73,11 +98,22 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         assert  np.array(goal_state).shape[0] == 3
         return  goal_state
 
+
+    def reset(self, *args):
+        if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
+            self.sim.reset()
+            ob = self.reset_model(*args)
+            self.reset_count = 0
+        else:
+            ob = self.reset_model(*args)
+
+        self.reset_count += 1
+        return ob
+
     def reset_model(self, command=None, ):
-
-
-        # reset init robot
-        self._reset_robot_position()
+        if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
+            # reset init robot
+            self._reset_robot_position()
 
         # sample_goal
         self.goal_state = self.sampel_goal()
@@ -119,13 +155,14 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         self._t_step = 0
 
         # reset something...
-        self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector,
-                                                 dt=self.dt,
-                                                 mode=self.cpg_mode)
+        if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
+            self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector,
+                                                     dt=self.dt,
+                                                     mode=self.cpg_mode)
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
 
-        self._reset_cnt += 1
+       # self._reset_cnt += 1
         return obs
 
 

@@ -143,6 +143,8 @@ register(
                  cpg_mode=2,
                  max_steps = 400,
 
+                trajectory_length = 40,
+
                  robot_state_dim = 41,
                 isRenderGoal = 1,
                  )
@@ -155,9 +157,30 @@ register(
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=2,
-                 max_steps = 2000,
+                 max_steps = 200,
 
+                trajectory_length = 0,
                  robot_state_dim = 41,
-                isRenderGoal = 0,
+                isRenderGoal = 1,
                  )
 )
+
+
+
+#
+#
+#
+# register(
+#     id='CellRobotEnvCPG6Target-v3',
+#     entry_point='my_envs.mujoco:CellRobotEnvCPG6Target',
+#     max_episode_steps=2000,
+#     reward_threshold=6000.0,
+#     kwargs=dict( control_skip = 5,
+#                  cpg_mode=2,
+#                  max_steps = 2000,
+#
+#
+#                  robot_state_dim = 41,
+#                 isRenderGoal = 0,
+#                  )
+# )
