@@ -141,9 +141,6 @@ class VG(VariantGenerator):
         return [None]
 
 
-
-
-
 exp_id = args.exp_id
 
 EXP_NAME ='_SMC_PPO_RL'
@@ -199,8 +196,6 @@ full_output = True
 evaluate_monitor = False
 
 
-
-
 # run
 num_exp =0
 for v in variants:
@@ -232,8 +227,6 @@ for v in variants:
 
     os.environ["REWARD_CHOICE"] = str(v['reward_fun_choice'])
     print('REWARD_CHOICE = ', os.getenv('REWARD_CHOICE'))
-
-
 
     if v['action_dim'] is not None:
         os.environ["ACTION_DIM"] = str(v['action_dim'])
@@ -330,7 +323,9 @@ for v in variants:
 
               " --log-dir " + str(log_dir) +
               " --save-dir " + str(save_dir) +
-              " --base "  +str(base) + other_str
+              " --base "  +str(base) +
+              " --no-cuda " +
+              other_str
 
               )
 

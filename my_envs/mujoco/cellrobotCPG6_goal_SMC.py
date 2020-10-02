@@ -330,8 +330,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.disturb_cnt = 0
 
     def step(self, a):
-
-
         action = a.copy()
 
         v_commdand = self.command[self._t_step, :3]
@@ -339,7 +337,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.goal_x += v_commdand[0]*self.dt
         self.goal_y += v_commdand[1]*self.dt
         # self.goal_xyyaw += v_commdand*self.dt
-
 
         if self.CPG_enable == 1 :
             action = self.CPG_transfer(a, self.CPG_controller )
@@ -364,7 +361,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
-
 
         if self.isAddDisturbance:
             self.addDisturbance()
@@ -430,7 +426,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             cmd = self.current_command[:2]  #x y
         elif self.command_mode == 'error' :
             cmd = self.current_command[:2] - self.root_velocity[:2] #x y
-
         elif self.command_mode == 'FandE':
             cmd = np.concatenate([self.current_command[:2],
                                   self.current_command[:2] - self.root_velocity[:2]  # x y
