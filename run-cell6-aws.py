@@ -122,7 +122,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return ["conv_error" ]  # full, error, no FandE  point  conv_error
+        return ["FandE" ]  # full, error, no FandE  point  conv_error
 
     @variant
     def reward_fun_choice(self):
