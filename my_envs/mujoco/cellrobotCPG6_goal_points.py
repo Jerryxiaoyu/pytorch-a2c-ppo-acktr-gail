@@ -188,53 +188,53 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             return True
         return False
 
-    def _get_robot_state(self):
-        joint_position = state_M.dot(self.sim.data.qpos[7:].reshape((-1, 1))).flatten()
-        joint_velocity = state_M.dot(self.sim.data.qvel[6:].reshape((-1, 1))).flatten()
-
-        root_position = self.get_body_com("torso").flatten()
-        root_euler = self.get_orien()
-
-        #print('quat', self.root_quat)
-        #print(root_euler)
-        root_velocity = (root_position - self.last_root_position) / self.dt
-
-        root_angluar_velocity = (root_euler - self.last_root_euler) / self.dt
-
-        if self.vel_filtered:
-            vx_f = np.array([self.filter_fun_list[0].apply(root_velocity[0])])
-            vy_f = np.array([self.filter_fun_list[1].apply(root_velocity[1])])
-            vz_f = np.array([self.filter_fun_list[2].apply(root_velocity[2])])
-            filterd_root_velocity = np.concatenate((vx_f, vy_f, vz_f))
-
-            wx_f = np.array([self.filter_fun_list[3].apply(root_angluar_velocity[0])])
-            wy_f = np.array([self.filter_fun_list[4].apply(root_angluar_velocity[1])])
-            wz_f = np.array([self.filter_fun_list[5].apply(root_angluar_velocity[2])])
-            filterd_root_angluar_velocity = np.concatenate((wx_f, wy_f, wz_f))
-
-            robot_state = np.concatenate([
-                root_position,  # 3
-                #self.root_rotation.flatten(),#9
-                root_euler,  # 3
-                joint_position,  # 13
-                joint_velocity,  # 13
-                # root_velocity,  # 3
-                # root_angluar_velocity,  # 3
-                filterd_root_velocity,
-                filterd_root_angluar_velocity,
-            ])
-        else:
-            robot_state = np.concatenate([
-                root_position,  # 3
-
-                root_euler,  # 3
-                joint_position,  # 13
-                joint_velocity,  # 13
-                root_velocity,  # 3
-                root_angluar_velocity,  # 3
-
-            ])
-        return robot_state
+    # def _get_robot_state(self):
+    #     joint_position = state_M.dot(self.sim.data.qpos[7:].reshape((-1, 1))).flatten()
+    #     joint_velocity = state_M.dot(self.sim.data.qvel[6:].reshape((-1, 1))).flatten()
+    #
+    #     root_position = self.get_body_com("torso").flatten()
+    #     root_euler = self.get_orien()
+    #
+    #     #print('quat', self.root_quat)
+    #     #print(root_euler)
+    #     root_velocity = (root_position - self.last_root_position) / self.dt
+    #
+    #     root_angluar_velocity = (root_euler - self.last_root_euler) / self.dt
+    #
+    #     if self.vel_filtered:
+    #         vx_f = np.array([self.filter_fun_list[0].apply(root_velocity[0])])
+    #         vy_f = np.array([self.filter_fun_list[1].apply(root_velocity[1])])
+    #         vz_f = np.array([self.filter_fun_list[2].apply(root_velocity[2])])
+    #         filterd_root_velocity = np.concatenate((vx_f, vy_f, vz_f))
+    #
+    #         wx_f = np.array([self.filter_fun_list[3].apply(root_angluar_velocity[0])])
+    #         wy_f = np.array([self.filter_fun_list[4].apply(root_angluar_velocity[1])])
+    #         wz_f = np.array([self.filter_fun_list[5].apply(root_angluar_velocity[2])])
+    #         filterd_root_angluar_velocity = np.concatenate((wx_f, wy_f, wz_f))
+    #
+    #         robot_state = np.concatenate([
+    #             root_position,  # 3
+    #             #self.root_rotation.flatten(),#9
+    #             root_euler,  # 3
+    #             joint_position,  # 13
+    #             joint_velocity,  # 13
+    #             # root_velocity,  # 3
+    #             # root_angluar_velocity,  # 3
+    #             filterd_root_velocity,
+    #             filterd_root_angluar_velocity,
+    #         ])
+    #     else:
+    #         robot_state = np.concatenate([
+    #             root_position,  # 3
+    #
+    #             root_euler,  # 3
+    #             joint_position,  # 13
+    #             joint_velocity,  # 13
+    #             root_velocity,  # 3
+    #             root_angluar_velocity,  # 3
+    #
+    #         ])
+    #     return robot_state
 
     def _get_obs(self):
 
@@ -268,7 +268,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
     def _get_goal_info(self):
         if self.command_mode == 'point':
             #print("goal: {}, root pos: {}".format(self.goal_state[:2], self.root_position[:2] ))
-            cmd = np.linalg.inv(self.root_rotation).dot(self.goal_state- self.root_position)[:2] ## only x y
+            cmd = self.root_inv_rotation.dot(self.goal_state- self.root_position)[:2] ## only x y
 
             #print("cmd: ", cmd)
         else:
