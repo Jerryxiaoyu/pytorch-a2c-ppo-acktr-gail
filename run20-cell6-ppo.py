@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Target-v3' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v3' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -45,11 +45,11 @@ class VG(VariantGenerator):
 
     @variant
     def tau(self):
-        return [0.95 ]  #0.98
+        return [0.95]  #0.98
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [2e5]
 
 
     @variant
@@ -96,11 +96,11 @@ class VG(VariantGenerator):
 
     @variant
     def base(self):
-        return ['MLPBase' , ]  # CellRobotMLPBase MLPBase
+        return ['MLPBase', ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
-        return [2,13]  # 2,3,13
+        return [2 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -110,14 +110,13 @@ class VG(VariantGenerator):
     def num_buffer(self):
         return [0]
 
-
     @variant
     def command_mode(self):
-        return [ "point" ]  #full, error, no FandE
+        return [ "conv_error" ]  #full, error, no FandE  conv_error
 
     @variant
     def reward_fun_choice(self):
-        return [0,1 ]
+        return [ 0  ]
 
     @variant
     def vel_filtered(self):
@@ -132,15 +131,18 @@ class VG(VariantGenerator):
         return [1] #
 
 
-exp_id = 24
+exp_id = 25
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
-
+log_interval = 1
+save_model_interval = 50
 sync_s3 = False#True
+inner_upload_s3 = False
 
-n_cpu = 8 #8
+
+n_cpu = 4 #8
 num_threads = n_cpu
 
 bucket_path = "jaco-bair/cellrobot/AWS_logfiles"
@@ -179,8 +181,7 @@ with open(group_dir + '/readme.txt', 'wt') as f:
 
 algo ='ppo'
 
-log_interval = 1
-save_model_interval = 50
+
 
 full_output = True
 evaluate_monitor = False
@@ -293,6 +294,13 @@ for v in variants:
     if  trained_model_path is not None:
         other_str +=   (" --tained-mode-path "+str(trained_model_path)+ " ")
 
+    if  inner_upload_s3:
+        other_str +=   (" --s3-path "+str(bucket_path)+ " ")
+        other_str += (" --upload-s3 ")
+
+
+
+
     os.system("python3 main.py "  +
               " --env-name " + str(env_name) +
               " --algo " + str(algo) +
@@ -318,7 +326,9 @@ for v in variants:
               " --log-dir " + str(log_dir) +
               " --save-dir " + str(save_dir) +
 
-              " --base "  +str(base) + other_str
+              " --base "  +str(base) +
+
+              other_str
 
               )
 

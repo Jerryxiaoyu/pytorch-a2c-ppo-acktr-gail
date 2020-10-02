@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Traj-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v3']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -60,7 +60,6 @@ class VG(VariantGenerator):
     @variant
     def num_env_steps(self):
         return [2e7]
-
 
     @variant
     def recurrent(self):
@@ -103,7 +102,6 @@ class VG(VariantGenerator):
         return ['meiyong']
 
     # ----------------------------------------------
-
     @variant
     def base(self):
         return [ 'MLPBase' ]  # CellRobotMLPBase MLPBase
@@ -118,11 +116,11 @@ class VG(VariantGenerator):
 
     @variant
     def num_buffer(self):
-        return [0  ]
+        return [0 ]
 
     @variant
     def command_mode(self):
-        return [ "FandE" ]  # full, error, no FandE  point  conv_error
+        return [ "conv_error" ]  # full, error, no FandE  point  conv_error
 
     @variant
     def reward_fun_choice(self):

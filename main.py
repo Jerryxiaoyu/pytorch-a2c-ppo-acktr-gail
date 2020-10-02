@@ -46,6 +46,10 @@ if args.cuda and torch.cuda.is_available() and args.cuda_deterministic:
 
 args.log_dir = os.path.expanduser(args.log_dir)
 
+bucket_path = args.s3_path#"jaco-bair/cellrobot/AWS_logfiles"
+s3_local_dir = os.path.abspath(os.path.dirname(args.log_dir))
+print("local dir: ", s3_local_dir)
+
 try:
     os.makedirs(args.log_dir)
 except OSError:
@@ -166,8 +170,17 @@ def main():
 
             save_model = [save_model,
                           getattr(get_vec_normalize(envs), 'ob_rms', None)]
-
+            print("Save model to path: ", os.path.join(save_path, args.env_name + "_{}.pt".format(j)))
             torch.save(save_model, os.path.join(save_path, args.env_name + "_{}.pt".format(j)))
+
+            if args.upload_s3:
+                print("upload model to s3.. ")
+
+                s3_local_dir = os.path.dirname(args.log_dir)
+                bucket_dir = bucket_path + '/' + s3_local_dir.split('/')[-1]
+                cmd = "aws s3 sync {} s3://{}  ".format(os.path.abspath(s3_local_dir), bucket_dir)
+                os.system(cmd)
+
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 

@@ -381,12 +381,31 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         joint_velocity = state_M.dot(self.sim.data.qvel[6:6+13].reshape((-1, 1))).flatten()
 
         root_position = self.get_body_com("torso").flatten()
-        root_euler = self.get_orien()
+
+
+        rot = np.array(
+            [[0., 0., -1., 0.],
+             [1., 0., 0., 0.],
+             [0., -1., 0., 0.],
+             [0., 0., 0., 1.]]
+        )
+        self._root_rotation = transformations.quaternion_matrix(self.root_quat).dot(rot)
+        root_euler = np.array(transformations.euler_from_matrix(self._root_rotation, axes='sxyz'))
+
+        self._root_rotation = self._root_rotation[:3,:3]
+        self._inv_root_rotation = self._root_rotation.transpose()#np.linalg.inv(self._root_rotation)[:3,:3]
+
+        #root_euler = self.get_orien()
+        #print('old root euler :', root_euler)
+
+
+        #print('new root euler :', new_euler)
+
 
         # print('quat', self.root_quat)
         # print(root_euler)
         root_velocity = (root_position - self.last_root_position) / self.dt
-        root_angluar_velocity = (root_euler - self.last_root_euler) / self.dt
+        root_angluar_velocity = ( root_euler - self.last_root_euler) / self.dt
 
         if self.vel_filtered:
             vx_f = np.array([self.filter_fun_list[0].apply(root_velocity[0])])
@@ -436,7 +455,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                                   ])
         elif self.command_mode =='conv_error':
 
-            conv_error = np.linalg.inv(self.root_rotation).dot(self.current_command  - self.root_velocity )
+            conv_error = self.root_inv_rotation.dot(self.current_command  - self.root_velocity )
             cmd = np.concatenate([conv_error[:2],
                                   self.current_command[:2]
                                   ])
@@ -625,7 +644,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         q = np.array([0.5000, 0.5000, 0.5000, -0.5000])
 
         R_q = quaternion_multiply(q_g2, quaternion_inverse(q))
-        print(q_g2, q, R_q)
+        #print(q_g2, q, R_q)
 
         orien = euler_from_quaternion(R_q, axes='sxyz')
 
@@ -662,9 +681,14 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         alion to the globle frame
         :return:
         """
-        q = np.array([0.5000, 0.5000, 0.5000, -0.5000])
-        R_q = quaternion_multiply(self.root_quat,  quaternion_inverse(q))
-        return transformations.quaternion_matrix(R_q)[:3,:3]
+        return  self._root_rotation
+        # q = np.array([0.5000, 0.5000, 0.5000, -0.5000])
+        # R_q = quaternion_multiply(self.root_quat,  quaternion_inverse(q))
+        # return transformations.quaternion_matrix(R_q)[:3,:3]
+
+    @property
+    def root_inv_rotation(self):
+        return self._inv_root_rotation
 
     @property
     def root_direction(self):
@@ -724,7 +748,9 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
         os.environ["NUM_BUFFER"] = str(trajectory_length)
         self.sample_interval = int( trajectory_length / self.sample_count)  # 40/4  10
-        self._pred_root_position = np.zeros((self.sample_count, 2), dtype=np.float32)
+
+
+        self._pred_root_position = np.zeros((self.sample_count, 3), dtype=np.float32)
 
         CellRobotEnvCPG6Goal.__init__(self, **kwargs)
 
@@ -748,13 +774,14 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         else:
             obs = self.obs_robot_state
 
+        #print("quat :", self.root_quat)
         # concat cmd
         cmd = self._get_goal_info()
         if cmd is not None:
             obs = np.concatenate([obs,
                                   cmd])
         if self.isRootposNotInObs:
-            pred_position = self._get_pred_root_position()
+            pred_position =  self._get_pred_root_position()
             obs = np.concatenate([obs,
                                   pred_position,
                                   self.root_rotation.flatten()
@@ -770,24 +797,30 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
     def _get_pred_root_position(self):
 
         if self.isRootposNotInObs:
-            x_pos = np.array(
-                [self.root_position[0] + self.current_command[0] * self.sample_interval * self.dt * (i + 1) for i in
-                 range(self.sample_count)])
-            y_pos = np.array(
-                [self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in
-                 range(self.sample_count)])
-            xyz_pos = np.concatenate((x_pos[None], y_pos[None], np.zeros_like(x_pos)[None]), axis=0).transpose() - self.root_position
 
-            xyz_pos = np.array([np.linalg.inv(self.root_rotation).dot(xyz_pos[_]) for _ in range(self.sample_count)])
+            self._pred_root_position[:, 0] = np.array(
+                [  self.current_command[0] * self.sample_interval * self.dt * (i + 1) for i in
+                 range(self.sample_count)])
+            self._pred_root_position[:, 1] = np.array(
+                [ self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in
+                 range(self.sample_count)])
 
-            self._pred_root_position = xyz_pos[:,0:2]
+            #xyz_pos = self._pred_root_position - self.root_position
+
+            # x_pos = np.array(  [self.root_position[0] + self.current_command[0] * self.sample_interval * self.dt * (i + 1) for i in range(self.sample_count)])
+            # y_pos = np.array(  [self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in range(self.sample_count)])
+            # xyz_pos = np.concatenate((x_pos[None], y_pos[None], np.zeros_like(x_pos)[None]), axis=0).transpose() - self.root_position
+
+            xyz_pos = np.array([self.root_inv_rotation.dot(self._pred_root_position[_]) for _ in range(self.sample_count)])
+            self._pred_root_position = xyz_pos
+            #self._pred_root_position = xyz_pos
         else:
-            x_pos = np.array([ self.root_position[0] + self.current_command[0]*self.sample_interval *self.dt*(i+1) for i in range(self.sample_count) ])
-            y_pos = np.array([self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in  range(self.sample_count)])
+            x_pos = np.array([self.root_position[0] + self.current_command[0] * self.sample_interval * self.dt * (i + 1) for i in range(self.sample_count)])
+            y_pos = np.array([self.root_position[1] + self.current_command[1] * self.sample_interval * self.dt * (i + 1) for i in range(self.sample_count)])
 
             self._pred_root_position[:,0] = x_pos
             self._pred_root_position[:,1] = y_pos
-        return self._pred_root_position.flatten()
+        return self._pred_root_position[:,:2].flatten()
 
     @property
     def sampled_history_trajectory(self):

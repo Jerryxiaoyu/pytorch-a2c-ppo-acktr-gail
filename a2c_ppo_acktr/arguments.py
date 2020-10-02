@@ -68,6 +68,10 @@ def get_args():
     parser.add_argument('--tained-mode-path', default=None,
                         help='directory to trained model path, ..pt')
 
+    parser.add_argument('--upload-s3', action='store_true', default=False,
+                        help='upload logs to s3')
+    parser.add_argument('--s3-path', default=None,
+                        help='log path to s3')
 
     args = parser.parse_args()
 
