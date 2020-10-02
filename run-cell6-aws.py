@@ -124,7 +124,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [0]
+        return [0,1]
 
     @variant
     def vel_filtered(self):
@@ -136,7 +136,7 @@ class VG(VariantGenerator):
 
     @variant
     def sample_mode(self):
-        return [None]
+        return [1]
 
 
 exp_id = args.exp_id
