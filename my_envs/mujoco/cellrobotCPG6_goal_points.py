@@ -292,7 +292,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
 
            # print('reward: ', reward)
-            print(other_rewards)
+            #print(other_rewards)
         elif self.reward_choice == 1:
             ## line
             dis = np.linalg.norm(self.goal_state[:2] - self.root_position[:2])
