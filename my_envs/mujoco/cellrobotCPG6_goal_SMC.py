@@ -493,7 +493,6 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _render_goal_position(self, position):
         """
-
         :param position: [x,y,z]
         :return:
         """

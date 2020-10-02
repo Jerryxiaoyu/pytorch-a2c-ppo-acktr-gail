@@ -5,6 +5,9 @@ import numpy as np
 import cv2
 #----
 from my_envs.mujoco import *
+import time
+
+
 #---
 
 #os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit_ball.xml"
@@ -35,16 +38,28 @@ obs = env.reset()
 print("obs:", env.observation_space )
 print("action:", env.action_space.shape)
 
+step_times = []
+
 t=0
 for i in range(5000):
     print('t={}'.format(t))
     n_dim_action = env.action_space.shape[0]
     action = env.action_space.sample() # np.zeros(n_dim_action)#
+
+    t_start = time.time()
     obs, reward, done, info = env.step(action)
+    t_end = time.time()
+
+    step_times.append(t_end - t_start)
+    #print("step time: {}", t_end - t_start)
 
     t += 1
     if done :
         print("reset:")
+
+        print("average step time: {:.5s} s", sum(step_times)/len(step_times))
+        step_times = []
+
         env.reset()
         t = 0
 
