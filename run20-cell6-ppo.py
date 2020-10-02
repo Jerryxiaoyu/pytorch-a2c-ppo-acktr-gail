@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Target-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Target-v3' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -100,7 +100,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2]  # 2,3,13
+        return [2,13]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -127,8 +127,12 @@ class VG(VariantGenerator):
     def trained_model_path(self):
         return [None]
 
+    @variant
+    def sample_mode(self):
+        return [1] #
 
-exp_id = 23
+
+exp_id = 24
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
@@ -274,6 +278,11 @@ for v in variants:
     if v['xml_name'] is not None:
             os.environ["XML_NAME"] = str(v['xml_name'])
             print('XML_NAME = ', os.getenv('XML_NAME'))
+
+
+    if v['sample_mode'] is not None:
+        os.environ["SAMPLE_MODE"] = str(v['sample_mode'])
+        print('SAMPLE_MODE = ', os.getenv('SAMPLE_MODE'))
 
     if v['recurrent'] == 1 :
         other_str = " --recurrent-policy "

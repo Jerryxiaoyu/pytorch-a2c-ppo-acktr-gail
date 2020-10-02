@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Target-v3']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Target-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -106,7 +106,7 @@ class VG(VariantGenerator):
 
     @variant
     def base(self):
-        return [ 'MLPBase' ]  # CellRobotMLPBase MLPBase
+        return [ 'MLPBase256' ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):

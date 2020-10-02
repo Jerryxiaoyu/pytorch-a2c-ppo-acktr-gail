@@ -41,9 +41,9 @@ data_name = None#
 contact_log = None
 
 # 实验数据原始目录
-ENV_name = 'CellRobotEnvCPG6Target-v2'
-group_dir = 'log-files-SMC/Sep_29_SMC_PPO_RL_CELL6_Exp23'
-exp_id = 23
+ENV_name = 'CellRobotEnvCPG6Target-v3'
+group_dir = 'log-files-SMC/Oct_01_SMC_PPO_RL_CELL6_Exp24'
+exp_id = 24
 exp_no_list= [1]
 num_enjoy = 1
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6

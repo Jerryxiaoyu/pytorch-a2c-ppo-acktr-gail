@@ -106,6 +106,11 @@ class VG(VariantGenerator):
     def recurrent(self):
             return [0]
 
+    @variant
+    def sample_mode(self):
+        return [0, 1]
+
+
 exp_id = 5
 EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \

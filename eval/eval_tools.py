@@ -111,6 +111,11 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
             os.environ["XML_NAME"] = str(parms['xml_name'])
             print('XML_NAME = ', os.getenv('XML_NAME'))
 
+    if 'sample_mode' in parms.keys():
+        if parms['sample_mode'] is not None:
+            os.environ["SAMPLE_MODE"] = str(parms['sample_mode'])
+            print('SAMPLE_MODE = ', os.getenv('SAMPLE_MODE'))
+
 
     if rand_init is None:
         if 'rand_init' in parms.keys():
