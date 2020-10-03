@@ -26,7 +26,7 @@ os.environ["COMMAND_Y"] = str(0.2)
 os.environ["COMMAND_Z"] = str(0)
 os.environ["ACTION_DIM"] = str(2)
 
-# os.environ["SAMPLE_MODE"] = "1"
+os.environ["SAMPLE_MODE"] = "0"
 # os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2

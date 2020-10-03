@@ -47,7 +47,7 @@ parser.add_argument('--contact-log',type=str,default=None)
 parser.add_argument('--no-render', action='store_true', default=False,
                     help='whether to render')
 args = parser.parse_args()
-num_enjoy = 1
+num_enjoy = args.num_enjoy
 contact_log = args.contact_log
 
 if args.result_dir is None:

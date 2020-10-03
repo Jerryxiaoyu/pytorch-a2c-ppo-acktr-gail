@@ -184,6 +184,24 @@ register(
                  )
 )
 
+
+register(
+    id='CellRobotEnvCPG6NewTargetEVAL-v2',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewTarget',
+    max_episode_steps=10000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 400,
+
+                trajectory_length = 40,
+                robot_state_dim = 42,
+                isRenderGoal = 1,
+                 sample_mode = 1
+                 )
+)
+
+
 #
 #
 #

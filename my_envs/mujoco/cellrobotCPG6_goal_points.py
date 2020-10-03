@@ -279,10 +279,10 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         if self.reward_choice == 0:
             ## line
             dis = np.linalg.norm(self.goal_state[:2] - self.root_position[:2])
-            forward_reward = -dis
+            forward_reward = -dis*5
 
             if dis  < REACH_THRESHHOLD:
-                forward_reward += 50
+                forward_reward += 5
 
             ctrl_cost = 0#.5 * np.square(action).sum()
             contact_cost = 0#0.5 * 1e-4 * np.sum( np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
@@ -323,6 +323,23 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
 
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
 
+        elif self.reward_choice == 3:
+            ## line
+            vel = np.linalg.norm(self.last_root_position - self.goal_state) - np.linalg.norm(
+                self.root_position - self.goal_state)
+            forward_reward = vel*1000
+
+            dis = np.linalg.norm(self.goal_state[:2] - self.root_position[:2])
+            if dis  < REACH_THRESHHOLD:
+                forward_reward += 50
+
+            ctrl_cost = 0#.5 * np.square(action).sum()
+            contact_cost =0# 0.5 * 1e-4 * np.sum( np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = -1.0
+            reward = forward_reward - ctrl_cost - contact_cost + survive_reward
+
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+
         else:
             raise NotImplementedError
         #print(other_rewards)
@@ -346,7 +363,7 @@ class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
             self.obs_robot_state,
             self.root_quat.flatten()
         ])
-
+        print("root pos:", self.root_position)
         # concat history state
         if self.trajectory_length > 0:
             history_traj = self.sampled_history_trajectory
