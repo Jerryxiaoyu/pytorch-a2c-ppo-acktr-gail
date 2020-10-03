@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewTarget-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -32,7 +32,7 @@ class VG(VariantGenerator):
 
     @variant
     def learning_rate(self):
-        return [3e-4]  #1e-3
+        return [3e-4*2]  #1e-3
 
     @variant
     def entropy_coef(self):
@@ -59,7 +59,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [5e7]
 
     @variant
     def recurrent(self):
@@ -108,11 +108,11 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2 ]  # 2,3,13
+        return [13 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
-        return [1]
+        return [1,0]
 
     @variant
     def num_buffer(self):
@@ -120,11 +120,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "point" ]  # full, error, no FandE  point  conv_error
+        return [ "FandE" ]  # full, error, no FandE  point  conv_error
 
     @variant
     def reward_fun_choice(self):
-        return [1,2]
+        return [3]
 
     @variant
     def vel_filtered(self):
@@ -136,7 +136,7 @@ class VG(VariantGenerator):
 
     @variant
     def sample_mode(self):
-        return [1]
+        return [None]
 
 
 exp_id = args.exp_id
