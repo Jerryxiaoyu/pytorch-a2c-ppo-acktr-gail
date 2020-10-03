@@ -296,7 +296,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         elif self.reward_choice == 1:
             ## line
             dis = np.linalg.norm(self.goal_state[:2] - self.root_position[:2])
-            forward_reward = -dis
+            forward_reward = -dis*5
 
             # if dis  < REACH_THRESHHOLD:
             #     forward_reward += 50
@@ -307,8 +307,79 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             reward = forward_reward - ctrl_cost - contact_cost + survive_reward
 
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+        elif self.reward_choice == 2:
+            ## line
+            vel = np.linalg.norm(self.last_root_position - self.goal_state) - np.linalg.norm(
+                self.root_position - self.goal_state)
+            forward_reward = vel*1000
+
+            # if dis  < REACH_THRESHHOLD:
+            #     forward_reward += 50
+
+            ctrl_cost = 0#.5 * np.square(action).sum()
+            contact_cost =0# 0.5 * 1e-4 * np.sum( np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = -1.0
+            reward = forward_reward - ctrl_cost - contact_cost + survive_reward
+
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+
         else:
             raise NotImplementedError
         #print(other_rewards)
         return reward, other_rewards
+
+
+class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
+    def __init__(self,
+
+                 **kwargs):
+
+
+        super().__init__(**kwargs)
+
+
+    def _get_obs(self):
+
+        self.obs_robot_state = self._robot_state
+
+        self.obs_robot_state = np.concatenate([
+            self.obs_robot_state,
+            self.root_quat.flatten()
+        ])
+
+        # concat history state
+        if self.trajectory_length > 0:
+            history_traj = self.sampled_history_trajectory
+
+            delta_position = history_traj[:,:3] - self.root_position
+            root_pos_history = np.array(
+                [self.root_inv_rotation.dot(delta_position[_]) for _ in range(delta_position.shape[0])])
+
+            obs = np.concatenate([
+                self.obs_robot_state[3:],
+                root_pos_history.flatten(),
+                history_traj[:,3:].flatten()
+
+            ])
+        else:
+            obs = self.obs_robot_state
+
+        # concat cmd
+        cmd = self._get_goal_info()
+        if cmd is not None:
+            obs = np.concatenate([obs,
+                                  cmd])
+
+
+        return obs
+
+    def _get_goal_info(self):
+        if self.command_mode == 'point':
+            #print("goal: {}, root pos: {}".format(self.goal_state[:2], self.root_position[:2] ))
+            cmd = self.root_inv_rotation.dot(self.goal_state- self.root_position)[:2] ## only x y
+
+            #print("cmd: ", cmd)
+        else:
+            raise NotImplementedError
+        return cmd
 

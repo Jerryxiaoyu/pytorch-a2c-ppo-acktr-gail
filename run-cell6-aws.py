@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Target-v3']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewTarget-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -124,7 +124,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [0,1]
+        return [1,2]
 
     @variant
     def vel_filtered(self):
@@ -147,6 +147,7 @@ group_note ="************ABOUT THIS EXPERIMENT****************\n" \
         " "
 
 sync_s3 = True
+inner_upload_s3 = True
 
 n_cpu = args.n_cpu
 num_threads = n_cpu
@@ -297,6 +298,11 @@ for v in variants:
     if trained_model_path is not None:
         other_str += (" --tained-mode-path " + str(trained_model_path) + " ")
 
+    if  inner_upload_s3:
+        other_str +=   (" --s3-path "+str(bucket_path)+ " ")
+        other_str += (" --upload-s3 ")
+
+
     os.system("python3 main.py "  +
               " --env-name " + str(env_name) +
               " --algo " + str(algo) +
@@ -336,7 +342,7 @@ for v in variants:
     if sync_s3 and bucket_path is not None:
         local_dir = os.path.abspath(group_dir)
         bucket_dir = bucket_path+'/' + local_dir.split('/')[-1]
-        cmd = "aws s3 cp {} s3://{}   --recursive".format(os.path.abspath(local_dir), bucket_dir)
+        cmd = "aws s3 sync {} s3://{} ".format(os.path.abspath(local_dir), bucket_dir)
         os.system(cmd)
 
 

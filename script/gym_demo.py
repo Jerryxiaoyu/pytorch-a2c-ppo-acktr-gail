@@ -17,7 +17,7 @@ os.environ["CPG_ENABLE"] = str(1)
 os.environ["NUM_BUFFER"] = str(0)
 os.environ["COMMAND_MODE"] = "FandE"
 os.environ["VEL_FILTER"] = str(1)
-os.environ["REWARD_CHOICE"] = str(0)
+os.environ["REWARD_CHOICE"] = str(1)
 
 os.environ["GLOBAL_CMD"] = 's2-cell6'
 
@@ -30,7 +30,7 @@ os.environ["ACTION_DIM"] = str(2)
 # os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6Target-v2" )
+env = gym.make("CellRobotEnvCPG6NewTarget-v2" )
 
 
 obs = env.reset()
@@ -42,14 +42,16 @@ step_times = []
 
 t=0
 for i in range(5000):
-    print('t={}'.format(t))
+
     n_dim_action = env.action_space.shape[0]
     action = env.action_space.sample() # np.zeros(n_dim_action)#
 
     t_start = time.time()
     obs, reward, done, info = env.step(action)
+
     t_end = time.time()
 
+    print('t={}, reward={:.3f}'.format(t, reward))
     step_times.append(t_end - t_start)
     #print("step time: {}", t_end - t_start)
 

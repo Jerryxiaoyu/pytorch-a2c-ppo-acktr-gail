@@ -14,6 +14,7 @@ from my_envs.mujoco.cellrobotCPG5_SMC import CellRobotEnvCPG5
 from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6Goal
 from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
 from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6Target
+from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6NewTarget
 from my_envs.mujoco.my_ant import MyAntEnv
 
 register(
@@ -166,6 +167,22 @@ register(
 )
 
 
+register(
+    id='CellRobotEnvCPG6NewTarget-v2',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewTarget',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 400,
+
+                trajectory_length = 40,
+
+                 robot_state_dim = 42,
+                isRenderGoal = 1,
+                 sample_mode = 1
+                 )
+)
 
 #
 #
