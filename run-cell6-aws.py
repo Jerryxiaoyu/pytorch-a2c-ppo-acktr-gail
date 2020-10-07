@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewTarget-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -104,11 +104,11 @@ class VG(VariantGenerator):
     # ----------------------------------------------
     @variant
     def base(self):
-        return [ 'MLPBase256' ]  # CellRobotMLPBase MLPBase
+        return [ 'MLPBase' ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
-        return [2 ]  # 2,3,13
+        return [2,13 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -120,11 +120,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "point" ]  # full, error, no FandE  point  conv_error
+        return [ "FandE" ]  # full, error, no FandE  point  conv_error
 
     @variant
     def reward_fun_choice(self):
-        return [0,2,3]
+        return [3]
 
     @variant
     def vel_filtered(self):
@@ -136,7 +136,7 @@ class VG(VariantGenerator):
 
     @variant
     def sample_mode(self):
-        return [0]
+        return [None]
 
 
 exp_id = args.exp_id
