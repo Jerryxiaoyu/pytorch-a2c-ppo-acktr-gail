@@ -108,11 +108,11 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2,13 ]  # 2,3,13
+        return [13 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
-        return [1 ]
+        return [0 ]
 
     @variant
     def num_buffer(self):
