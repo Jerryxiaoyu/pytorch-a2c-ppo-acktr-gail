@@ -127,8 +127,9 @@ class CPG_network_Sinusoid(object):
         #         self.CPG_list[i + 1].parm['X1'] = self.parm_list[i + 1][4] * factor_cpg[i*3+1]
         #         self.CPG_list[i + 1].parm['f12'] = self.parm_list[i + 1][5] * factor_cpg[i*3+2]
         if len(fi_l) ==39:
+
             #factor_cpg = np.clip(fi_l, -max_factor, max_factor)
-            factor_cpg = np.clip(fi_l, -1, 1)
+            factor_cpg = np.clip(fi_l, -1, 1) * 2
             for i in range(self.num_Cell):
                 self.CPG_list[i+1].parm['R1'] = self.parm_list[i+1][3] +   factor_cpg[i*3]
                 self.CPG_list[i + 1].parm['X1'] = self.parm_list[i + 1][4] +  factor_cpg[i*3+1]
