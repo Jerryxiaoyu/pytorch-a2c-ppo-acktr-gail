@@ -2,6 +2,42 @@ import numpy as np
 import transformations
 from scipy.interpolate import interp1d
 
+
+
+def generate_same_interval_eight_curve(A=6, b=2, N= 10000, dis= 0.3):
+    DIS = dis#0.3
+    A = A
+    b = b
+    N = N
+    t = np.linspace(0, 2 * np.pi, num=N)
+    x = A * np.sin(b * t)
+    y = A * np.sin(b * t) * np.cos(b * t)
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+    points = []
+    points.append(xy[0])
+
+    N = xy.shape[0]
+    idx = 1
+
+    def find_nearPoint(idx):
+        for try_idx in range(idx, N):
+            dis = np.linalg.norm(xy[try_idx] - xy[idx])
+
+            if dis > DIS - 0.01 and dis < DIS + 0.01:
+                points.append(xy[try_idx])
+                idx = try_idx
+                return idx
+        return None
+
+    while idx < N:
+        idx = find_nearPoint(idx)
+        if idx is None:
+            break
+
+    points = np.array(points)
+    return points
+
 def generate_point_in_arc_area(center_p, norm_dir,  theta= np.deg2rad(30), dis_range= (30, 100), side = np.random.choice(2) ):
     """
     生成一个点，在给扇形区域内, 在xz平面内。

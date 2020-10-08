@@ -192,14 +192,16 @@ register(
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=2,
-                 max_steps = 40,
+                 max_steps = 200,
 
-                num_goals = 2,
+                hardReset_per_reset= 50,
+
+                num_goals = 5,
 
                 trajectory_length = 40,
 
                  robot_state_dim = 42,
-                isRenderGoal = 1,
+                 isRenderGoal = 0,
                  sample_mode = 1
                  )
 )

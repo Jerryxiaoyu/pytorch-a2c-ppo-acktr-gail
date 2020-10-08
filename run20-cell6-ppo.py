@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Traj-v3' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewMultiTarget-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -22,7 +22,7 @@ class VG(VariantGenerator):
 
     @variant
     def learning_rate(self):
-        return [3e-4*3]  #1e-3
+        return [3e-4 ]  #1e-3
 
     @variant
     def entropy_coef(self):
@@ -112,7 +112,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "conv_error", "FandE"]  #full, error, no FandE  conv_error
+        return [ "point" ]  #full, error, no FandE  conv_error
 
     @variant
     def reward_fun_choice(self):

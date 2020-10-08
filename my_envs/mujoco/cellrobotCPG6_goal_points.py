@@ -12,7 +12,7 @@ from utils.fir_filter import fir_filter
 import math
 import time
 from .cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
-from my_envs.utils.goals import generate_point_in_arc_area
+from my_envs.utils.goals import generate_point_in_arc_area, generate_same_interval_eight_curve
 
 state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
@@ -118,6 +118,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
 
         # sample_goal
         self.goal_state = self.sampel_goal()
+
 
         if self._isRenderGoal:
             self._render_goal_position(self._goal2render(self.goal_state))
@@ -405,11 +406,26 @@ class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
             raise NotImplementedError
         return cmd
 
+import transformations
+
 class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
     def __init__(self,
                  **kwargs):
 
+        self.phase_time = 0
+        self.goal_data = self.generate_curve()
         super().__init__(**kwargs)
+
+    def reset_model(self, command=None,):
+        obs = super().reset_model(command)
+        self.phase_time = 0
+        return obs
+
+    def generate_curve(self):
+        points = generate_same_interval_eight_curve(dis=0.3)
+        goal_positions = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+
+        return goal_positions
 
     def _get_goal_info(self):
         if self.command_mode == 'point':
@@ -442,6 +458,33 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
 
                 goal_points.append([final_p[0], final_p[2], 0])
 
+
+        elif self.sample_mode ==1:
+
+            rand_init = 0.2
+
+            idx = np.random.randint(0, self.goal_data.shape[0])
+            goal_points = []
+            for i in range(self.num_goals):
+                x = self.goal_data[(idx + i) % self.goal_data.shape[0]][0]
+                y = self.goal_data[(idx + i) % self.goal_data.shape[0]][1]
+                goal_points.append([x, y, 0])
+            goal_positions = np.array(goal_points)
+
+
+            goal_dir = goal_positions[1] - goal_positions[0]
+            rot = transformations.rotation_matrix(
+                np.arctan2(self.root_direction[1], self.root_direction[0]) - np.arctan2(goal_dir[1], goal_dir[0]),
+                [0, 0, 1])[0:3, 0:3]
+
+            goal_positions_transfered = rot.dot(goal_positions.transpose()).transpose()
+            goal_positions_transfered += (self.root_position - goal_positions_transfered[0])+ np.array([np.random.uniform(-rand_init,rand_init ),np.random.uniform(-rand_init,rand_init ), 0])
+
+            goal_points = goal_positions_transfered
+
+            ## check outspace
+            return np.array(goal_points).flatten()
+
         else:
             raise NotImplementedError
         ## check outspace
@@ -457,10 +500,14 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
         :param position: [x,y,z]
         :return:
         """
-        assert  self.num_goals <= 2
+        assert  self.num_goals <= 5
         for i in range(self.num_goals):
 
             self.model.site_pos[i] = position.reshape((-1,3))[i]
+            if i ==0:
+                self.model.site_rgba[i] = [1 ,0.5, 0 ,1]
+            else:
+                self.model.site_rgba[i] = [1, 0, 0, 1]
 
     def _terminal(self):
 
@@ -473,11 +520,53 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
             return True
         if self._t_step > self.max_steps:
             return True
+
+        if self.phase_time == self.num_goals:
+            self.phase_time = 0
+            return True
+
         # dis = np.linalg.norm(self.root_position- self.goal_state)
         # if dis < REACH_THRESHHOLD:
         #     return True
         return False
 
+    def compute_reward(self, velocity_base, v_commdand, action, obs):
+        if self.reward_choice == 0:
+            return NotImplementedError
+
+        elif self.reward_choice == 3:
+            ## line
+            vel = np.linalg.norm(self.last_root_position - self.goal_state.reshape((-1, 3)), axis=1) - np.linalg.norm(
+                self.root_position - self.goal_state.reshape((-1, 3)), axis=1)
+            forward_reward = vel*1000
+
+            dis = np.linalg.norm(self.goal_state.reshape((-1, 3))[:,:2] - self.root_position[:2],axis=1)
+
+            r = 0
+            if dis[self.phase_time] < REACH_THRESHHOLD:
+                r += 50
+
+                if self._isRenderGoal:
+                    self.model.site_rgba[self.phase_time] = [0, 1, 0,1]
+                    #self.model.site_pos[self.phase_time] = [0,0,0]
+
+                self.phase_time += 1
+
+            else:
+                r += vel[self.phase_time]
+
+            ctrl_cost = 0#.5 * np.square(action).sum()
+            contact_cost =0# 0.5 * 1e-4 * np.sum( np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = -1.0
+            reward = r + survive_reward
+
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+            #print(other_rewards)
+
+        else:
+            raise NotImplementedError
+        #print(other_rewards)
+        return reward, other_rewards
 
 
 class CellRobotEnvCPG6NewEVALTarget(CellRobotEnvCPG6NewTarget):

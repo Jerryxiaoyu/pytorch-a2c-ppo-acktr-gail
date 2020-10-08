@@ -94,6 +94,9 @@
 
         <site name="target1" pos="0 0 0" rgba="1 0.5 0 1" size="0.05 " type="sphere"/>
         <site name="target2" pos="1 0 0" rgba="1 0 0 1" size="0.05 " type="sphere"/>
+        <site name="target3" pos="1 0 0" rgba="1 0 0 1" size="0.05 " type="sphere"/>
+        <site name="target4" pos="1 0 0" rgba="1 0 0 1" size="0.05 " type="sphere"/>
+        <site name="target5" pos="1 0 0" rgba="1 0 0 1" size="0.05 " type="sphere"/>
 
         <body  quat="0.5000  0.5000  0.5000  -0.5000"  name="torso" pos="0  0  0.17">  <!-- euler="-1.5808 0 1.5808"   quat="0.7071 0  0.7071   0" -->
             <camera name="track" mode="trackcom" pos="-0.5 -0.3 -2.5" euler="3.1316  0  1.5808" />
