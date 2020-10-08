@@ -179,7 +179,7 @@ register(
                 trajectory_length = 40,
 
                  robot_state_dim = 42,
-                isRenderGoal = 1,
+                isRenderGoal = 0,
                  sample_mode = 1
                  )
 )
@@ -201,7 +201,7 @@ register(
                 trajectory_length = 40,
 
                  robot_state_dim = 42,
-                 isRenderGoal = 1,
+                 isRenderGoal = 0,
                  sample_mode = 1
                  )
 )
