@@ -104,11 +104,11 @@ class VG(VariantGenerator):
     # ----------------------------------------------
     @variant
     def base(self):
-        return ['MLPBase','MLPBase256'  ]  # CellRobotMLPBase MLPBase
+        return ['MLPBase' ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
-        return [2 ]  # 2,3,13
+        return [13 ]  # 2,3,13
 
     @variant
     def CPG_enable(self):
