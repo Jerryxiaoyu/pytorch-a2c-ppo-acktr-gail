@@ -465,7 +465,7 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
 
             idx = np.random.randint(0, self.goal_data.shape[0])
             goal_points = []
-            for i in range(self.num_goals):
+            for i in range(self.num_goals+1):
                 x = self.goal_data[(idx + i) % self.goal_data.shape[0]][0]
                 y = self.goal_data[(idx + i) % self.goal_data.shape[0]][1]
                 goal_points.append([x, y, 0])
@@ -480,7 +480,7 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
             goal_positions_transfered = rot.dot(goal_positions.transpose()).transpose()
             goal_positions_transfered += (self.root_position - goal_positions_transfered[0])+ np.array([np.random.uniform(-rand_init,rand_init ),np.random.uniform(-rand_init,rand_init ), 0])
 
-            goal_points = goal_positions_transfered
+            goal_points = goal_positions_transfered[1:]
 
             ## check outspace
             return np.array(goal_points).flatten()

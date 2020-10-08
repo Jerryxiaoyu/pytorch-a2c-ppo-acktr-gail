@@ -201,7 +201,28 @@ register(
                 trajectory_length = 40,
 
                  robot_state_dim = 42,
-                 isRenderGoal = 0,
+                 isRenderGoal = 1,
+                 sample_mode = 1
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6NewMultiTarget-v3',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewMultiTarget',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 80,
+
+                hardReset_per_reset= 50,
+
+                num_goals = 2,
+
+                trajectory_length = 40,
+
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
                  sample_mode = 1
                  )
 )
