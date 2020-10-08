@@ -46,6 +46,8 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
                  max_steps = 2000,
                  isRenderGoal = 0,
                  sample_mode = 0,
+                 hardReset_per_reset=5,
+                 num_goals = 1,
                  **kwargs):
 
         self.sample_mode = os.getenv('SAMPLE_MODE')
@@ -57,13 +59,12 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             print('sample_mode = ', self.sample_mode)
 
         self.reset_count = 0
-        self.hardReset_per_reset = 5
+        self.hardReset_per_reset = hardReset_per_reset
 
-        self.num_goals = 1
+        self.num_goals = num_goals
 
         self._isRenderGoal = isRenderGoal
         self.max_steps = max_steps
-
 
         self.goal_state = np.zeros(self.num_goals*3)
         super().__init__(**kwargs)
@@ -363,7 +364,7 @@ class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
             self.obs_robot_state,
             self.root_quat.flatten()
         ])
-        print("root pos:", self.root_position)
+        #print("root pos:", self.root_position)
         # concat history state
         if self.trajectory_length > 0:
             history_traj = self.sampled_history_trajectory
@@ -386,17 +387,213 @@ class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
         if cmd is not None:
             obs = np.concatenate([obs,
                                   cmd])
-
-
         return obs
 
     def _get_goal_info(self):
         if self.command_mode == 'point':
             #print("goal: {}, root pos: {}".format(self.goal_state[:2], self.root_position[:2] ))
+
             cmd = self.root_inv_rotation.dot(self.goal_state- self.root_position)[:2] ## only x y
+
+            # root2goal_vec = []
+            # for i in range(self.num_goals):
+            #     root2goal_vec.append(self.root_inv_rotation.dot(self.goal_state.reshape((-1, 3))[i] - self.root_position)[:2])
+            # cmd = np.array(root2goal_vec)
 
             #print("cmd: ", cmd)
         else:
             raise NotImplementedError
         return cmd
+
+class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
+    def __init__(self,
+                 **kwargs):
+
+        super().__init__(**kwargs)
+
+    def _get_goal_info(self):
+        if self.command_mode == 'point':
+            #print("goal: {}, root pos: {}".format(self.goal_state[:2], self.root_position[:2] ))
+
+            #cmd = self.root_inv_rotation.dot(self.goal_state- self.root_position)[:2] ## only x y
+
+            root2goal_vec = []
+            for i in range(self.num_goals):
+                root2goal_vec.append(self.root_inv_rotation.dot(self.goal_state.reshape((-1, 3))[i] - self.root_position)[:2])
+            cmd = np.array(root2goal_vec).flatten()
+
+            #print("cmd: ", cmd)
+        else:
+            raise NotImplementedError
+        return cmd
+
+    def sampel_goal(self):
+        if self.sample_mode == 0:
+
+            theta_list = [np.deg2rad(30), np.deg2rad(45), np.deg2rad(45), np.deg2rad(45)]
+            dis_list = [(0.1, 1), (0.1, 1), (0.1, 1), (0.1, 1)]
+            goal_points = []
+            center_p = [self.root_position[0], 0, self.root_position[1]]
+            norm_dir = [self.root_direction[0], 0, self.root_direction[1]]
+
+            for i in range(self.num_goals):
+
+                final_p = generate_point_in_arc_area(center_p, norm_dir, theta=theta_list[i], dis_range=dis_list[i])
+
+                goal_points.append([final_p[0], final_p[2], 0])
+
+        else:
+            raise NotImplementedError
+        ## check outspace
+        return np.array(goal_points).flatten()
+
+    #_render_goal_position
+    def _goal2render(self, goal_state):
+
+        return  goal_state
+
+    def _render_goal_position(self, position):
+        """
+        :param position: [x,y,z]
+        :return:
+        """
+        assert  self.num_goals <= 2
+        for i in range(self.num_goals):
+
+            self.model.site_pos[i] = position.reshape((-1,3))[i]
+
+    def _terminal(self):
+
+        q_state = self.state_vector()
+        notdone = np.isfinite(q_state).all() \
+                  and self.get_body_com("torso")[2] >= 0.1 and self.get_body_com("torso")[2] <= 0.6
+        done = not notdone
+
+        if done:
+            return True
+        if self._t_step > self.max_steps:
+            return True
+        # dis = np.linalg.norm(self.root_position- self.goal_state)
+        # if dis < REACH_THRESHHOLD:
+        #     return True
+        return False
+
+
+
+class CellRobotEnvCPG6NewEVALTarget(CellRobotEnvCPG6NewTarget):
+    def __init__(self,
+                 **kwargs):
+
+        self.render_traj_mode = 1
+        curve_n = 200
+        self.goal_data = self.generate_curve(curve_n)
+        super().__init__(**kwargs)
+
+    def generate_curve(self, curve_n):
+        if self.render_traj_mode == 1:
+            A = 6
+            b = 2
+            N = 10000
+            t = np.linspace(0, 2 * np.pi, num=N)
+            x = A * np.sin(b * t)
+            y = A * np.sin(b * t) * np.cos(b * t)
+            xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+            points = []
+            points.append(xy[0])
+            N = xy.shape[0]
+
+            DIS = 0.3
+            idx = 1
+
+
+            def find_nearPoint(idx):
+                for try_idx in range(idx, N):
+                    dis = np.linalg.norm(xy[try_idx] - xy[idx])
+
+                    if dis > DIS - 0.01 and dis < DIS + 0.01:
+                        points.append(xy[try_idx])
+                        idx = try_idx
+                        return idx
+                return None
+
+            while idx < N:
+                idx = find_nearPoint(idx)
+                if idx is None:
+                    break
+
+            xy = np.array(points)
+
+        elif self.render_traj_mode == 2:
+            A = 0
+            N = 80
+            # t = np.linspace(0, N, num = N)
+            theta = 3 * np.pi / 4
+            t = np.linspace(0, 80, num=N, endpoint=True)
+            vel = 50
+            x = np.cos(theta) * t * vel
+            y = np.sin(theta) * t * vel
+
+            # theta = 0
+            # x =   t*50
+            # y = np.zeros(N)
+            xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+            # xy = sample_any_straigtLine([self.init_position[0], 0, self.init_position[1]], [0,0,1], T = 10 ,#second
+            #                                 num_N = int(200*10/(2*np.pi*50)),
+            #                                 vel_range = (200, 200),
+            #                                  theta = 0,
+            #                                 rand_init = 10,
+            #                                 output_ignore_y=True,
+            #                                 )
+        elif self.render_traj_mode == 3:
+
+            A = 700
+            b = 2
+            R = 400  # 250
+            N = int(80 * R / 250)  # curve_n
+            t = np.linspace(0, 2 * np.pi, num=N)
+            x = R * np.sin(t) + self.init_position[0]
+            y = R - R * np.cos(t) + self.init_position[1]
+            xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+            # xy = sample_any_circle([self.init_position[0], 0, self.init_position[1]], [0,0,1], T = 1 ,#second
+            #                                 num_N = self.num_goals,
+            #                                 vel_range = (500, 500),
+            #                                 R_range = (500, 500),
+            #                                 direction = np.random.choice(2),
+            #                                  theta = 2*np.pi,
+            #
+            #                                 rand_init = 10,
+            #                                 output_ignore_y=True,
+            #                                 )
+
+        elif self.render_traj_mode == 4:
+            N = 1000
+            x = np.random.uniform(-900, 900, size=N)
+            y = np.random.uniform(-900, 900, size=N)
+            xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+            new_xy = []
+            for i in range(N):
+                new_xy.append(xy[i])
+                new_xy.append(xy[i])
+            xy = np.array(new_xy)
+        else:
+            raise NotImplementedError
+
+        return xy
+
+    def sampel_goal(self):
+
+        print('goal : ', self.reset_count)
+
+        goal_points = []
+        for i in range(self.num_goals):
+            x = self.goal_data[(self.reset_count * self.num_goals + i) % self.goal_data.shape[0]][0]
+            y = self.goal_data[(self.reset_count * self.num_goals + i) % self.goal_data.shape[0]][1]
+            goal_points.append([x, y, 0 ])
+
+        ## check outspace
+        return np.array(goal_points).flatten()
 

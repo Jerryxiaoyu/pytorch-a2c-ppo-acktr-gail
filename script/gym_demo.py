@@ -30,7 +30,7 @@ os.environ["SAMPLE_MODE"] = "0"
 # os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6NewTarget-v2" )
+env = gym.make("CellRobotEnvCPG6NewMultiTarget-v2" )
 
 
 obs = env.reset()
@@ -51,7 +51,7 @@ for i in range(5000):
 
     t_end = time.time()
 
-    print('t={}, reward={:.3f}'.format(t, reward))
+    #print('t={}, reward={:.3f}'.format(t, reward))
     step_times.append(t_end - t_start)
     #print("step time: {}", t_end - t_start)
 

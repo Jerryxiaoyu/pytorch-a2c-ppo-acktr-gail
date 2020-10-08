@@ -178,7 +178,7 @@ def main():
 
                 s3_local_dir = os.path.dirname(args.log_dir)
                 bucket_dir = bucket_path + '/' + s3_local_dir.split('/')[-1]
-                cmd = "aws s3 sync {} s3://{}  ".format(os.path.abspath(s3_local_dir), bucket_dir)
+                cmd = "aws s3 cp {} s3://{}   --recursive".format(os.path.abspath(s3_local_dir), bucket_dir)
                 os.system(cmd)
 
 

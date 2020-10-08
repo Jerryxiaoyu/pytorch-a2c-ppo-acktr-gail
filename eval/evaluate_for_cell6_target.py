@@ -42,10 +42,10 @@ contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6NewTarget-v2'
-group_dir = 'log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45'
-exp_id = 45
-exp_no_list= [3]
-num_enjoy = 5
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_07_SMC_PPO_RL_Exp46'
+exp_id = 46
+exp_no_list= [1]
+num_enjoy = 10000
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
 max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
 
@@ -146,7 +146,7 @@ for exp_no in exp_no_list:
 
     # evaluate
     evaluate_fun(result_path, parms,model_save_num , num_enjoy=num_enjoy ,global_command=global_command,
-                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log)
+                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log, env_name=ENV_name)
 
     eval_path = os.path.join(result_path, 'evaluate')
     eval_data_path = os.path.join(eval_path, 'log_data_{}.csv'.format(data_name))
