@@ -14,7 +14,8 @@ from my_envs.mujoco.cellrobotCPG5_SMC import CellRobotEnvCPG5
 from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6Goal
 from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
 from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6Target
-from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6NewTarget, CellRobotEnvCPG6NewEVALTarget, CellRobotEnvCPG6NewMultiTarget
+from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6NewTarget, \
+    CellRobotEnvCPG6NewEVALTarget, CellRobotEnvCPG6NewMultiTarget, CellRobotEnvCPG6NewEVALTargetILC
 from my_envs.mujoco.my_ant import MyAntEnv
 
 register(
@@ -201,7 +202,7 @@ register(
                 trajectory_length = 40,
 
                  robot_state_dim = 42,
-                 isRenderGoal = 0,
+                 isRenderGoal = 1,
                  sample_mode = 1
                  )
 )
@@ -235,8 +236,43 @@ register(
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=2,
-                 max_steps = 40,
-                 hardReset_per_reset= 5000,
+                 max_steps = 45,
+                 hardReset_per_reset= 500,
+
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
+                 sample_mode = 1,
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6NewTargetEVAL-v3',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewEVALTarget',
+    max_episode_steps=10000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 1,
+                 hardReset_per_reset= 50000,
+                render_traj_mode= 5,
+
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
+                 sample_mode = 1,
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6NewTargetEVAL-ILC-v2',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewEVALTargetILC',
+    max_episode_steps=10000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 45,
+                 hardReset_per_reset= 500,
 
                  trajectory_length = 40,
                  robot_state_dim = 42,

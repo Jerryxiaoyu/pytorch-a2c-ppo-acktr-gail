@@ -366,6 +366,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.addDisturbance()
 
 
+
         self._t_step += 1
         return obs, reward, done, dict(
             root_position = self.root_position,

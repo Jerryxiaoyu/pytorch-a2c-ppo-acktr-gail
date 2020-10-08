@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewMultiTarget-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [1e7]
+        return [2e7]
 
 
     @variant
@@ -112,7 +112,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "point" ]  #full, error, no FandE  conv_error
+        return [ "FandE" ]  #full, error, no FandE  conv_error
 
     @variant
     def reward_fun_choice(self):
@@ -131,7 +131,7 @@ class VG(VariantGenerator):
         return [None] #
 
 
-exp_id = 25
+exp_id = 26
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

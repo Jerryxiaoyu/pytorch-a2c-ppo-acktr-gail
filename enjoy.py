@@ -49,6 +49,8 @@ parser.add_argument('--no-render', action='store_true', default=False,
 args = parser.parse_args()
 num_enjoy = args.num_enjoy
 contact_log = args.contact_log
+pkl_log = args.contact_log
+
 
 if args.result_dir is None:
     result_dir = 'tmp'
@@ -113,6 +115,9 @@ contact_infos =[]
 root_positions_list  =[]
 root_euler_list = []
 
+traj_infos = []
+traj_info = []
+
 def get_contact_info(env, verbose=False):
     d = env.venv.venv.envs[0].unwrapped.data
 
@@ -141,6 +146,14 @@ while True:
     # Obser reward and next obs
     obs, reward, done, log_info = env.step(action)
 
+    if pkl_log is not None:
+        traj_info.append(dict(
+            obs = obs,
+            reward = reward,
+            done = done,
+            log_info = log_info
+        ))
+
     if contact_log is not None:
         contact_info = get_contact_info(env)
         contact_infos.append(contact_info)
@@ -149,6 +162,11 @@ while True:
 
     if done:
         num_episodes += 1
+
+        if pkl_log is not None:
+            traj_infos.append(traj_info)
+            traj_info = []
+
     if logger is not None:
         velocity_base_lists.append(log_info[0]['velocity_base'])
         command_lists.append(log_info[0]['commands'])
@@ -160,6 +178,8 @@ while True:
             root_positions_list.append(log_info[0]['root_position'])
         if 'root_euler' in log_info[0].keys():
             root_euler_list.append(log_info[0]['root_euler'])
+
+
 
     if num_episodes == num_enjoy:
         break
@@ -200,3 +220,7 @@ if logger is not None:
 if contact_log is not None:
     contact_log = result_dir
     IO(os.path.join(contact_log , 'log_contact_{}.pkl'.format(data_name))).to_pickle(contact_infos)
+
+if pkl_log is not None:
+
+    IO(os.path.join(result_dir, 'log_traj_{}.pkl'.format(data_name))).to_pickle(traj_infos)

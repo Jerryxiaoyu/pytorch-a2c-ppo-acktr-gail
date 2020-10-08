@@ -135,9 +135,11 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         self._sample_command(command)
 
         # reset something...
-        if self.trajectory_length > 0:
-            self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim,
-                                                   max_trajectory=self.trajectory_length)
+
+        if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
+            if self.trajectory_length > 0:
+                self.history_buffer = TrajectoryBuffer(num_size_per=self.robot_state_dim,
+                                                       max_trajectory=self.trajectory_length)
 
         # set curriculum params...
         self.k0 = set_curriculum(self.curriculum_init)
@@ -152,8 +154,9 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
 
         obs = self._get_obs()
 
-        if self.trajectory_length > 0:
-            self.history_buffer.full_state(self.obs_robot_state)
+        if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
+            if self.trajectory_length > 0:
+                self.history_buffer.full_state(self.obs_robot_state)
         self._t_step = 0
 
         # reset something...
@@ -172,6 +175,8 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         obs, reward, done, info= super().step(a)
 
         done = self._terminal()
+
+        info['goal_state'] = self.goal_state
         return obs, reward, done, info
 
     def _terminal(self):
@@ -571,9 +576,11 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
 
 class CellRobotEnvCPG6NewEVALTarget(CellRobotEnvCPG6NewTarget):
     def __init__(self,
+
+                 render_traj_mode=1,
                  **kwargs):
 
-        self.render_traj_mode = 1
+        self.render_traj_mode = render_traj_mode
         curve_n = 200
         self.goal_data = self.generate_curve(curve_n)
         super().__init__(**kwargs)
@@ -668,6 +675,17 @@ class CellRobotEnvCPG6NewEVALTarget(CellRobotEnvCPG6NewTarget):
                 new_xy.append(xy[i])
                 new_xy.append(xy[i])
             xy = np.array(new_xy)
+
+
+        elif self.render_traj_mode == 5:
+            A = 6
+            b = 2
+            N = 8000
+            t = np.linspace(0, 2 * np.pi, num=N)
+            x = A * np.sin(b * t)
+            y = A * np.sin(b * t) * np.cos(b * t)
+            xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
         else:
             raise NotImplementedError
 
@@ -686,3 +704,42 @@ class CellRobotEnvCPG6NewEVALTarget(CellRobotEnvCPG6NewTarget):
         ## check outspace
         return np.array(goal_points).flatten()
 
+class CellRobotEnvCPG6NewEVALTargetILC(CellRobotEnvCPG6NewEVALTarget):
+    def __init__(self,
+
+                 **kwargs):
+        result_dir = "/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45/No_3_CellRobotEnvCPG6NewTarget-v2_PPO-2020-10-04_01:28:56/data"
+
+        self.traj_error = IO(os.path.join(result_dir, 'ilc_err1.pkl')).read_pickle()
+        super().__init__(**kwargs)
+
+
+    def sampel_goal(self):
+
+        print('goal : ', self.reset_count, )
+
+        goal_points = []
+        for i in range(self.num_goals):
+            x = self.goal_data[(self.reset_count * self.num_goals + i) % self.goal_data.shape[0]][0] + self.traj_error[(self.reset_count )%self.traj_error.shape[0]][0]
+            y = self.goal_data[(self.reset_count * self.num_goals + i) % self.goal_data.shape[0]][1] + self.traj_error[(self.reset_count )%self.traj_error.shape[0]][1]
+            goal_points.append([x, y, 0 ])
+
+        ## check outspace
+        return np.array(goal_points).flatten()
+
+
+    # def _get_goal_info(self):
+    #     if self.command_mode == 'point':
+    #         #print("goal: {}, root pos: {}".format(self.goal_state[:2], self.root_position[:2] ))
+    #         #print((self.reset_count*self.max_steps + self._t_step)%self.traj_error.shape[0])
+    #         cmd = self.root_inv_rotation.dot(self.goal_state- self.root_position  - self.traj_error[(self.reset_count*self.max_steps + self._t_step)%self.traj_error.shape[0]])[:2] ## only x y
+    #
+    #         # root2goal_vec = []
+    #         # for i in range(self.num_goals):
+    #         #     root2goal_vec.append(self.root_inv_rotation.dot(self.goal_state.reshape((-1, 3))[i] - self.root_position)[:2])
+    #         # cmd = np.array(root2goal_vec)
+    #
+    #         #print("cmd: ", cmd)
+    #     else:
+    #         raise NotImplementedError
+    #     return cmd
