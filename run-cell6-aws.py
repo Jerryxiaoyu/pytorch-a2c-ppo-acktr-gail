@@ -145,7 +145,7 @@ EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
-
+no_cuda = True
 sync_s3 = True
 inner_upload_s3 = True
 
@@ -301,6 +301,9 @@ for v in variants:
     if  inner_upload_s3:
         other_str +=   (" --s3-path "+str(bucket_path)+ " ")
         other_str += (" --upload-s3 ")
+
+    if no_cuda:
+        other_str += "  --no-cuda "
 
 
     os.system("python3 main.py "  +
