@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return [  'CellRobotEnvCPG6NewMultiTarget-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return [  'CellRobotEnvCPG6traj-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -54,11 +54,11 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [13 ]#2,3,13
+        return [2 ]#2,3,13
 
     @variant
     def reward_fun_choice(self):
-        return [2]
+        return [3]
 
     @variant
     def num_buffer(self):

@@ -18,7 +18,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_steps(self):
-        return [2048]
+        return [1024]
 
     @variant
     def learning_rate(self):
@@ -37,7 +37,7 @@ class VG(VariantGenerator):
         return [10]
     @variant
     def num_mini_batch(self):
-        return [64]
+        return [32]
 
     @variant
     def gamma(self):
@@ -87,7 +87,7 @@ class VG(VariantGenerator):
 
     @variant
     def xml_name(self):
-        return ['cellrobot_Quadruped_float_limit.xml']
+        return ['cellrobot_Quadruped_float_limit-old.xml']
 
     @variant
     def buffer_mode(self):
@@ -131,7 +131,7 @@ class VG(VariantGenerator):
         return [None] #
 
 
-exp_id = 26
+exp_id = 27
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

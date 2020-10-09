@@ -274,7 +274,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         mujoco_env.MujocoEnv.__init__(self, self.model_path,  self.control_skip , custom_action_space= self.custom_action_space)  # cellrobot_test_gen  CR_quadruped_v1_A001  'cellrobot/cellrobot_test_gen.xml' Atlas_v5/atlas_v5.xml
         utils.EzPickle.__init__(self)
-        seed = mujoco_env.MujocoEnv.seed(self)
+        seed = mujoco_env.MujocoEnv.seed(self, 1234)
 
         print('seed = ', seed)
         np.random.seed(seed[0]>>32)
@@ -343,7 +343,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.do_simulation(action, self.frame_skip)
 
         # get robot state
-        self._robot_state = self._get_robot_state()
+        #self._robot_state = self._get_robot_state()
         obs = self._get_obs()
         # print("step {}, next obs : position :{}, velocity:{} joint pos :{}, joint vel:{}".format(self._t_step, self.root_position,
         #                                                              self.root_velocity, self.joint_position, self.joint_velocity))
@@ -395,6 +395,13 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         self._root_rotation = self._root_rotation[:3,:3]
         self._inv_root_rotation = self._root_rotation.transpose()#np.linalg.inv(self._root_rotation)[:3,:3]
+
+
+        # root_euler2 = self.get_orien()
+        #
+        # print('new euler :', root_euler)
+        # print('old euler :', root_euler2)
+
 
         #root_euler = self.get_orien()
         #print('old root euler :', root_euler)
@@ -762,10 +769,11 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
     def _get_obs(self):
         # get robot state
+        self._robot_state = self._get_robot_state()
         if self.isRootposNotInObs:
-            self.obs_robot_state = self._robot_state[3:]
+            self.obs_robot_state = self.robot_state[3:]
         else:
-            self.obs_robot_state = self._robot_state
+            self.obs_robot_state = self.robot_state
         # concat history state
         if self.trajectory_length > 0:
             obs = np.concatenate([
@@ -821,7 +829,8 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
             self._pred_root_position[:,0] = x_pos
             self._pred_root_position[:,1] = y_pos
-        return self._pred_root_position[:,:2].flatten()
+        return self._pred_root_position[:, :2].flatten()
+
 
     @property
     def sampled_history_trajectory(self):
@@ -893,7 +902,7 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             x, y direction velocity tracking
             """
 
-            y_pose = self.root_position[1]
+            #y_pose = self.root_position[1]
             # goal_vel = 0.10
 
             forward_reward = -1.0 * np.linalg.norm(velocity_base[:2] - v_commdand[:2])
@@ -901,12 +910,12 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
             y_cost =0 # -0.1 * np.linalg.norm(y_pose)
 
             ctrl_cost = 0  # -0.5 * np.square(action).sum()
-            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            contact_cost = 0#-0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
             survive_reward = 0.0
 
             reward = forward_reward + ctrl_cost + contact_cost + survive_reward + y_cost
             other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, y_cost])
-
+            #print('time: {}, reward: {}'.format(self._t_step, other_rewards))
         elif self.reward_choice == 4:
             """
             yaw direction velocity tracking
@@ -1005,7 +1014,8 @@ class CellRobotEnvCPG6NewObsGoalTraj(CellRobotEnvCPG6GoalTraj):
 
     def _get_obs(self):
         # get robot state
-        self.obs_robot_state = self._robot_state
+        self._robot_state = self._get_robot_state()
+        self.obs_robot_state = self.robot_state
 
         self.obs_robot_state = np.concatenate([
             self.obs_robot_state,

@@ -27,6 +27,24 @@ from a2c_ppo_acktr.utils import get_vec_normalize, update_linear_schedule
 #----
 from my_envs.base.global_config import *
 #---
+os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit.xml"
+
+
+os.environ["RAND_INIT"] = str(0)
+os.environ["CPG_ENABLE"] = str(1)
+
+os.environ["NUM_BUFFER"] = str(0)
+os.environ["COMMAND_MODE"] = "FandE"
+os.environ["VEL_FILTER"] = str(1)
+os.environ["REWARD_CHOICE"] = str(3)
+
+
+os.environ["COMMAND_X"] = str(0.2)
+os.environ["COMMAND_Y"] = str(0.2)
+os.environ["COMMAND_Z"] = str(0)
+os.environ["ACTION_DIM"] = str(2)
+
+
 
 args = get_args()
 

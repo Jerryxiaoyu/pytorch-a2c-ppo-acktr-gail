@@ -24,7 +24,7 @@ class VG(VariantGenerator):
 
     @variant
     def seed(self):
-        return [234]
+        return [123]
 
     @variant
     def num_steps(self):
@@ -59,7 +59,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [3e7]
 
     @variant
     def recurrent(self):
@@ -104,7 +104,7 @@ class VG(VariantGenerator):
     # ----------------------------------------------
     @variant
     def base(self):
-        return ['MLPBase' ]  # CellRobotMLPBase MLPBase
+        return ['MLPBase', 'MLPBase256' ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):

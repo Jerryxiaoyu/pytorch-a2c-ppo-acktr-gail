@@ -37,7 +37,7 @@ CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
 from utils.Logger import IO
-REACH_THRESHHOLD = 0.1
+REACH_THRESHHOLD = 0.15
 
 proj_dir = "/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr"
 

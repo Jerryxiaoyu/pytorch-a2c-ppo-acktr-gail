@@ -12,6 +12,8 @@ import time
 
 os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit.xml"
 
+
+os.environ["RAND_INIT"] = str(0)
 os.environ["CPG_ENABLE"] = str(1)
 
 os.environ["NUM_BUFFER"] = str(0)
@@ -30,7 +32,7 @@ os.environ["SAMPLE_MODE"] = "1"
 # os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6Traj-v4" )
+env = gym.make("CellRobotEnvCPG6Traj-v1" )
 
 
 obs = env.reset()

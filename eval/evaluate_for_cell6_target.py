@@ -41,11 +41,11 @@ data_name = None#
 contact_log = None
 
 # 实验数据原始目录
-ENV_name = 'CellRobotEnvCPG6NewMultiTarget-v2'
-group_dir = 'log-files-SMC/AWS_logfiles/Oct_08_SMC_PPO_RL_Exp58'
-exp_id = 58
+ENV_name = 'CellRobotEnvCPG6NewTargetEVAL-v3'
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45'
+exp_id = 45
 exp_no_list= [2]
-num_enjoy = 150
+num_enjoy = 1500
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
 max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
 

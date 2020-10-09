@@ -41,9 +41,9 @@ data_name = None#
 contact_log = None
 
 # 实验数据原始目录
-ENV_name = 'CellRobotEnvCPG6Traj-v3'
-group_dir = 'log-files-SMC/AWS_logfiles/Sep_28_SMC_PPO_RL_Exp31'
-exp_id = 31
+ENV_name = 'CellRobotEnvCPG6Traj-v4'
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_09_SMC_PPO_RL_Exp60'
+exp_id = 60
 exp_no_list= [1]
 num_enjoy = 1
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
@@ -53,7 +53,7 @@ max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
 model_save_num = None
 monitor = args.monitor
 render = not monitor
-render = True
+render = False
 
 if args.env_name is None:
     ENV_name = ENV_name
@@ -155,7 +155,9 @@ for exp_no in exp_no_list:
    # if parms['reward_fun_choice'] == 11:
     v_e = eval_data_df.loc[:, '1':'3'].values
     c_command = eval_data_df.loc[:, '4':'6'].values
-    xyz = eval_data_df.loc[:, '7':'9'].values
+    #xyz = eval_data_df.loc[:, '7':'9'].values
+
+    xyz = eval_data_df.loc[:, eval_data_df.columns[-6:-3]].values
     # else:
     #     raise Exception('Setting parsing ')
 
