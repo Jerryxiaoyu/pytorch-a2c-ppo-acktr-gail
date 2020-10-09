@@ -206,7 +206,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.goal_xyyaw = np.array([0.0, 0.0,0.0])
 
 
-        self._robot_state = np.zeros(44)
+        self._robot_state = np.zeros(robot_state_dim)
         self._last_root_position = np.zeros(3)
         self._last_root_euler = np.zeros(3)
 
@@ -994,6 +994,57 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
         return reward, other_rewards
 
 
+
+
+class CellRobotEnvCPG6NewObsGoalTraj(CellRobotEnvCPG6GoalTraj):
+    def __init__(self,
+
+                 **kwargs):
+
+        CellRobotEnvCPG6GoalTraj.__init__(self, **kwargs)
+
+    def _get_obs(self):
+        # get robot state
+        self.obs_robot_state = self._robot_state
+
+        self.obs_robot_state = np.concatenate([
+            self.obs_robot_state,
+            self.root_quat.flatten()
+        ])
+
+
+        # concat history state
+        if self.trajectory_length > 0:
+            history_traj = self.sampled_history_trajectory
+
+            delta_position = history_traj[:, :3] - self.root_position
+            root_pos_history = np.array(
+                [self.root_inv_rotation.dot(delta_position[_]) for _ in range(delta_position.shape[0])])
+
+            obs = np.concatenate([
+                self.obs_robot_state[3:],
+                root_pos_history.flatten(),
+                history_traj[:, 3:].flatten()
+
+            ])
+        else:
+            obs = self.obs_robot_state
+
+        #print("quat :", self.root_quat)
+        # concat cmd
+        cmd = self._get_goal_info()
+        if cmd is not None:
+            obs = np.concatenate([obs,
+                                  cmd])
+
+        pred_position =  self._get_pred_root_position()
+        obs = np.concatenate([obs,
+                              pred_position,
+
+                              ])
+
+
+        return obs
 
 
 

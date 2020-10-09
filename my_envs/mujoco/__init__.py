@@ -12,7 +12,7 @@ from my_envs.mujoco.cellrobotCPG3 import CellRobotEnvCPG3
 from my_envs.mujoco.cellrobotCPG4 import CellRobotEnvCPG4
 from my_envs.mujoco.cellrobotCPG5_SMC import CellRobotEnvCPG5
 from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6Goal
-from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
+from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj, CellRobotEnvCPG6NewObsGoalTraj
 from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6Target
 from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6NewTarget, \
     CellRobotEnvCPG6NewEVALTarget, CellRobotEnvCPG6NewMultiTarget, CellRobotEnvCPG6NewEVALTargetILC
@@ -131,10 +131,27 @@ register(
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=2,
-                 isRootposNotInObs = True
+                 isRootposNotInObs = True,
+
 
                  )
 )
+
+
+register(
+    id='CellRobotEnvCPG6Traj-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewObsGoalTraj',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 isRootposNotInObs = True,
+
+                 robot_state_dim = 42+3,
+
+                 )
+)
+
 
 register(
     id='CellRobotEnvCPG6Target-v2',

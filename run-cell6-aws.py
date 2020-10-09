@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Traj-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v4']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -108,7 +108,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2,13 ]  # 2,3,13
+        return [2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -145,7 +145,7 @@ EXP_NAME ='_SMC_PPO_RL'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \
         " "
-no_cuda = True
+no_cuda = False
 sync_s3 = True
 inner_upload_s3 = True
 
@@ -307,6 +307,7 @@ for v in variants:
 
 
     os.system("python3 main.py "  +
+            " --seed " +str(seed) +
               " --env-name " + str(env_name) +
               " --algo " + str(algo) +
               " --use-gae "  +
