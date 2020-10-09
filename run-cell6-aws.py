@@ -24,7 +24,7 @@ class VG(VariantGenerator):
 
     @variant
     def seed(self):
-        return [123,234]
+        return [123]
 
     @variant
     def num_steps(self):
