@@ -124,14 +124,14 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ['log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45/No_3_CellRobotEnvCPG6NewTarget-v2_PPO-2020-10-04_01:28:56/model/ppo/CellRobotEnvCPG6NewTarget-v2_304.pt']
+        return ['pre_models/CellRobotEnvCPG6NewP2PTarget-v3_609_local_exp29_no1.pt']
 
     @variant
     def sample_mode(self):
         return [None] #
 
 
-exp_id = 29
+exp_id = 30
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

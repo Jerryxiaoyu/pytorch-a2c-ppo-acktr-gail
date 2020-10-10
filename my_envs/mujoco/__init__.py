@@ -173,6 +173,10 @@ register(
 
                  robot_state_dim = 42+3,
 
+
+                   # isRenderDir = False,
+                #isRenderDir = True,
+
                  )
 )
 

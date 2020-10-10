@@ -16,14 +16,14 @@ def find_ExpPath(n, exp_dir_list):
     return exp_path[0]
 
 def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_enjoy =1, render = True, monitor = False, rand_init = None ,
-                 seed=0, data_name =None, contact_log = None, env_name=None):
+                 seed=0, data_name =None, contact_log = None, env_name=None,evaluate_name = "evaluate" ):
     # save_plot_path=os.path.abspath(os.path.join(results_dir,'No_{}-Curve'.format(exp_no)))
     # reward_fun_choice = parms['reward_fun_choice']
     # load_path = os.path.abspath(os.path.join(result_path, 'model/modelmodel'))
     #
 
 
-    evaluate_path = os.path.join(result_path,'evaluate')
+    evaluate_path = os.path.join(result_path,evaluate_name)
     os.makedirs(evaluate_path, exist_ok=True)
 
 

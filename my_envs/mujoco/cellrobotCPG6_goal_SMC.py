@@ -51,8 +51,12 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                  isRootposNotInObs = False,
 
                  isAddDisturbance= False,
-                 disturb_time_list = [100, 200, 300, 400]
+                 disturb_time_list = [100, 200, 300, 400],
+
+                 isRenderDir = False,
                  ):
+
+        self.isRenderDir = isRenderDir
 
         self.isAddDisturbance = isAddDisturbance
         self.disturb_time_list = disturb_time_list
@@ -330,6 +334,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.disturb_cnt = 0
 
     def step(self, a):
+
         action = a.copy()
 
         v_commdand = self.command[self._t_step, :3]
@@ -365,6 +370,18 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         if self.isAddDisturbance:
             self.addDisturbance()
 
+        if self.isRenderDir:
+            cmd_direction = np.array([np.cos(self.current_command[2]), np.sin(self.current_command[2]), 0])
+
+            pos0 = self.root_position + cmd_direction * 0.2
+            pos1 = pos0 + cmd_direction * (v_commdand[0] / 0.2)
+
+            self.model.site_pos[0] = pos0
+            self.model.site_pos[1] = pos1
+
+            self.model.site_rgba[0] = [1, 0.5, 0, 1]
+
+            self.model.site_rgba[1] = [1, 0, 0, 1]
 
 
         self._t_step += 1
@@ -540,7 +557,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         global_command = os.getenv('GLOBAL_CMD')
         if global_command is not None:
-            self.command = IO('{}/data/cmd_{}.pkl'.format(proj_dir, global_command)).read_pickle()
+            self.command = IO('{}/{}.pkl'.format(proj_dir, global_command)).read_pickle()
             print('Global command is selected, cmd_{}'.format(global_command))
 
        # plot_command(self.command)

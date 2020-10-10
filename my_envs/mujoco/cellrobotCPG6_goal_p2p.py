@@ -206,11 +206,11 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
             return True, -10
         if self._t_step > self.max_steps:
             return True, 0
-        # dis = np.linalg.norm(self.root_position[:2]- self.current_command[:2])
-        # if dis > 15:
-        #     #print("over distance : " )
-        #     #print("current timestep:{},  extra reward :{} ".format(self._t_step,-dis*(self.max_steps - self._t_step) ))
-        #     return True, -1000#-dis*(self.max_steps - self._t_step)
+        dis = np.linalg.norm(self.root_position[:2]- self.current_command[:2])
+        if dis > 5:
+            #print("over distance : " )
+            #print("current timestep:{},  extra reward :{} ".format(self._t_step,-dis*(self.max_steps - self._t_step) ))
+            return True, -1000#-dis*(self.max_steps - self._t_step)
         return False, 0
 
 

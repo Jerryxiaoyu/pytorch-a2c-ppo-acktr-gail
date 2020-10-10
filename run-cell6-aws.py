@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewP2PTarget-v4']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v4']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -104,15 +104,15 @@ class VG(VariantGenerator):
     # ----------------------------------------------
     @variant
     def base(self):
-        return ['MLPBase'  ]  # CellRobotMLPBase MLPBase
+        return ['MLPBase256'  ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
-        return [2]  # 2,3,13
+        return [13]  # 2,3,13
 
     @variant
     def CPG_enable(self):
-        return [1 ]
+        return [0 ]
 
     @variant
     def num_buffer(self):
@@ -121,11 +121,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "p2p" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
+        return [ "conv_error" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
 
     @variant
     def reward_fun_choice(self):
-        return [0]
+        return [3]
 
     @variant
     def vel_filtered(self):
