@@ -59,7 +59,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [3e7]
+        return [2e7]
 
     @variant
     def recurrent(self):
@@ -75,7 +75,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_high(self):
-        return [0.2 ]
+        return [0.  ]
 
     @variant
     def command_vx_low(self):
@@ -87,7 +87,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_wz_high(self):
-        return [0]  # vel , pos
+        return [math.pi]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -121,11 +121,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "conv_error" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
+        return [ "dir_vel" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
 
     @variant
     def reward_fun_choice(self):
-        return [3]
+        return [4]
 
     @variant
     def vel_filtered(self):
