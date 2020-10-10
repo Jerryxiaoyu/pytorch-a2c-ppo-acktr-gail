@@ -48,6 +48,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
                  sample_mode = 0,
                  hardReset_per_reset=5,
                  num_goals = 1,
+                 goal_interval_steps =1,
                  **kwargs):
 
         #
@@ -60,6 +61,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
         #     self.sample_mode = int(self.sample_mode)
         #     print('sample_mode = ', self.sample_mode)
 
+        self._goal_interval_steps = goal_interval_steps
         self.reset_count = 0
         self.hardReset_per_reset = hardReset_per_reset
 
@@ -273,9 +275,6 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
     @property
     def future_command(self):
-
-        self._goal_interval_steps = 1
-
 
 
         return self.command[np.arange(self._t_step, self._t_step + (self._goal_interval_steps) * self.num_goals, step=self._goal_interval_steps)]

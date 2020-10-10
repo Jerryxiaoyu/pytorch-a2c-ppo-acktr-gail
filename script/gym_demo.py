@@ -33,7 +33,7 @@ os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 os.environ["COMMAND_MODE"] = "p2p"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6NewP2PTarget-v2" )
+env = gym.make("CellRobotEnvCPG6NewP2PTarget-v4" )
 
 
 obs = env.reset()
