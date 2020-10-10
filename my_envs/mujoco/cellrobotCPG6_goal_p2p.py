@@ -275,8 +275,6 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
     @property
     def future_command(self):
-
-
         return self.command[np.arange(self._t_step, self._t_step + (self._goal_interval_steps) * self.num_goals, step=self._goal_interval_steps)]
 
     def compute_reward(self, velocity_base, v_commdand, action, obs):
