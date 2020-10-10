@@ -17,8 +17,9 @@ from my_envs.mujoco.cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj, Cell
 #from my_envs.mujoco.cellrobotCPG6_goal_SMC_legacy import CellRobotEnvCPG6GoalTrajLagencyNew
 
 from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6Target
-from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6NewTarget, \
+from my_envs.mujoco.cellrobotCPG6_goal_points import CellRobotEnvCPG6NewTarget, CellRobotEnvCPG6NewMulti2Target, \
     CellRobotEnvCPG6NewEVALTarget, CellRobotEnvCPG6NewMultiTarget, CellRobotEnvCPG6NewEVALTargetILC
+from my_envs.mujoco.cellrobotCPG6_goal_p2p import CellRobotEnvCPG6NewP2PTarget
 from my_envs.mujoco.my_ant import MyAntEnv
 
 register(
@@ -233,7 +234,7 @@ register(
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=2,
-                 max_steps = 200,
+                 max_steps = 1000,
 
                 hardReset_per_reset= 50,
 
@@ -321,6 +322,26 @@ register(
                  )
 )
 
+
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-v2',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=4000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 4000,
+
+                 hardReset_per_reset= 1,
+
+                 num_goals = 2,
+
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
+                 sample_mode = 1
+                 )
+)
 
 #
 #

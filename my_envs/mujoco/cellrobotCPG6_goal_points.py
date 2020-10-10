@@ -577,6 +577,148 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
         return reward, other_rewards
 
 
+class CellRobotEnvCPG6NewMulti2Target(CellRobotEnvCPG6NewTarget):
+    def __init__(self,
+                 **kwargs):
+
+
+
+
+        print(self.goal_data.shape)
+        super().__init__(**kwargs)
+
+    def reset_model(self, command=None,):
+        obs = super().reset_model(command)
+
+        return obs
+
+    def generate_curve(self):
+        points = generate_same_interval_eight_curve(dis=0.3)
+        goal_positions = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+
+        return goal_positions
+
+    def _get_goal_info(self):
+        if self.command_mode == 'point':
+            #print("goal: {}, root pos: {}".format(self.goal_state[:2], self.root_position[:2] ))
+
+            #cmd = self.root_inv_rotation.dot(self.goal_state- self.root_position)[:2] ## only x y
+
+            root2goal_vec = []
+            for i in range(self.num_goals):
+                root2goal_vec.append(self.root_inv_rotation.dot(self.goal_state.reshape((-1, 3))[i] - self.root_position)[:2])
+            cmd = np.array(root2goal_vec).flatten()
+
+            #print("cmd: ", cmd)
+        else:
+            raise NotImplementedError
+        return cmd
+
+
+    def _sample_command(self, command):
+        if command is  None:
+            self.command = command_generator(self.command_max_step , self.dt, self.command_duration,
+                                             vx_range=(self.command_vx_low, self.command_vx_high),
+                                             vy_range=(self.command_vy_low, self.command_vy_high),
+                                             wyaw_range=(self.command_wz_low, self.command_wz_high), render=False)
+        else:
+            self.command = command
+
+        global_command = os.getenv('GLOBAL_CMD')
+        if global_command is not None:
+            self.command = IO('{}/data/cmd_{}.pkl'.format(proj_dir, global_command)).read_pickle()
+            print('Global command is selected, cmd_{}'.format(global_command))
+
+    def sampel_goal(self):
+        if self.sample_mode == 0:
+
+            points = generate_same_interval_eight_curve(dis=0.3)
+            goal_positions = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+
+        else:
+            raise NotImplementedError
+        ## check outspace
+        return goal_positions
+
+    #_render_goal_position
+    def _goal2render(self, goal_state):
+
+        return  goal_state
+
+    def _render_goal_position(self, position):
+        """
+        :param position: [x,y,z]
+        :return:
+        """
+        assert  self.num_goals <= 5
+        for i in range(self.num_goals):
+
+            self.model.site_pos[i] = position.reshape((-1,3))[i]
+            if i ==0:
+                self.model.site_rgba[i] = [1 ,0.5, 0 ,1]
+            else:
+                self.model.site_rgba[i] = [1, 0, 0, 1]
+
+    def _terminal(self):
+
+        q_state = self.state_vector()
+        notdone = np.isfinite(q_state).all() \
+                  and self.get_body_com("torso")[2] >= 0.1 and self.get_body_com("torso")[2] <= 0.6
+        done = not notdone
+
+        if done:
+            return True
+        if self._t_step > self.max_steps:
+            return True
+
+        if self.phase_time == self.num_goals:
+            self.phase_time = 0
+            return True
+
+        # dis = np.linalg.norm(self.root_position- self.goal_state)
+        # if dis < REACH_THRESHHOLD:
+        #     return True
+        return False
+
+    def compute_reward(self, velocity_base, v_commdand, action, obs):
+        if self.reward_choice == 0:
+            return NotImplementedError
+
+        elif self.reward_choice == 3:
+            ## line
+            vel = np.linalg.norm(self.last_root_position - self.goal_state.reshape((-1, 3)), axis=1) - np.linalg.norm(
+                self.root_position - self.goal_state.reshape((-1, 3)), axis=1)
+            forward_reward = vel*1000
+
+            dis = np.linalg.norm(self.goal_state.reshape((-1, 3))[:,:2] - self.root_position[:2],axis=1)
+
+            r = 0
+            if dis[self.phase_time] < REACH_THRESHHOLD:
+                r += 50
+
+                if self._isRenderGoal:
+                    self.model.site_rgba[self.phase_time] = [0, 1, 0,1]
+                    #self.model.site_pos[self.phase_time] = [0,0,0]
+
+                self.phase_time += 1
+
+            else:
+                r += vel[self.phase_time]
+
+            ctrl_cost = 0#.5 * np.square(action).sum()
+            contact_cost =0# 0.5 * 1e-4 * np.sum( np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            survive_reward = -1.0
+            reward = r + survive_reward
+
+            other_rewards = np.array([reward, forward_reward, ctrl_cost, contact_cost, survive_reward])
+            #print(other_rewards)
+
+        else:
+            raise NotImplementedError
+        #print(other_rewards)
+        return reward, other_rewards
+
+
 class CellRobotEnvCPG6NewEVALTarget(CellRobotEnvCPG6NewTarget):
     def __init__(self,
 

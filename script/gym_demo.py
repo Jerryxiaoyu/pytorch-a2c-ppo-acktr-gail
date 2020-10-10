@@ -19,9 +19,9 @@ os.environ["CPG_ENABLE"] = str(1)
 os.environ["NUM_BUFFER"] = str(0)
 os.environ["COMMAND_MODE"] = "FandE"
 os.environ["VEL_FILTER"] = str(1)
-os.environ["REWARD_CHOICE"] = str(3)
+os.environ["REWARD_CHOICE"] = str(1)
 
-os.environ["GLOBAL_CMD"] = 's2-cell6'
+#os.environ["GLOBAL_CMD"] = 's2-cell6'
 
 os.environ["COMMAND_X"] = str(0.2)
 os.environ["COMMAND_Y"] = str(0.2)
@@ -30,9 +30,10 @@ os.environ["ACTION_DIM"] = str(2)
 
 os.environ["SAMPLE_MODE"] = "1"
 os.environ["COMMAND_MODE"] = "point"  #point dir_vel
+os.environ["COMMAND_MODE"] = "p2p"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6Target-v2" )
+env = gym.make("CellRobotEnvCPG6NewP2PTarget-v2" )
 
 
 obs = env.reset()

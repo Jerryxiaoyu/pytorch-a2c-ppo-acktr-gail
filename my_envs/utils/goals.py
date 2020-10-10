@@ -38,6 +38,29 @@ def generate_same_interval_eight_curve(A=6, b=2, N= 10000, dis= 0.3):
     points = np.array(points)
     return points
 
+
+def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05):
+    A = A
+    b = b
+    N = 20000
+    t = np.linspace(0, np.pi, num=N)
+    x = A * np.sin(b * t)
+    y = A * np.sin(b * t) * np.cos(b * t)
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+
+    sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
+    new_N = sum_traj / (vel * dt) * 1.1
+
+
+    t = np.linspace(0, np.pi, num=new_N)
+    x = A * np.sin(b * t)
+    y = A * np.sin(b * t) * np.cos(b * t)
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+    return xy
+
+
 def generate_point_in_arc_area(center_p, norm_dir,  theta= np.deg2rad(30), dis_range= (30, 100), side = np.random.choice(2) ):
     """
     生成一个点，在给扇形区域内, 在xz平面内。
