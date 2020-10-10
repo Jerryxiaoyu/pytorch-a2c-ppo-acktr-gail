@@ -118,6 +118,7 @@ class VG(VariantGenerator):
     def num_buffer(self):
         return [0 ]
 
+
     @variant
     def command_mode(self):
         return [ "dir_vel" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
