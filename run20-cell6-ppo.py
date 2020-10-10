@@ -87,7 +87,7 @@ class VG(VariantGenerator):
 
     @variant
     def xml_name(self):
-        return ['cellrobot_Quadruped_float_limit-old.xml']
+        return ['cellrobot_Quadruped_float_limit.xml']
 
     @variant
     def buffer_mode(self):
@@ -104,7 +104,7 @@ class VG(VariantGenerator):
 
     @variant
     def CPG_enable(self):
-        return [0]
+        return [1]
 
     @variant
     def num_buffer(self):
@@ -112,11 +112,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "FandE" ]  #full, error, no FandE  conv_error
+        return [ "dir_vel" ]  #full, error, no FandE  conv_error
 
     @variant
     def reward_fun_choice(self):
-        return [ 3  ]
+        return [ 4 ]
 
     @variant
     def vel_filtered(self):

@@ -458,8 +458,11 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                                   self.current_command[:2] - self.root_velocity[:2]  # x y
                                   ])
         elif self.command_mode =='dir_vel':
+
+            cmd_direction = np.array([np.cos(self.current_command[2]), np.sin(self.current_command[2]), 0])
             cmd = np.concatenate([self.current_command[0:0] - np.linalg.norm(self.root_velocity[:2]),
-                                  self.current_command[2:2]
+                                  cmd_direction,
+                                  self.root_direction
                                   ])
         elif self.command_mode =='conv_error':
 
