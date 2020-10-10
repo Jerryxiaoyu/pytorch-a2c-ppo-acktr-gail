@@ -124,7 +124,7 @@ class VG(VariantGenerator):
 
     @variant
     def reward_fun_choice(self):
-        return [4]
+        return [3]
 
     @variant
     def vel_filtered(self):
