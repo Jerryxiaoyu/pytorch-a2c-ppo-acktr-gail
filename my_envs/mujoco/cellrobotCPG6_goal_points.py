@@ -244,8 +244,9 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
     #     return robot_state
 
     def _get_obs(self):
+        self._robot_state = self._get_robot_state()
 
-        self.obs_robot_state = self._robot_state[6:]
+        self.obs_robot_state = self.robot_state[6:]
 
         self.obs_robot_state = np.concatenate([
             self.obs_robot_state,
@@ -364,7 +365,9 @@ class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
 
     def _get_obs(self):
 
-        self.obs_robot_state = self._robot_state
+        self._robot_state = self._get_robot_state()
+
+        self.obs_robot_state = self.robot_state
 
         self.obs_robot_state = np.concatenate([
             self.obs_robot_state,

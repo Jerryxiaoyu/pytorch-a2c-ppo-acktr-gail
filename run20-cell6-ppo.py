@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Traj-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6Traj-v4' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -104,7 +104,7 @@ class VG(VariantGenerator):
 
     @variant
     def CPG_enable(self):
-        return [1]
+        return [0]
 
     @variant
     def num_buffer(self):

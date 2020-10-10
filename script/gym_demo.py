@@ -29,10 +29,10 @@ os.environ["COMMAND_Z"] = str(0)
 os.environ["ACTION_DIM"] = str(2)
 
 os.environ["SAMPLE_MODE"] = "1"
-# os.environ["COMMAND_MODE"] = "point"  #point dir_vel
+os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6Traj-v1" )
+env = gym.make("CellRobotEnvCPG6Target-v2" )
 
 
 obs = env.reset()
