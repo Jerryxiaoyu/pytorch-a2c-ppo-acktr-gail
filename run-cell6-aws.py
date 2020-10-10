@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewP2PTarget-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewP2PTarget-v4']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -59,7 +59,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [2e7]
+        return [5e7]
 
     @variant
     def recurrent(self):
@@ -133,7 +133,7 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ['pre_models/CellRobotEnvCPG6NewP2PTarget-v2_304_aws_exp74_no1.pt']
+        return [None]
 
     @variant
     def sample_mode(self):
