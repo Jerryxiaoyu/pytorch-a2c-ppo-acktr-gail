@@ -58,7 +58,7 @@ def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05):
     y = A * np.sin(b * t) * np.cos(b * t)
     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
 
-    xy = np.concatenate((xy,xy), axis=1)
+    xy = np.concatenate((xy,xy), axis=0)
 
     return xy
 
