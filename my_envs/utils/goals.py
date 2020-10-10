@@ -50,13 +50,15 @@ def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05):
 
 
     sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
-    new_N = sum_traj / (vel * dt) * 1.5
+    new_N = sum_traj / (vel * dt) * 1.1
 
 
     t = np.linspace(0, np.pi, num=new_N)
     x = A * np.sin(b * t)
     y = A * np.sin(b * t) * np.cos(b * t)
     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+    xy = np.concatenate((xy,xy), axis=1)
 
     return xy
 
