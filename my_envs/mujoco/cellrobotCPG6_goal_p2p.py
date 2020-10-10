@@ -185,7 +185,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
     def step(self, a):
 
         if self._isRenderGoal:
-            self._render_goal_position(self.command[self._t_step:self._t_step+self.num_goals])
+            self._render_goal_position(self.future_command)
         obs, reward, done, info= super().step(a)
        # print('reward: ', reward)
         done, terminal_reward = self._terminal()
@@ -255,15 +255,30 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
             #cmd = self.root_inv_rotation.dot(self.current_command- self.root_position)[:2] ## only x y
 
+            # root2goal_vec = []
+            # for i in range(self.num_goals):
+            #     root2goal_vec.append(self.root_inv_rotation.dot(self.command[self._t_step+i] - self.root_position)[:2])
+            # cmd = np.array(root2goal_vec).flatten()
+
             root2goal_vec = []
             for i in range(self.num_goals):
-                root2goal_vec.append(self.root_inv_rotation.dot(self.command[self._t_step+i] - self.root_position)[:2])
+                root2goal_vec.append(
+                    self.root_inv_rotation.dot(self.future_command[i] - self.root_position)[:2])
             cmd = np.array(root2goal_vec).flatten()
 
             #print("cmd: ", cmd)
         else:
             raise NotImplementedError
         return cmd
+
+    @property
+    def future_command(self):
+
+        self._goal_interval_steps = 1
+
+
+
+        return self.command[np.arange(self._t_step, self._t_step + (self._goal_interval_steps) * self.num_goals, step=self._goal_interval_steps)]
 
     def compute_reward(self, velocity_base, v_commdand, action, obs):
         if self.reward_choice == 0:

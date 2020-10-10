@@ -20,7 +20,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Traj-v4']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewP2PTarget-v2']  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -87,7 +87,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_wz_high(self):
-        return [math.pi]  # vel , pos
+        return [0]  # vel , pos
 
     @variant
     def turing_flag(self):
@@ -121,11 +121,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "dir_vel" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
+        return [ "p2p" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
 
     @variant
     def reward_fun_choice(self):
-        return [4]
+        return [0]
 
     @variant
     def vel_filtered(self):
@@ -133,7 +133,7 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return [None]
+        return ['pre_models/CellRobotEnvCPG6NewP2PTarget-v2_304_aws_exp74_no1.pt']
 
     @variant
     def sample_mode(self):

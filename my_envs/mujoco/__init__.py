@@ -342,7 +342,25 @@ register(
                  sample_mode = 1
                  )
 )
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-v3',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 2000,
 
+                 hardReset_per_reset= 1,
+
+                 num_goals = 1,
+
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
+                 sample_mode = 1
+                 )
+)
 #
 #
 #

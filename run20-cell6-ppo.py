@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewP2PTarget-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewP2PTarget-v3' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -18,7 +18,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_steps(self):
-        return [1024]
+        return [2048]
 
     @variant
     def learning_rate(self):
@@ -37,7 +37,7 @@ class VG(VariantGenerator):
         return [10]
     @variant
     def num_mini_batch(self):
-        return [32]
+        return [64]
 
     @variant
     def gamma(self):
@@ -124,14 +124,14 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return [None]
+        return ['log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45/No_3_CellRobotEnvCPG6NewTarget-v2_PPO-2020-10-04_01:28:56/model/ppo/CellRobotEnvCPG6NewTarget-v2_304.pt']
 
     @variant
     def sample_mode(self):
         return [None] #
 
 
-exp_id = 27
+exp_id = 29
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

@@ -151,6 +151,8 @@ def main():
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
 
+            #envs.render()
+
             for info in infos:
                 if 'episode' in info.keys():
                     episode_rewards.append(info['episode']['r'])
