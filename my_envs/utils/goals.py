@@ -39,7 +39,45 @@ def generate_same_interval_eight_curve(A=6, b=2, N= 10000, dis= 0.3):
     return points
 
 
-def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05):
+
+
+
+
+def generate_circle_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
+    R = 3  # np.random.uniform(R_range[0], R_range[1])
+    vel = 0.2  # np.random.uniform(vel_range[0], vel_range[1])
+    theta = np.pi * 2
+    direction = 1
+    dt = 0.05
+
+    if theta is None:
+        theta = vel * T / R
+    else:
+        T = R * theta / vel
+        num_N = int(T / dt)
+
+    if direction == 1:
+        t = np.linspace(-np.pi / 2, -np.pi / 2 + theta, num=num_N, endpoint=True)
+        x = 0 + R * np.cos(t)
+        y = R + R * np.sin(t)
+    else:
+        t = np.linspace(np.pi / 2 - theta, np.pi / 2, num=num_N, endpoint=True)
+        x = 0 + R * np.cos(t)
+        y = -R + R * np.sin(t)
+
+    xy = np.concatenate((x, y )).reshape((2, -1)).transpose()
+
+    num_xy = xy.shape[0]
+    cnt = int(least_N*1.2/num_xy)
+
+    tmp = xy
+    if cnt >1:
+        for _ in range(cnt):
+            tmp = np.concatenate([tmp, xy], axis=0)
+
+    return tmp
+
+def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
     A = A
     b = b
     N = 20000
@@ -58,9 +96,15 @@ def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05):
     y = A * np.sin(b * t) * np.cos(b * t)
     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
 
-    xy = np.concatenate((xy,xy), axis=0)
+    num_xy = xy.shape[0]
+    cnt = int(least_N*1.2/num_xy)
 
-    return xy
+    tmp = xy
+    if cnt >1:
+        for _ in range(cnt):
+            tmp = np.concatenate([tmp, xy], axis=0)
+
+    return tmp
 
 
 def generate_point_in_arc_area(center_p, norm_dir,  theta= np.deg2rad(30), dis_range= (30, 100), side = np.random.choice(2) ):

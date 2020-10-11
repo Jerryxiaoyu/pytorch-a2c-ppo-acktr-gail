@@ -381,7 +381,6 @@ register(
 
                  num_goals = 4,
 
-
                  goal_interval_steps =10,
                  trajectory_length = 40,
                  robot_state_dim = 42,
