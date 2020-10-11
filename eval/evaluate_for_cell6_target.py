@@ -42,8 +42,8 @@ contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6NewP2PTarget-v4'
-group_dir = 'log-files-SMC/AWS_logfiles/Oct_10_SMC_PPO_RL_Exp76'
-exp_id = 76
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_11_SMC_PPO_RL_Exp79'
+exp_id = 79
 exp_no_list= [1]
 num_enjoy = 1500
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
