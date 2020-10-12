@@ -55,7 +55,7 @@ max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
 model_save_num = None
 monitor = args.monitor
 render = not monitor
-render = False
+render = True
 
 is_no_save_plot = args.is_no_plot
 
