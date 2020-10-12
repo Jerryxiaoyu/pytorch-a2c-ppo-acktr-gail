@@ -23,7 +23,7 @@ os.environ["REWARD_CHOICE"] = str(3)
 os.environ["COMMAND_X"] = str(0.2)
 os.environ["COMMAND_Y"] = str(0.2)
 os.environ["COMMAND_Z"] = str(0)
-os.environ["ACTION_DIM"] = str(39)
+os.environ["ACTION_DIM"] = str(4)
 
 #os.environ["SAMPLE_MODE"] = "1"
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel

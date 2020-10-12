@@ -469,11 +469,16 @@ class CPG_network_Sinusoid(object):
 
             # gain_left = 1 - (0.5 - fi_l[0]) * self.kesi
             # gain_right = 1 - (0.5 - fi_l[1]) * self.kesi
+            max_factor = 1
+            # g1 = np.clip(fi_l[0], -max_factor, max_factor)
+            # g2 =np.clip(fi_l[1], -max_factor, max_factor)
+            # g3 = np.clip(fi_l[2], -max_factor, max_factor)
+            # g4 = np.clip(fi_l[3], -max_factor, max_factor)
 
-            g1 = np.clip(fi_l[0], -max_factor, max_factor)
-            g2 =np.clip(fi_l[1], -max_factor, max_factor)
-            g3 = np.clip(fi_l[2], -max_factor, max_factor)
-            g4 = np.clip(fi_l[3], -max_factor, max_factor)
+            g1 = np.clip(fi_l[0], -0, max_factor)
+            g2 = np.clip(fi_l[1], -0, max_factor)
+            g3 = np.clip(fi_l[2], -0, max_factor)
+            g4 = np.clip(fi_l[3], -0, max_factor)
 
 
             self.CPG_list[2].parm['R1'] = self.parm_list[2][3] * g1
