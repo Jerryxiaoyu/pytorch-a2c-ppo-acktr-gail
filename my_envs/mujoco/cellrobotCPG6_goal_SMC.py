@@ -769,9 +769,10 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
     def __init__(self,
                  trajectory_length = 40,
+                 trajectory_sample_count = 4,
                  **kwargs):
 
-        self.sample_count = 4
+        self.sample_count = trajectory_sample_count
         #trajectory_length  = 40
 
         os.environ["NUM_BUFFER"] = str(trajectory_length)

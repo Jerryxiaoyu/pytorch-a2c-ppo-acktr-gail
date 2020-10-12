@@ -182,6 +182,70 @@ register(
 
 
 register(
+    id='CellRobotEnvCPG6Traj-v5',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewObsGoalTraj',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 isRootposNotInObs = True,
+
+                 robot_state_dim = 42+3,
+
+                 trajectory_length = 80,
+                 trajectory_sample_count = 8,
+
+
+                   # isRenderDir = False,
+                #isRenderDir = True,
+
+                 )
+)
+
+
+register(
+    id='CellRobotEnvCPG6Traj-v6',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewObsGoalTraj',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 isRootposNotInObs = True,
+
+                 robot_state_dim = 42+3,
+
+                 trajectory_length = 20,
+                 trajectory_sample_count = 2,
+
+
+                   # isRenderDir = False,
+                #isRenderDir = True,
+
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6Traj-v7',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewObsGoalTraj',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 isRootposNotInObs = True,
+
+                 robot_state_dim = 42+3,
+
+                 trajectory_length = 0,
+                 trajectory_sample_count = 2,
+
+
+                   # isRenderDir = False,
+                #isRenderDir = True,
+
+                 )
+)
+
+register(
     id='CellRobotEnvCPG6Target-v2',
     entry_point='my_envs.mujoco:CellRobotEnvCPG6Target',
     max_episode_steps=2000,
