@@ -97,7 +97,7 @@ def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
 
     num_xy = xy.shape[0]
-    cnt = int(least_N*1.2/num_xy)
+    cnt = int(np.ceil(least_N*1.5/num_xy))
 
     tmp = xy
     if cnt >1:
