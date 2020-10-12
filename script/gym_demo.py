@@ -23,14 +23,14 @@ os.environ["REWARD_CHOICE"] = str(3)
 os.environ["COMMAND_X"] = str(0.2)
 os.environ["COMMAND_Y"] = str(0.2)
 os.environ["COMMAND_Z"] = str(0)
-os.environ["ACTION_DIM"] = str(2)
+os.environ["ACTION_DIM"] = str(39)
 
 #os.environ["SAMPLE_MODE"] = "1"
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "p2p"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6Traj-v7" )
+env = gym.make("CellRobotEnvCPG6Traj-v4" )
 
 
 obs = env.reset()
