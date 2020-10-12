@@ -50,6 +50,7 @@ class VG(VariantGenerator):
     def num_mini_batch(self):
         return [64]
 
+
     @variant
     def gamma(self):
         return [0.99 ] #0.9985
