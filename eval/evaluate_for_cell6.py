@@ -38,16 +38,16 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 16# 11
-global_command = 'data/cmd_s2-cell6-xy10'  #'data/cmd_s2-cell6-xy10' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
+global_command = 'data/cell6-straight/cmd_s2-cell6-line-0'#'data/cmd_s2-cell6-xy10'  #'data/cmd_s2-cell6-xy10' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
 rand_init = 0 #
 data_name = None#
 contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6Traj-v4'
-group_dir = 'log-files-SMC/AWS_logfiles/Oct_12_SMC_PPO_RL_Exp84'
-exp_id = 84
-exp_no_list= [2]
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_10_SMC_PPO_RL_Exp72'
+exp_id = 72
+exp_no_list= [1]
 num_enjoy = 1
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
 max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
@@ -153,7 +153,7 @@ for exp_no in exp_no_list:
                  render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log, evaluate_name = args.evaluate_name)
 
     if not is_no_save_plot:
-        eval_path = os.path.join(result_path, 'evaluate')
+        eval_path = os.path.join(result_path,args.evaluate_name)
         eval_data_path = os.path.join(eval_path, 'log_data_{}.csv'.format(data_name))
         eval_data_df = pd.read_csv(eval_data_path)
 
