@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser(description='Evaluation')
 parser.add_argument('--env_name', default=None, metavar='G' )
 parser.add_argument('--group_dir', type= str, default=None, )
 parser.add_argument('--exp_id', type= int, default=None )
+parser.add_argument('--exp_no_id', type= int, default=None )
 parser.add_argument('--full_output', type= ast.literal_eval, default=False )
 parser.add_argument('--monitor', type=ast.literal_eval, default=False )
 parser.add_argument('--is-no-plot', action='store_true', default=False )
@@ -44,9 +45,9 @@ contact_log = None
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6Traj-v4'
-group_dir = 'log-files-SMC/AWS_logfiles/Oct_10_SMC_PPO_RL_Exp78'
-exp_id = 78
-exp_no_list= [1]
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_12_SMC_PPO_RL_Exp84'
+exp_id = 84
+exp_no_list= [2]
 num_enjoy = 1
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
 max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
@@ -55,7 +56,7 @@ max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
 model_save_num = None
 monitor = args.monitor
 render = not monitor
-render = True
+render = False
 
 is_no_save_plot = args.is_no_plot
 
@@ -113,6 +114,9 @@ if args.full_output is False:
     exp_no_list= exp_no_list
 else:
     exp_no_list = list(range(1,len(exp_list)))
+
+if args.exp_no_id is not None:
+    exp_no_list = [args.exp_no_id]
 
 print(exp_no_list)
 

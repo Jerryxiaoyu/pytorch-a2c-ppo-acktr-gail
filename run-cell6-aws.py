@@ -61,7 +61,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [5e7]
+        return [3e7]
 
     @variant
     def recurrent(self):
@@ -106,15 +106,15 @@ class VG(VariantGenerator):
     # ----------------------------------------------
     @variant
     def base(self):
-        return ['MLPBase256'  ]  # CellRobotMLPBase MLPBase
+        return ['MLPBase'  ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
-        return [13]  # 2,3,13
+        return [4,39]  # 2,3,13
 
     @variant
     def CPG_enable(self):
-        return [0 ]
+        return [1]
 
     @variant
     def num_buffer(self):
@@ -135,7 +135,7 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ["pre_models/CellRobotEnvCPG6Traj-v4_761_aws_exp78_no1.pt"]
+        return [None]
 
     @variant
     def sample_mode(self):
