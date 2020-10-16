@@ -52,11 +52,16 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
                  isAddDisturbance= False,
                  disturb_time_list = [100, 200, 300, 400],
+                 xml_name='cellrobot_Quadruped_float_limit.xml',
 
                  isRenderDir = False,
+                 is_hard_reset_position = False,
+                 max_steps = 2000,
                  ):
 
+        self.max_steps = max_steps
         self.isRenderDir = isRenderDir
+        self.is_hard_reset_position = is_hard_reset_position
 
         self.isAddDisturbance = isAddDisturbance
         self.disturb_time_list = disturb_time_list
@@ -178,7 +183,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.rand_init = int(self.rand_init)
 
         if self.xml_name is None:
-            self.xml_name = 'cellrobot_Quadruped_float.xml'
+            self.xml_name = xml_name
 
             self.model_path = 'cellrobot/'+self.xml_name
             print('model path:', self.model_path)
@@ -289,7 +294,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         print('Policy action size : ', self.action_space.shape[0] )
 
     def get_one_disturbance(self):
-        v_bullet = np.random.uniform(3,5)
+        v_bullet = np.random.uniform(5,5)
 
         x = np.random.uniform(self.root_position[0] - 1, self.root_position[0] + 1)
         y = np.random.uniform(self.root_position[1] - 1, self.root_position[1] + 1)
@@ -359,10 +364,12 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         reward, other_rewards = self.compute_reward(velocity_base, v_commdand, action, obs)
 
         # confirm if done
-        q_state = self.state_vector()
-        notdone = np.isfinite(q_state).all() \
-                  and self.get_body_com("torso")[2] >= 0.1 and self.get_body_com("torso")[2] <= 0.6
-        done = not notdone
+        # q_state = self.state_vector()
+        # notdone = np.isfinite(q_state).all() \
+        #           and self.get_body_com("torso")[2] >= 0.1 and self.get_body_com("torso")[2] <= 0.6
+        # done = not notdone
+
+        done, terminal_reward = self._terminal()
 
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
@@ -385,7 +392,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
 
         self._t_step += 1
-        return obs, reward, done, dict(
+        return obs, reward+terminal_reward, done, dict(
             root_position = self.root_position,
             root_euler=self.root_euler,
             velocity_base=velocity_base,
@@ -393,6 +400,20 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             rewards=other_rewards,
             obs = obs
         )
+
+    def _terminal(self):
+
+        q_state = self.state_vector()
+        notdone = np.isfinite(q_state).all() \
+                  and self.get_body_com("torso")[2] >= 0.1 and self.get_body_com("torso")[2] <= 0.6
+        done = not notdone
+
+        if done:
+            return True , -1000
+        if self._t_step > self.max_steps:
+            return True ,0
+
+        return False, 0
 
     def _get_robot_state(self):
         joint_position = state_M.dot(self.sim.data.qpos[7:7+13].reshape((-1, 1))).flatten()
@@ -520,15 +541,54 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         return obs
 
     def _reset_robot_position(self):
-        T = np.ones(self.model.nq)
-        T[2] = 0
+        if self.is_hard_reset_position:
 
-        if self.rand_init == 0:
+            hard_position = os.getenv('XYZ')
+            if hard_position is not None:
+                x = hard_position.split('_')[0]
+                y = hard_position.split('_')[1]
+                z = hard_position.split('_')[2]
+
+            goal_points = [float(x), float(y), float(z)]
+
+            self.init_qpos[:3] = goal_points
+
+            T = np.ones(self.model.nq)
+            T[2] = 0
+
+         #    qpos = [-0.29627853,  0.08375629,  0.22849016, -0.11638895 , 0.08747848 , 0.06061479,
+         #             -0.04676204, -0.20625531 , 0.50924755, -0.64953141, -0.00216199 ,-0.3749116,
+         #              0.12870825]
+         #    qvel = [-1.18470342 , 2.58112803 , 1.97923591 , 0.56271407 ,-0.34421984 , 2.73444493,
+         # -2.8795056 ,  2.93954109, -1.16187402 , 2.28738732 ,-0.10565884 , 3.11114063,
+         #  3.20108197]
+            #
+            # qpos= [0.08696509 ,-0.02266381, -0.00050443,  0.00114894, -0.05612997 , 0.04914332,
+            #        -0.00165076 , 0.20790401, -0.05150042 , 0.44837893 ,-0.02797514 , 0.28012856,
+            #        0.06318285]
+            # qvel= [1.83018464 , 0.19192611 ,-0.03096657, -0.05215018 , 0.08410683 ,-0.16124939,
+            #        0.10221479, -2.90619531, -1.93506711, -2.66933662, -0.27239235, -2.97988054,
+            #        -1.88363454]
+
+            self.init_qpos[7:] = qpos
+            self.init_qvel[6:] = qvel
+
             qpos = self.init_qpos  # + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
             qvel = self.init_qvel  # + self.np_random.randn(self.model.nv) * .1
+
+
+           # print('hard reset : ', qpos)
+
         else:
-            qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
-            qvel = self.init_qvel #+ self.np_random.randn(self.model.nv) * .1
+            T = np.ones(self.model.nq)
+            T[2] = 0
+
+            if self.rand_init == 0:
+                qpos = self.init_qpos  # + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
+                qvel = self.init_qvel  # + self.np_random.randn(self.model.nv) * .1
+            else:
+                qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
+                qvel = self.init_qvel #+ self.np_random.randn(self.model.nv) * .1
 
         self.set_state(qpos, qvel)
         self.goal_theta = pi / 4.0
@@ -563,6 +623,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
        # plot_command(self.command)
 
     def reset_model(self, command = None,  ):
+
+
         # reset init robot
         self._reset_robot_position()
 
@@ -957,7 +1019,7 @@ class CellRobotEnvCPG6GoalTraj(CellRobotEnvCPG6Goal):
 
 
             ctrl_cost = 0  # -0.5 * np.square(action).sum()
-            contact_cost = -0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            contact_cost = 0#-0.5 * 1e-3 * np.sum(np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
             survive_reward = 0.0
 
             reward = forward_reward * direction_reward + contact_cost - 1

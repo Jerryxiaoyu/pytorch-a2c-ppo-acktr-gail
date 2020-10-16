@@ -13,7 +13,7 @@ import math
 import time
 from .cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
 from my_envs.utils.goals import generate_point_in_arc_area, generate_same_interval_eight_curve, \
-    generate_eight_curve,generate_circle_curve
+    generate_eight_curve,generate_circle_curve,generate_butterfly_curve
 
 state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
@@ -54,13 +54,14 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         #
         #
-        # self.sample_mode = os.getenv('SAMPLE_MODE')
-        # if self.sample_mode is None:
-        #     self.sample_mode = sample_mode
-        #     print('sample_mode is not sepecified, so sample_mode is default  {}'.format(sample_mode))
-        # else:
-        #     self.sample_mode = int(self.sample_mode)
-        #     print('sample_mode = ', self.sample_mode)
+        self.sample_mode = os.getenv('SAMPLE_MODE')
+        if self.sample_mode is None:
+            self.sample_mode = sample_mode
+            print('sample_mode is not sepecified, so sample_mode is default  {}'.format(sample_mode))
+        else:
+            self.sample_mode = int(self.sample_mode)
+            print('sample_mode = ', self.sample_mode)
+
 
         self._goal_interval_steps = goal_interval_steps
         self.reset_count = 0
@@ -156,9 +157,20 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
     def _sample_command(self, command):
         if command is None:
-            vel = np.random.uniform(0.03, 0.2)
-            A = np.random.uniform(1,6)
-            points = generate_eight_curve(A=A, b=2, vel=vel, dt=self.dt)
+
+            if self.sample_mode ==0:
+                vel = np.random.uniform(0.03, 0.2)
+                A = np.random.uniform(1,6)
+                points = generate_eight_curve(A=A, b=2, vel=vel, dt=self.dt)
+            elif self.sample_mode ==1:
+
+                R = np.random.uniform(1, 10)
+                direction = np.random.randint(0,2)
+                vel = np.random.uniform(0.03, 0.2)
+
+                points = generate_circle_curve(R, direction, vel )
+            else:
+                raise NotImplementedError
 
             #points = generate_circle_curve()
             #points = generate_eight_curve(A= 3, b=2, vel=0.1, dt = self.dt)
@@ -170,8 +182,32 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         global_command = os.getenv('GLOBAL_CMD')
         if global_command is not None:
-            self.command = IO('{}/data/cmd_{}.pkl'.format(proj_dir, global_command)).read_pickle()
-            print('Global command is selected, cmd_{}'.format(global_command))
+
+            if global_command.split('-')[0] == 'p2p_circle':
+                R = float(global_command.split('-')[1])
+                direction = int(global_command.split('-')[2])
+                vel = float(global_command.split('-')[3])
+
+                points = generate_circle_curve(R, direction, vel, no_extend=True)
+
+                self.max_steps = int(points.shape[0]/2)
+                print("Change the max steps to : ", self.max_steps)
+            # elif global_command == 'p2p_butterfly':
+            #     points = generate_butterfly_curve(vel=0.1)
+
+            elif global_command.split('-')[0] == 'p2p_eight':
+                A = float(global_command.split('-')[1])
+                vel = float(global_command.split('-')[2])
+
+                points = generate_eight_curve(A, vel=vel, no_extend=True)
+
+                self.max_steps = int(points.shape[0]/2)
+                print("Change the max steps to : ", self.max_steps)
+
+            else:
+                raise NotImplementedError
+            self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+            print('Global command is selected,  {}'.format(global_command))
 
         # _render_goal_position
     def _render_goal_position(self, position):
@@ -322,3 +358,17 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
         #print(other_rewards)
         return reward, other_rewards
 
+class CellRobotEnvCPG6NewP2PTargetILC(CellRobotEnvCPG6NewP2PTarget):
+    def __init__(self,
+
+                 **kwargs):
+        result_dir = "/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr/log-files-SMC/AWS_logfiles/Oct_13_SMC_PPO_RL_Exp87/No_1_CellRobotEnvCPG6NewP2PTarget-v4_PPO-2020-10-13_03:43:06/data"
+
+        self.traj_error = IO(os.path.join(result_dir, 'ilc_circle_err3.pkl')).read_pickle()
+        super().__init__(**kwargs)
+
+    @property
+    def future_command(self):
+        idxs = np.arange(self._t_step, self._t_step + (self._goal_interval_steps) * self.num_goals,
+                                      step=self._goal_interval_steps)
+        return self.command[idxs] + 0.5*self.traj_error[idxs%self.traj_error.shape[0]]

@@ -37,13 +37,13 @@ CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
 from utils.Logger import IO
-REACH_THRESHHOLD = 0.15
+REACH_THRESHHOLD = 0.1
 
 proj_dir = "/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr"
 
 class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
     def __init__(self,
-                 max_steps = 2000,
+                 #max_steps = 2000,
                  isRenderGoal = 0,
                  sample_mode = 0,
                  hardReset_per_reset=5,
@@ -64,7 +64,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         self.num_goals = num_goals
 
         self._isRenderGoal = isRenderGoal
-        self.max_steps = max_steps
+        #self.max_steps = max_steps
 
         self.goal_state = np.zeros(self.num_goals*3)
         super().__init__(**kwargs)
@@ -88,6 +88,29 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             final_p = generate_point_in_arc_area(center_p, norm_dir, theta=theta_list[0], dis_range=dis_list[0])
 
             goal_points.append([final_p[0], final_p[2], 0])
+
+
+        elif self.sample_mode ==2:
+            #print("sample mode : 2222222222222222222222222222222222222222")
+            goal_points = []
+            for i in range(self.num_goals):
+                x = self.root_position[0] + np.random.uniform(-5, 5)
+                y = self.root_position[1] + np.random.uniform(-5, 5)
+                goal_points.append([x, y, 0])
+
+        elif self.sample_mode ==3:
+
+            hard_position = os.getenv('XYZ')
+            if hard_position is not None:
+                x = hard_position.split('_')[0]
+                y = hard_position.split('_')[1]
+                z = hard_position.split('_')[2]
+
+            goal_points = [float(x), float(y), float(z)]
+
+        elif self.sample_mode ==4:
+
+            goal_points = [0,0,0]
 
         else:
             raise NotImplementedError
@@ -290,7 +313,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             forward_reward = -dis*5
 
             if dis  < REACH_THRESHHOLD:
-                forward_reward += 5
+                forward_reward += 50
 
             ctrl_cost = 0#.5 * np.square(action).sum()
             contact_cost = 0#0.5 * 1e-4 * np.sum( np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
@@ -364,6 +387,9 @@ class CellRobotEnvCPG6NewTarget(CellRobotEnvCPG6Target):
 
 
     def _get_obs(self):
+
+        # print('qpos:' , self.sim.data.qpos[7:7 + 13])
+        # print('qvel:', self.sim.data.qvel[6:6 + 13] )
 
         self._robot_state = self._get_robot_state()
 

@@ -25,7 +25,7 @@ class VG(VariantGenerator):
 
     @variant
     def seed(self):
-        return [123]
+        return [123, 124,125,126,127]
 
     @variant
     def num_steps(self):
@@ -85,7 +85,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_vy_low(self):
-        return [-0.2]
+        return [0]
 
     @variant
     def command_wz_high(self):

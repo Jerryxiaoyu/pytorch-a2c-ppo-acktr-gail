@@ -29,23 +29,24 @@ parser.add_argument('--global_command', type= str, default=None, )
 parser.add_argument('--rand_init', type= int, default=None )
 parser.add_argument('--seed', type= int, default=None )
 parser.add_argument('--contact_log', type= str, default=None, )
+parser.add_argument('--evaluate_name', type= str, default='evaluate', )
 args = parser.parse_args()
 
 root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 16# 11
-global_command = None#'s2-cell6-xy10-quan' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
+global_command = None# 'p2p_circle-3-1-0.1'#'s2-cell6-xy10-quan' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
 rand_init = 0 #
 data_name = None#
 contact_log = None
 
 # 实验数据原始目录
-ENV_name = 'CellRobotEnvCPG6NewP2PTarget-v4'
-group_dir = 'log-files-SMC/AWS_logfiles/Oct_12_SMC_PPO_RL_Exp81'
-exp_id = 81
-exp_no_list= [1]
-num_enjoy = 1500
+ENV_name = 'CellRobotEnvCPG6NewTarget-v2'#'CellRobotEnvCPG6NewP2PTarget-v4'
+group_dir = 'log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45'
+exp_id = 45
+exp_no_list= [3]
+num_enjoy = 100
 dt = 0.05 # 0.01 for old env(cell4), 0.05 for Cell5 and cell6
 max_step = 1000 # 2000 for old env(cell4), 1000 for Cell5 and cell6
 
@@ -54,6 +55,8 @@ model_save_num = None
 monitor = args.monitor
 render = not monitor
 render = True
+
+save_plot = True
 
 if args.env_name is None:
     ENV_name = ENV_name
@@ -137,25 +140,24 @@ for exp_no in exp_no_list:
 
     # parse results
 
+    if save_plot:
+        reward_res = pu.load_results(result_path)
 
-    reward_res = pu.load_results(result_path)
-
-    # plot learning curve
-
-    plot_learning_curve(reward_res, save_plot_path1, exp_no )
+        # plot learning curve
+        plot_learning_curve(reward_res, save_plot_path1, exp_no )
 
     # evaluate
     evaluate_fun(result_path, parms,model_save_num , num_enjoy=num_enjoy ,global_command=global_command,
-                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log, env_name=ENV_name)
+                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log, env_name=ENV_name, evaluate_name = args.evaluate_name)
 
-    eval_path = os.path.join(result_path, 'evaluate')
-    eval_data_path = os.path.join(eval_path, 'log_data_{}.csv'.format(data_name))
-    eval_data_df = pd.read_csv(eval_data_path)
-
-   # if parms['reward_fun_choice'] == 11:
-    v_e = eval_data_df.loc[:, '1':'3'].values
-    c_command = eval_data_df.loc[:, '4':'6'].values
-    xyz = eval_data_df.loc[:, '7':'9'].values
+   #  eval_path = os.path.join(result_path, 'evaluate')
+   #  eval_data_path = os.path.join(eval_path, 'log_data_{}.csv'.format(data_name))
+   #  eval_data_df = pd.read_csv(eval_data_path)
+   #
+   # # if parms['reward_fun_choice'] == 11:
+   #  v_e = eval_data_df.loc[:, '1':'3'].values
+   #  c_command = eval_data_df.loc[:, '4':'6'].values
+   #  xyz = eval_data_df.loc[:, '7':'9'].values
     # else:
     #     raise Exception('Setting parsing ')
 

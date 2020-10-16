@@ -11,7 +11,7 @@ import time
 os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit.xml"
 
 os.environ["RAND_INIT"] = str(0)
-os.environ["CPG_ENABLE"] = str(1)
+os.environ["CPG_ENABLE"] = str(0)
 
 os.environ["NUM_BUFFER"] = str(0)
 os.environ["COMMAND_MODE"] = "FandE"
@@ -23,9 +23,9 @@ os.environ["REWARD_CHOICE"] = str(3)
 os.environ["COMMAND_X"] = str(0.2)
 os.environ["COMMAND_Y"] = str(0.2)
 os.environ["COMMAND_Z"] = str(0)
-os.environ["ACTION_DIM"] = str(4)
+os.environ["ACTION_DIM"] = str(13)
 
-#os.environ["SAMPLE_MODE"] = "1"
+#os.environ["SAMPLE_MODE"] = "2"
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "p2p"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel

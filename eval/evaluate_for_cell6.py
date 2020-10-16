@@ -38,10 +38,11 @@ root_path = '/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr'
 os.chdir(root_path)
 
 seed = 16# 11
-global_command = 'data/cell6-straight/cmd_s2-cell6-line-0'#'data/cmd_s2-cell6-xy10'  #'data/cmd_s2-cell6-xy10' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
+global_command = 'data/cmd_s2-cell6-xy10'#'data/cmd_s2-cell6-xy10'  #'data/cmd_s2-cell6-xy10' #'cons100'  's1'   s2-cell6-xy10  s2-cell6-10  s2-cell6-xy-circle
 rand_init = 0 #
 data_name = None#
 contact_log = None
+
 
 # 实验数据原始目录
 ENV_name = 'CellRobotEnvCPG6Traj-v4'
@@ -150,7 +151,8 @@ for exp_no in exp_no_list:
 
     # evaluate
     evaluate_fun(result_path, parms,model_save_num , num_enjoy=num_enjoy ,global_command=global_command,
-                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log, evaluate_name = args.evaluate_name)
+                 render = render, monitor = monitor, rand_init= rand_init, seed=seed, data_name = data_name, contact_log = contact_log,
+                 env_name=ENV_name,evaluate_name = args.evaluate_name)
 
     if not is_no_save_plot:
         eval_path = os.path.join(result_path,args.evaluate_name)
@@ -167,7 +169,7 @@ for exp_no in exp_no_list:
         #     raise Exception('Setting parsing ')
 
 
-        save_plot_path2 = os.path.join(eval_path, 'No_{}'.format(exp_no))
+        save_plot_path2 = os.path.join(eval_path, 'No_{}_{}'.format(exp_no, data_name))
         for save_plot_path in [save_plot_path1, save_plot_path2]:
             plot_velocity_curve(v_e, c_command, max_step, dt =dt, save_plot_path=save_plot_path)
             plot_position_time(xyz, max_step, dt =dt,save_plot_path=save_plot_path)

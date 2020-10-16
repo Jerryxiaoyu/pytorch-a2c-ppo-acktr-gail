@@ -10,7 +10,7 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6NewP2PTarget-v3' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewTarget-v2' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [1e7]
+        return [2e7]
 
 
     @variant
@@ -96,7 +96,7 @@ class VG(VariantGenerator):
 
     @variant
     def base(self):
-        return ['MLPBase', ]  # CellRobotMLPBase MLPBase
+        return ['MLPBase256', ]  # CellRobotMLPBase MLPBase
 
     @variant
     def action_dim(self):
@@ -112,7 +112,7 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ 'p2p' ]  #full, error, no FandE  conv_error  p2p
+        return [ 'point' ]  #full, error, no FandE  conv_error  p2p
 
     @variant
     def reward_fun_choice(self):
@@ -124,14 +124,14 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ['pre_models/CellRobotEnvCPG6NewP2PTarget-v3_609_local_exp29_no1.pt']
+        return [None]
 
     @variant
     def sample_mode(self):
-        return [None] #
+        return [2] #
 
 
-exp_id = 30
+exp_id = 33
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

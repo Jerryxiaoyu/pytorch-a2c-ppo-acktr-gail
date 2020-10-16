@@ -43,18 +43,12 @@ def generate_same_interval_eight_curve(A=6, b=2, N= 10000, dis= 0.3):
 
 
 
-def generate_circle_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
-    R = 3  # np.random.uniform(R_range[0], R_range[1])
-    vel = 0.2  # np.random.uniform(vel_range[0], vel_range[1])
+def generate_circle_curve(R= 3, direction=1, vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
     theta = np.pi * 2
-    direction = 1
-    dt = 0.05
 
-    if theta is None:
-        theta = vel * T / R
-    else:
-        T = R * theta / vel
-        num_N = int(T / dt)
+    dt = 0.05
+    T = R * theta / vel
+    num_N = int(T / dt)
 
     if direction == 1:
         t = np.linspace(-np.pi / 2, -np.pi / 2 + theta, num=num_N, endpoint=True)
@@ -64,20 +58,32 @@ def generate_circle_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
         t = np.linspace(np.pi / 2 - theta, np.pi / 2, num=num_N, endpoint=True)
         x = 0 + R * np.cos(t)
         y = -R + R * np.sin(t)
+        x = x[::-1]
+        y = y[::-1]
 
     xy = np.concatenate((x, y )).reshape((2, -1)).transpose()
 
-    num_xy = xy.shape[0]
-    cnt = int(least_N*1.2/num_xy)
 
-    tmp = xy
-    if cnt >1:
-        for _ in range(cnt):
-            tmp = np.concatenate([tmp, xy], axis=0)
+    if not no_extend:
+        num_xy = xy.shape[0]
+        cnt = int(np.ceil(least_N * 1.5 / num_xy))
+
+        tmp = xy
+        if cnt > 1:
+            for _ in range(cnt):
+                tmp = np.concatenate([tmp, xy], axis=0)
+    else:
+        tmp = xy
+        tmp = np.concatenate([tmp, xy], axis=0)
+
+
 
     return tmp
 
-def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
+
+
+
+def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
     A = A
     b = b
     N = 20000
@@ -98,11 +104,45 @@ def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000):
     num_xy = xy.shape[0]
     cnt = int(np.ceil(least_N*1.5/num_xy))
 
+    # tmp = xy
+    # if cnt >1:
+    #     for _ in range(cnt):
+    #         tmp = np.concatenate([tmp, xy], axis=0)
+
+    if not no_extend:
+        num_xy = xy.shape[0]
+        cnt = int(np.ceil(least_N * 1.5 / num_xy))
+
+        tmp = xy
+        if cnt > 1:
+            for _ in range(cnt):
+                tmp = np.concatenate([tmp, xy], axis=0)
+    else:
+        tmp = xy
+        tmp = np.concatenate([tmp, xy], axis=0)
+
+    return tmp
+
+def generate_butterfly_curve(vel=0.2, dt = 0.05, least_N = 4000):
+    data = np.loadtxt('data/contours/butterfly.txt')
+
+    xy = data[40000:] * 50
+
+    sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
+    new_N = int(sum_traj / (vel * dt) * 1.1)
+
+    interval = int(xy.shape[0] / new_N)
+    idxs = np.clip(np.arange(0, xy.shape[0], interval), 0, xy.shape[0] - 1)
+
+    xy = xy[idxs]
+
+    num_xy = xy.shape[0]
+    cnt = int(np.ceil(least_N * 1.5 / num_xy))
+
     tmp = xy
-    if cnt >1:
+    if cnt > 1:
         for _ in range(cnt):
             tmp = np.concatenate([tmp, xy], axis=0)
-
     return tmp
 
 
