@@ -57,6 +57,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                  isRenderDir = False,
                  is_hard_reset_position = False,
                  max_steps = 2000,
+
+                 isRenderTrajectory = False
                  ):
 
         self.max_steps = max_steps
@@ -66,6 +68,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.isAddDisturbance = isAddDisturbance
         self.disturb_time_list = disturb_time_list
         self.disturb_cnt = 0
+
+        self.isRenderTrajectory = isRenderTrajectory
 
         print('test cpg2........................')
         self.reward_choice = os.getenv('REWARD_CHOICE')
@@ -337,6 +341,24 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
         if self.disturb_cnt == len(self.disturb_time_list):
             self.disturb_cnt = 0
+    def RenderTrajectory(self):
+        #print("shape :", self.model.site_pos.shape)
+        # if self._t_step%5 ==0:
+        #     #self.sim.model.site_pos[(self._t_step//5+5)%20000] = self.root_position
+        #     self.sim.model.site_pos[(self._t_step // 5 + 5) % 20000] = self.root_position
+        #     #print(self._t_step%5, self.model.site_pos[(self._t_step+5)%20000])
+
+        root_pos = self.root_position.copy()
+        root_pos[2] = 0.05
+
+
+        self.sim.model.site_pos[(self._t_step  + 5) % 20000] = root_pos#self.root_position
+
+        #
+        #
+        # self.sim.model.site_pos[self._t_step  + 5 + 10000] = ref_pos
+        # self.sim.model.site_rgba[self._t_step + 5 + 10000] = [1, 0, 1, 1]
+
 
     def step(self, a):
 
@@ -351,7 +373,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         if self.CPG_enable == 1 :
             action = self.CPG_transfer(a, self.CPG_controller )
         self.do_simulation(action, self.frame_skip)
-
+        # print("sensor :", self.sim.data.sensordata[np.arange(39, step=3)])
+        # print("force :", self.sim.data.actuator_force)
+        # print("length :", self.sim.data.actuator_length)
         # get robot state
         #self._robot_state = self._get_robot_state()
         obs = self._get_obs()
@@ -377,6 +401,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         if self.isAddDisturbance:
             self.addDisturbance()
 
+        if self.isRenderTrajectory:
+            self.RenderTrajectory()
+
         if self.isRenderDir:
             cmd_direction = np.array([np.cos(self.current_command[2]), np.sin(self.current_command[2]), 0])
 
@@ -398,7 +425,9 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             velocity_base=velocity_base,
             commands=v_commdand,
             rewards=other_rewards,
-            obs = obs
+            obs = obs,
+            motor= action,
+            torque = self.sim.data.sensordata[np.arange(39, step=3)],
         )
 
     def _terminal(self):
@@ -590,6 +619,20 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                 qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
                 qvel = self.init_qvel #+ self.np_random.randn(self.model.nv) * .1
 
+        # for star
+        #qpos[0:2] = self.command[0,:2]
+
+        # for eight
+        #qpos[3:7] =[ 0.65328148,  0.27059805,  0.65328148, -0.27059805]
+
+        # # for heart
+        # qpos[0:2] = [0, 0.7]
+        # qpos[3:7] =[0.70020647, 0.09854386, 0.70020647, -0.09854386]
+
+        # for rect
+        #qpos[0:2] = [0, 0.]
+
+
         self.set_state(qpos, qvel)
         self.goal_theta = pi / 4.0
         #self.model.site_pos[1] = [cos(self.goal_theta), sin(self.goal_theta), 0]
@@ -670,7 +713,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         return obs
 
     def viewer_setup(self):
-        self.viewer.cam.distance = self.model.stat.extent * 0.5
+        self.viewer.cam.distance = 6.6#self.model.stat.extent * 0.5
+       # self.viewer.cam.lookat = np.array([0,0.00112246279, 0.0820925741])
 
     def state_vector(self):
         return np.concatenate([

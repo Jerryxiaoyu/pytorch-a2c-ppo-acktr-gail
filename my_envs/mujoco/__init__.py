@@ -491,11 +491,14 @@ register(
                  num_goals = 2,
 
 
-                    goal_interval_steps =1,
+                 goal_interval_steps =1,
                  trajectory_length = 40,
                  robot_state_dim = 42,
                  isRenderGoal = 1,
-                 sample_mode = 1
+                 sample_mode = 1,
+
+                isRenderTrajectory = False
+
                  )
 )
 register(
@@ -511,10 +514,11 @@ register(
 
                  num_goals = 1,
 
+                goal_interval_steps =1,
                  trajectory_length = 40,
                  robot_state_dim = 42,
                  isRenderGoal = 1,
-                 sample_mode = 1
+                 sample_mode = 0
                  )
 )
 
@@ -535,10 +539,131 @@ register(
                  trajectory_length = 40,
                  robot_state_dim = 42,
                  isRenderGoal = 1,
-                 sample_mode = 0
+                 sample_mode = 0,
+
+                isRenderTrajectory = False
                  )
 )
 
+
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-g2-I10-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 4000,
+
+                 hardReset_per_reset= 1,
+
+                 num_goals = 2,
+
+                 goal_interval_steps =10,
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
+                 sample_mode = 0,
+
+                isRenderTrajectory = False
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-g6-I10-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 4000,
+
+                 hardReset_per_reset= 1,
+
+                 num_goals = 6,
+
+                 goal_interval_steps =10,
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+
+                 sample_mode = 0,
+
+                  isRenderGoal = 0,
+                 isRenderTrajectory = False
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-g4-I1-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict(control_skip=5,
+                cpg_mode=2,
+                max_steps=4000,
+
+                hardReset_per_reset=1,
+
+                num_goals=4,
+
+                goal_interval_steps=1,
+                trajectory_length=40,
+                robot_state_dim=42,
+
+                sample_mode=0,
+
+                isRenderGoal=0,
+                isRenderTrajectory=False
+                )
+)
+
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-g4-I5-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict(control_skip=5,
+                cpg_mode=2,
+                max_steps=4000,
+
+                hardReset_per_reset=1,
+
+                num_goals=4,
+
+                goal_interval_steps=5,
+                trajectory_length=40,
+                robot_state_dim=42,
+
+                sample_mode=0,
+
+                isRenderGoal=0,
+                isRenderTrajectory=False
+                )
+)
+
+register(
+    id='CellRobotEnvCPG6NewP2PTarget-g4-I20-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict(control_skip=5,
+                cpg_mode=2,
+                max_steps=4000,
+
+                hardReset_per_reset=1,
+
+                num_goals=4,
+
+                goal_interval_steps=20,
+                trajectory_length=40,
+                robot_state_dim=42,
+
+                sample_mode=0,
+
+                isRenderGoal=1,
+                isRenderTrajectory=False
+                )
+)
 
 register(
     id='CellRobotEnvCPG6NewP2PTargetILC-v4',

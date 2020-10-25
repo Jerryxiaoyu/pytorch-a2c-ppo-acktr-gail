@@ -83,6 +83,7 @@ def generate_circle_curve(R= 3, direction=1, vel=0.1, dt = 0.05, least_N = 4000,
 
 
 
+
 def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
     A = A
     b = b
@@ -100,6 +101,152 @@ def generate_eight_curve(A= 6, b=2, vel=0.1, dt = 0.05, least_N = 4000, no_exten
     x = A * np.sin(b * t)
     y = A * np.sin(b * t) * np.cos(b * t)
     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+    num_xy = xy.shape[0]
+    cnt = int(np.ceil(least_N*1.5/num_xy))
+
+    # tmp = xy
+    # if cnt >1:
+    #     for _ in range(cnt):
+    #         tmp = np.concatenate([tmp, xy], axis=0)
+
+    if not no_extend:
+        num_xy = xy.shape[0]
+        cnt = int(np.ceil(least_N * 1.5 / num_xy))
+
+        tmp = xy
+        if cnt > 1:
+            for _ in range(cnt):
+                tmp = np.concatenate([tmp, xy], axis=0)
+    else:
+        tmp = xy
+        tmp = np.concatenate([tmp, xy], axis=0)
+
+    return tmp
+
+
+def get_same_interrval(xy, vel=0.1, Dt=0.05):
+    points = []
+    points.append(xy[0])
+
+    DIS = vel * Dt
+
+    end_index = 0
+    try_index = 0
+    last_index = 0
+    while end_index < (xy.shape[0] - 10):
+        # print(end_index)
+        sum_dis = 0
+        for end_index in range(try_index + 1, xy.shape[0]):
+
+            dis = np.linalg.norm(xy[end_index] - xy[end_index - 1])
+
+            sum_dis += dis
+
+            if sum_dis < DIS:
+                end_index += 1
+            else:
+                last_index = try_index
+                points.append(xy[end_index])
+                try_index = end_index
+                sum_dis = 0
+                break
+
+    points = np.array(points)
+    return points
+
+def generate_star_curve(A= 0.5, C= 1,  vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
+
+    N = 20000
+    t = np.linspace(0, 4 * np.pi, num=N)
+    x = C * 3 * np.sin(t) / 2 + C * A * np.sin(3 * t / 2)
+    y = C * 3 * np.cos(t) / 2 - C * A * np.cos(3 * t / 2)
+
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    #xy = get_same_interrval(xy, vel=vel, Dt=0.05)
+
+    sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
+    new_N = sum_traj / (vel * dt) * 1.1
+
+    t = np.linspace(0, 4 * np.pi, num=new_N)
+    x = C * 3 * np.sin(t) / 2 + C * A * np.sin(3 * t / 2)
+    y = C * 3 * np.cos(t) / 2 - C * A * np.cos(3 * t / 2)
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    xy = get_same_interrval(xy, vel=vel, Dt=0.05)
+
+    num_xy = xy.shape[0]
+    cnt = int(np.ceil(least_N*1.5/num_xy))
+
+    # tmp = xy
+    # if cnt >1:
+    #     for _ in range(cnt):
+    #         tmp = np.concatenate([tmp, xy], axis=0)
+
+    if not no_extend:
+        num_xy = xy.shape[0]
+        cnt = int(np.ceil(least_N * 1.5 / num_xy))
+
+        tmp = xy
+        if cnt > 1:
+            for _ in range(cnt):
+                tmp = np.concatenate([tmp, xy], axis=0)
+    else:
+        tmp = xy
+        tmp = np.concatenate([tmp, xy], axis=0)
+
+    return tmp
+
+def generate_heart_curve(A= 0.5, C= 1,  vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
+    A = 0.1
+    C = 1
+    N = 20000
+    t = np.linspace(0, 2 * np.pi, num=N)
+    x = A * (16 * np.sin(t) ** 3)
+    y = A * (15 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t))
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+    sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
+    new_N = sum_traj / (vel * dt) * 1.1
+
+    t = np.linspace(0, 2 * np.pi, num=new_N)
+    x = A * (16 * np.sin(t) ** 3)
+    y = A * (15 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t))
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+
+    num_xy = xy.shape[0]
+    cnt = int(np.ceil(least_N*1.5/num_xy))
+
+    # tmp = xy
+    # if cnt >1:
+    #     for _ in range(cnt):
+    #         tmp = np.concatenate([tmp, xy], axis=0)
+
+    if not no_extend:
+        num_xy = xy.shape[0]
+        cnt = int(np.ceil(least_N * 1.5 / num_xy))
+
+        tmp = xy
+        if cnt > 1:
+            for _ in range(cnt):
+                tmp = np.concatenate([tmp, xy], axis=0)
+    else:
+        tmp = xy
+        tmp = np.concatenate([tmp, xy], axis=0)
+
+    return tmp
+
+
+def generate_rect_curve( vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
+
+    N = 1450
+    xy = cal_rectangle(N )
+
+    sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
+    new_N = sum_traj / (vel * dt) * 1.1
+
+
+
+    xy = cal_rectangle(int(N/14) )
 
     num_xy = xy.shape[0]
     cnt = int(np.ceil(least_N*1.5/num_xy))
@@ -145,7 +292,87 @@ def generate_butterfly_curve(vel=0.2, dt = 0.05, least_N = 4000):
             tmp = np.concatenate([tmp, xy], axis=0)
     return tmp
 
+def get_arc_data(mode,x0,y0, N, R= 1):
+    if mode =='1':
+        t = np.linspace(0, np.pi / 2, num=N, endpoint=True)
+        x = x0+ 0 + R * np.cos(t)
+        y = y0+ -R + R * np.sin(t)
+        x = x[::-1]
+        y = y[::-1]
+        xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    elif mode =='2':
+        t = np.linspace(-np.pi/2,  0 , num=N, endpoint=True)
+        x = x0+-R + R * np.cos(t)
+        y = y0+0 + R * np.sin(t)
+        x = x[::-1]
+        y = y[::-1]
+        xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    elif mode =='3':
+        t = np.linspace(np.pi  , np.pi/2*3 , num=N, endpoint=True)
+        x = x0+0 + R * np.cos(t)
+        y = y0+R + R * np.sin(t)
+        x = x[::-1]
+        y = y[::-1]
+        xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    elif mode =='4':
+        t = np.linspace(np.pi/2  , np.pi , num=N, endpoint=True)
+        x = x0+R + R * np.cos(t)
+        y = y0+0 + R * np.sin(t)
+        x = x[::-1]
+        y = y[::-1]
+        xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    return xy
 
+def cal_rectangle(N ):
+    L = 1
+    #N = 1450
+    # 8+ int(L/2*1.5707*4)
+    points = []
+
+    x = np.linspace(0, L / 2, num=N)
+    y = np.zeros_like(x)
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    points.append(xy)
+
+    xy = get_arc_data('1', x[-1], y[-1], int(L / 2 * 1.5707 * N))
+    points.append(xy)
+
+    y = np.linspace(xy[-1, 1], xy[-1, 1] - L, num=2 * N)
+    x = np.ones_like(y) * xy[-1, 0]
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    points.append(xy)
+
+    xy = get_arc_data('2', x[-1], y[-1], int(L / 2 * 1.5707 * N))
+    points.append(xy)
+
+    x = np.linspace(xy[-1, 0], xy[-1, 0] - L, num=2 * N)
+    y = np.ones_like(x) * xy[-1, 1]
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    points.append(xy)
+
+    xy = get_arc_data('3', x[-1], y[-1], int(L / 2 * 1.5707 * N))
+    points.append(xy)
+
+    y = np.linspace(xy[-1, 1], xy[-1, 1] + L, num=2 * N)
+    x = np.ones_like(y) * xy[-1, 0]
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    points.append(xy)
+
+    xy = get_arc_data('4', x[-1], y[-1], int(L / 2 * 1.5707 * N))
+    points.append(xy)
+
+    x = np.linspace(xy[-1, 0], xy[-1, 0] + L / 2, num=N)
+    y = np.ones_like(x) * xy[-1, 1]
+    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+    points.append(xy)
+
+    for i in range(len(points)):
+        if i == 0:
+            xy = points[0]
+        else:
+            xy = np.concatenate((xy, points[i]), axis=0)
+
+    return xy
 def generate_point_in_arc_area(center_p, norm_dir,  theta= np.deg2rad(30), dis_range= (30, 100), side = np.random.choice(2) ):
     """
     生成一个点，在给扇形区域内, 在xz平面内。

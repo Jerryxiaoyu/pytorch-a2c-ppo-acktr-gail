@@ -13,7 +13,7 @@ import math
 import time
 from .cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
 from my_envs.utils.goals import generate_point_in_arc_area, generate_same_interval_eight_curve, \
-    generate_eight_curve,generate_circle_curve,generate_butterfly_curve
+    generate_eight_curve,generate_circle_curve,generate_butterfly_curve, generate_star_curve, generate_heart_curve, generate_rect_curve
 
 state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
@@ -69,7 +69,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         self.num_goals = num_goals
 
-        self._isRenderGoal = isRenderGoal
+        self._isRenderGoal =  isRenderGoal # False#
         self.max_steps = max_steps
 
         self.goal_state = np.zeros(self.num_goals*3)
@@ -97,6 +97,9 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
 
     def reset_model(self, command=None, ):
+
+        self._sample_command(command)
+
         if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
             # reset init robot
             self._reset_robot_position()
@@ -117,7 +120,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
         for i in range(6):
             self.filter_fun_list[i].reset()
 
-        self._sample_command(command)
+
 
         # reset something...
 
@@ -169,6 +172,23 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
                 vel = np.random.uniform(0.03, 0.2)
 
                 points = generate_circle_curve(R, direction, vel )
+
+            elif self.sample_mode ==2:
+                #print("stars sample")
+                A = np.random.uniform(0.2, 0.7)
+                C = np.random.uniform(0.5,3)
+                vel = np.random.uniform(0.03, 0.18)
+
+                points =  generate_star_curve( A= A, C= C, vel=vel)
+            elif self.sample_mode ==3:
+                #print("stars sample")
+                A = 0.5
+                C = 1
+                vel = np.random.uniform(0.03, 0.18)
+
+                points =  generate_star_curve( A= A, C= C, vel=vel)
+
+
             else:
                 raise NotImplementedError
 
@@ -190,7 +210,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
                 points = generate_circle_curve(R, direction, vel, no_extend=True)
 
-                self.max_steps = int(points.shape[0]/2)
+                self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
             # elif global_command == 'p2p_butterfly':
             #     points = generate_butterfly_curve(vel=0.1)
@@ -203,11 +223,41 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
                 self.max_steps = int(points.shape[0]/2)
                 print("Change the max steps to : ", self.max_steps)
+            elif global_command.split('-')[0] == 'p2p_star':
+
+
+                points = generate_star_curve( A= 0.23, C= 1, vel=0.08, no_extend=True)
+
+                self.max_steps = int(points.shape[0]/2)
+                print("Change the max steps to : ", self.max_steps)
+            elif global_command.split('-')[0] == 'p2p_heart':
+
+
+                points = generate_heart_curve( vel=0.18, no_extend=True)
+
+                self.max_steps = int(points.shape[0]/2)
+                print("Change the max steps to : ", self.max_steps)
+            elif global_command.split('-')[0] == 'p2p_rect':
+
+
+                points = generate_rect_curve( vel=0.12, no_extend=True)
+
+                self.max_steps = int(points.shape[0]/2)+100
+                print("Change the max steps to : ", self.max_steps)
+
 
             else:
                 raise NotImplementedError
             self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
             print('Global command is selected,  {}'.format(global_command))
+
+            #
+            # for i in range(min(4200, self.command.shape[0])):
+            #     ref_pos = self.command[i]#*1.05
+            #     ref_pos[2] = 0.05
+            #     self.sim.model.site_pos[10000+i] = ref_pos
+            #     self.sim.model.site_rgba[10000+i] = [0, 0, 1, 1]
+
 
         # _render_goal_position
     def _render_goal_position(self, position):
@@ -215,7 +265,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
         :param position: [x,y,z]
         :return:
         """
-        assert self.num_goals <= 5
+        assert self.num_goals <= 6
         for i in range(self.num_goals):
 
             self.model.site_pos[i] = position.reshape((-1, 3))[i]
@@ -224,7 +274,6 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
             else:
                 self.model.site_rgba[i] = [1, 0, 0, 1]
     def step(self, a):
-
         if self._isRenderGoal:
             self._render_goal_position(self.future_command)
         obs, reward, done, info= super().step(a)

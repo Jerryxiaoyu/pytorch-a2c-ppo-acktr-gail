@@ -112,7 +112,7 @@ class MujocoEnv(gym.Env):
 
     def render(self, mode='human', width=DEFAULT_SIZE, height=DEFAULT_SIZE):
         if mode == 'rgb_array':
-            camera_name = 'track'
+            camera_name = 'fixed_camera'
             camera_id = None if camera_name not in self.model.camera_names else self.model.camera_name2id(camera_name)
             self._get_viewer(mode).render(width, height, camera_id=camera_id)
             # window size used for old mujoco-py:
