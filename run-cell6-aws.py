@@ -21,11 +21,11 @@ class VG(VariantGenerator):
 
     @variant
     def env_name(self):
-        return ['CellRobotEnvCPG6Traj-v4' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
+        return ['CellRobotEnvCPG6NewP2PTarget-g4-I20-v4','CellRobotEnvCPG6NewP2PTarget-g4-I5-v4','CellRobotEnvCPG6NewP2PTarget-g4-I1-v4' ]  # 'CellrobotEnv-v0' , 'Cellrobot2Env-v0', 'CellrobotSnakeEnv-v0'  , 'CellrobotSnake2Env-v0','CellrobotButterflyEnv-v0', 'CellrobotBigdog2Env-v0'
 
     @variant
     def seed(self):
-        return [123, 124,125,126,127]
+        return [123 ]
 
     @variant
     def num_steps(self):
@@ -61,7 +61,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [3e7]
+        return [2e7]
 
     @variant
     def recurrent(self):
@@ -110,11 +110,11 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [13]  # 2,3,13
+        return [2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
-        return [0]
+        return [1]
 
     @variant
     def num_buffer(self):
@@ -123,11 +123,11 @@ class VG(VariantGenerator):
 
     @variant
     def command_mode(self):
-        return [ "conv_error" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
+        return [ "p2p" ]  # full, error, no FandE  dir_vel point  conv_error  p2p
 
     @variant
     def reward_fun_choice(self):
-        return [3]
+        return [0]
 
     @variant
     def vel_filtered(self):
