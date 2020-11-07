@@ -180,7 +180,23 @@ register(
 
                  )
 )
+register(
+    id='CellRobotEnvCPG6TrajForPID-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewObsGoalTraj',
+    max_episode_steps=8000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 isRootposNotInObs = True,
 
+                 robot_state_dim = 42+3,
+
+                    max_steps = 8000,
+                   # isRenderDir = False,
+                #isRenderDir = True,
+
+                 )
+)
 
 register(
     id='CellRobotEnvCPG6TrajDisturb-v4',
@@ -501,6 +517,10 @@ register(
 
                  )
 )
+
+
+
+
 register(
     id='CellRobotEnvCPG6NewP2PTarget-v3',
     entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
@@ -541,9 +561,42 @@ register(
                  isRenderGoal = 1,
                  sample_mode = 0,
 
-                isRenderTrajectory = False
+                isRenderTrajectory = True
                  )
 )
+
+
+
+register(
+    id='CellRobotEnvCPG6NewP2PTargetDisturb-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict(control_skip=5,
+                cpg_mode=2,
+                max_steps=4000,
+
+                hardReset_per_reset=1,
+
+                num_goals=4,
+
+                goal_interval_steps=10,
+                trajectory_length=40,
+                robot_state_dim=42,
+                isRenderGoal=1,
+                sample_mode=0,
+
+                isRenderTrajectory=False,
+
+                isAddDisturbance= True,
+
+                disturb_time_list = np.arange(0, 10000, 100).tolist(),
+                xml_name='cellrobot_Quadruped_float_limit_visualizer_ball.xml',
+                )
+)
+
+
 
 
 register(

@@ -49,7 +49,7 @@ class VG(VariantGenerator):
 
     @variant
     def num_env_steps(self):
-        return [3e7]
+        return [5e7]
 
 
     @variant
@@ -100,7 +100,7 @@ class VG(VariantGenerator):
 
     @variant
     def action_dim(self):
-        return [2 ]  # 2,3,13
+        return [2]  # 2,3,13
 
     @variant
     def CPG_enable(self):
@@ -124,14 +124,14 @@ class VG(VariantGenerator):
 
     @variant
     def trained_model_path(self):
-        return ["pre_models/CellRobotEnvCPG6NewP2PTarget-v4_761_aws_exp87_no1.pt"]
+        return [None]
 
     @variant
     def sample_mode(self):
-        return [3] #
+        return [None] #
 
 
-exp_id = 36
+exp_id = 38
 EXP_NAME ='_SMC_PPO_RL_CELL6'
 group_note ="************ABOUT THIS EXPERIMENT****************\n" \
             "  " \

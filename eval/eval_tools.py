@@ -133,12 +133,17 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
             os.environ["GLOBAL_CMD"] = str(global_command)
             print('GLOBAL_CMD = ', os.getenv('GLOBAL_CMD'))
 
-   # os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit_ball.xml"
+   # os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit_ball2.xml"
+
+    #os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit_visualizer_ball.xml"
     os.environ["XML_NAME"] = "cellrobot_Quadruped_float_limit_visualizer.xml"
     if not render:
         other_str = ' --no-render'
     else:
         other_str = ' '
+
+    if contact_log is not None:
+        other_str += ' --contact-log '+str(contact_log)
 
     os.system("python3 enjoy.py " +
               " --seed " + str(seed) +
@@ -149,7 +154,7 @@ def evaluate_fun(result_path,   parms, model_save_num, global_command=None, num_
              " --result-dir " + str(evaluate_path) +
              " --num-enjoy " + str(num_enjoy)+
              " --data-name " +str(data_name) +
-              ' --contact-log='+str(contact_log) +
+
               other_str
               # " --gpu-index " + str(gpu_index) +
               # " --store_data " + str(store_data) +

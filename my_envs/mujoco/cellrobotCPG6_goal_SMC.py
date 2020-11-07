@@ -428,6 +428,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             obs = obs,
             motor= action,
             torque = self.sim.data.sensordata[np.arange(39, step=3)],
+            root_quat = self.root_quat,
         )
 
     def _terminal(self):
@@ -620,7 +621,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                 qvel = self.init_qvel #+ self.np_random.randn(self.model.nv) * .1
 
         # for star
-        #qpos[0:2] = self.command[0,:2]
+        qpos[0:2] = self.command[0,:2]
 
         # for eight
         #qpos[3:7] =[ 0.65328148,  0.27059805,  0.65328148, -0.27059805]

@@ -69,7 +69,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         self.num_goals = num_goals
 
-        self._isRenderGoal =  isRenderGoal # False#
+        self._isRenderGoal = False# isRenderGoal # False#
         self.max_steps = max_steps
 
         self.goal_state = np.zeros(self.num_goals*3)
@@ -102,7 +102,43 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
             # reset init robot
-            self._reset_robot_position()
+            T = np.ones(self.model.nq)
+            T[2] = 0
+
+            if self.rand_init == 0:
+                qpos = self.init_qpos  # + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
+                qvel = self.init_qvel  # + self.np_random.randn(self.model.nv) * .1
+            else:
+                qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1) * T
+                qvel = self.init_qvel  # + self.np_random.randn(self.model.nv) * .1
+
+            global_command = os.getenv('GLOBAL_CMD')
+
+            # for star
+            qpos[0:2] = self.command[0, :2]
+
+            # for eight
+            if self.sample_mode == 0 and global_command is None:
+                qpos[3:7] =[ 0.65328148,  0.27059805,  0.65328148, -0.27059805]
+
+            if global_command is not None:
+                if global_command.split('-')[0] == 'p2p_eight':
+                    qpos[3:7] = [0.65328148, 0.27059805, 0.65328148, -0.27059805]
+
+            # # for heart
+            # qpos[0:2] = [0, 0.7]
+            # qpos[3:7] =[0.70020647, 0.09854386, 0.70020647, -0.09854386]
+
+            # for rect
+            # qpos[0:2] = [0, 0.]
+
+            self.set_state(qpos, qvel)
+            self.goal_theta = pi / 4.0
+            # self.model.site_pos[1] = [cos(self.goal_theta), sin(self.goal_theta), 0]
+
+            # init positon and euler
+            self._last_root_position = self.get_body_com("torso").flatten()
+            self._last_root_euler = self.get_orien()
 
         # # sample_goal
         # self.goal_state = self.sampel_goal()
@@ -221,26 +257,29 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
                 points = generate_eight_curve(A, vel=vel, no_extend=True)
 
-                self.max_steps = int(points.shape[0]/2)
+                self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
             elif global_command.split('-')[0] == 'p2p_star':
 
+                # default
+                #points = generate_star_curve( A= 0.23, C= 1, vel=0.08, no_extend=True)
+                C= float(global_command.split('-')[1])
+                vel = float(global_command.split('-')[2])
 
-                points = generate_star_curve( A= 0.23, C= 1, vel=0.08, no_extend=True)
-
-                self.max_steps = int(points.shape[0]/2)
+                points = generate_star_curve(A=0.3, C=C, vel=vel, no_extend=True) #0.23
+                self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
             elif global_command.split('-')[0] == 'p2p_heart':
 
 
                 points = generate_heart_curve( vel=0.18, no_extend=True)
 
-                self.max_steps = int(points.shape[0]/2)
+                self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
             elif global_command.split('-')[0] == 'p2p_rect':
+                vel = float(global_command.split('-')[1])  #0.12 default
 
-
-                points = generate_rect_curve( vel=0.12, no_extend=True)
+                points = generate_rect_curve( vel=vel, no_extend=True)
 
                 self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
@@ -252,11 +291,11 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
             print('Global command is selected,  {}'.format(global_command))
 
             #
-            # for i in range(min(4200, self.command.shape[0])):
-            #     ref_pos = self.command[i]#*1.05
-            #     ref_pos[2] = 0.05
-            #     self.sim.model.site_pos[10000+i] = ref_pos
-            #     self.sim.model.site_rgba[10000+i] = [0, 0, 1, 1]
+            for i in range(min(4200, self.command.shape[0])):
+                ref_pos = self.command[i]#*1.05
+                ref_pos[2] = 0.05
+                self.sim.model.site_pos[10000+i] = ref_pos
+                self.sim.model.site_rgba[10000+i] = [0, 0, 1, 1]
 
 
         # _render_goal_position

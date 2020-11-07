@@ -157,22 +157,14 @@ def get_same_interrval(xy, vel=0.1, Dt=0.05):
 
 def generate_star_curve(A= 0.5, C= 1,  vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
 
-    N = 20000
+    N = 30000
     t = np.linspace(0, 4 * np.pi, num=N)
     x = C * 3 * np.sin(t) / 2 + C * A * np.sin(3 * t / 2)
     y = C * 3 * np.cos(t) / 2 - C * A * np.cos(3 * t / 2)
 
     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
-    #xy = get_same_interrval(xy, vel=vel, Dt=0.05)
-
-    sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
-    new_N = sum_traj / (vel * dt) * 1.1
-
-    t = np.linspace(0, 4 * np.pi, num=new_N)
-    x = C * 3 * np.sin(t) / 2 + C * A * np.sin(3 * t / 2)
-    y = C * 3 * np.cos(t) / 2 - C * A * np.cos(3 * t / 2)
-    xy = np.concatenate((x[None], y[None]), axis=0).transpose()
     xy = get_same_interrval(xy, vel=vel, Dt=0.05)
+
 
     num_xy = xy.shape[0]
     cnt = int(np.ceil(least_N*1.5/num_xy))
@@ -195,6 +187,47 @@ def generate_star_curve(A= 0.5, C= 1,  vel=0.1, dt = 0.05, least_N = 4000, no_ex
         tmp = np.concatenate([tmp, xy], axis=0)
 
     return tmp
+
+# def generate_star_curve(A= 0.5, C= 1,  vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
+#
+#     N = 20000
+#     t = np.linspace(0, 4 * np.pi, num=N)
+#     x = C * 3 * np.sin(t) / 2 + C * A * np.sin(3 * t / 2)
+#     y = C * 3 * np.cos(t) / 2 - C * A * np.cos(3 * t / 2)
+#
+#     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+#     #xy = get_same_interrval(xy, vel=vel, Dt=0.05)
+#
+#     sum_traj = np.linalg.norm(xy[1:] - xy[:-1], axis=1).sum()
+#     new_N = sum_traj / (vel * dt) * 1.1
+#
+#     t = np.linspace(0, 4 * np.pi, num=new_N)
+#     x = C * 3 * np.sin(t) / 2 + C * A * np.sin(3 * t / 2)
+#     y = C * 3 * np.cos(t) / 2 - C * A * np.cos(3 * t / 2)
+#     xy = np.concatenate((x[None], y[None]), axis=0).transpose()
+#     xy = get_same_interrval(xy, vel=vel, Dt=0.05)
+#
+#     num_xy = xy.shape[0]
+#     cnt = int(np.ceil(least_N*1.5/num_xy))
+#
+#     # tmp = xy
+#     # if cnt >1:
+#     #     for _ in range(cnt):
+#     #         tmp = np.concatenate([tmp, xy], axis=0)
+#
+#     if not no_extend:
+#         num_xy = xy.shape[0]
+#         cnt = int(np.ceil(least_N * 1.5 / num_xy))
+#
+#         tmp = xy
+#         if cnt > 1:
+#             for _ in range(cnt):
+#                 tmp = np.concatenate([tmp, xy], axis=0)
+#     else:
+#         tmp = xy
+#         tmp = np.concatenate([tmp, xy], axis=0)
+#
+#     return tmp
 
 def generate_heart_curve(A= 0.5, C= 1,  vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
     A = 0.1
@@ -246,7 +279,7 @@ def generate_rect_curve( vel=0.1, dt = 0.05, least_N = 4000, no_extend=False):
 
 
 
-    xy = cal_rectangle(int(N/14) )
+    xy = cal_rectangle(int(new_N/14) )
 
     num_xy = xy.shape[0]
     cnt = int(np.ceil(least_N*1.5/num_xy))
