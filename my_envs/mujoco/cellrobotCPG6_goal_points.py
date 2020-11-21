@@ -37,7 +37,7 @@ CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
 from utils.Logger import IO
-REACH_THRESHHOLD = 0.1
+REACH_THRESHHOLD = 0.2
 
 proj_dir = "/home/drl/PycharmProjects/rl_baselines/pytorch-a2c-ppo-acktr"
 
@@ -66,7 +66,7 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
         self._isRenderGoal = isRenderGoal
         #self.max_steps = max_steps
 
-        self.goal_state = np.zeros(self.num_goals*3)
+        self.goal_state = np.ones(self.num_goals*3)*1
         super().__init__(**kwargs)
 
     def sampel_goal(self):
@@ -128,6 +128,10 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
             self.sim.reset()
             ob = self.reset_model(*args)
             self.reset_count = 0
+
+            if self.isRenderTrajectory:
+                for i in range(20000-5):
+                    self.sim.model.site_pos[i+5] = [0,0,-1]
         else:
             ob = self.reset_model(*args)
 
@@ -182,6 +186,9 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
                 self.history_buffer.full_state(self.obs_robot_state)
         self._t_step = 0
 
+        if self.isAddDisturbance:
+            self.disturb_cnt = 0
+
         # reset something...
         if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
             self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector,
@@ -197,26 +204,26 @@ class CellRobotEnvCPG6Target(CellRobotEnvCPG6GoalTraj):
     def step(self, a):
         obs, reward, done, info= super().step(a)
 
-        done = self._terminal()
+        done, terminal_reward = self._terminal()
 
         info['goal_state'] = self.goal_state
-        return obs, reward, done, info
+        return obs, reward+terminal_reward, done, info
 
     def _terminal(self):
 
         q_state = self.state_vector()
         notdone = np.isfinite(q_state).all() \
                   and self.get_body_com("torso")[2] >= 0.1 and self.get_body_com("torso")[2] <= 0.6
-        done = not notdone
+        done =  not notdone
 
         if done:
-            return True
+            return True, 0
         if self._t_step > self.max_steps:
-            return True
+            return True, 0
         dis = np.linalg.norm(self.root_position- self.goal_state)
         if dis < REACH_THRESHHOLD:
-            return True
-        return False
+            return True, 0
+        return False, 0
 
     # def _get_robot_state(self):
     #     joint_position = state_M.dot(self.sim.data.qpos[7:].reshape((-1, 1))).flatten()
@@ -551,18 +558,18 @@ class CellRobotEnvCPG6NewMultiTarget(CellRobotEnvCPG6NewTarget):
         done = not notdone
 
         if done:
-            return True
+            return True, 0
         if self._t_step > self.max_steps:
-            return True
+            return True, 0
 
         if self.phase_time == self.num_goals:
             self.phase_time = 0
-            return True
+            return True, 0
 
         # dis = np.linalg.norm(self.root_position- self.goal_state)
         # if dis < REACH_THRESHHOLD:
         #     return True
-        return False
+        return False, 0
 
     def compute_reward(self, velocity_base, v_commdand, action, obs):
         if self.reward_choice == 0:
@@ -693,18 +700,18 @@ class CellRobotEnvCPG6NewMulti2Target(CellRobotEnvCPG6NewTarget):
         done = not notdone
 
         if done:
-            return True
+            return True, 0
         if self._t_step > self.max_steps:
-            return True
+            return True, 0
 
         if self.phase_time == self.num_goals:
             self.phase_time = 0
-            return True
+            return True, 0
 
         # dis = np.linalg.norm(self.root_position- self.goal_state)
         # if dis < REACH_THRESHHOLD:
         #     return True
-        return False
+        return False, 0
 
     def compute_reward(self, velocity_base, v_commdand, action, obs):
         if self.reward_choice == 0:

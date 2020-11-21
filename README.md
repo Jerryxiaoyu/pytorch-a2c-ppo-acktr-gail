@@ -19,6 +19,25 @@ aws s3  sync s3://jaco-bair/cellrobot/AWS_logfiles log-files-SMC/AWS_logfiles/
 2e7 ～ 6+ hours
 
 
+#------------------------
+
+重要结果说明：
+1. Target 任务：
+log-files-SMC/AWS_logfiles/Oct_03_SMC_PPO_RL_Exp45/No_3_CellRobotEnvCPG6NewTarget-v2_PPO-2020-10-04_01:28:56
+
+2. Velocity 任务
+log-files-SMC/AWS_logfiles/Oct_16_SMC_PPO_RL_Exp90/No_2_CellRobotEnvCPG6Traj-v4_PPO-2020-10-16_17:30:59
+
+RL
+log-files-SMC/AWS_logfiles/Oct_16_SMC_PPO_RL_Exp91/No_1_CellRobotEnvCPG6Traj-v4_PPO-2020-10-16_09:16:54
+
+PID
+log-files-SMC/cell6_PID_vel_logs
+
+3. Path Following
+log-files-SMC/AWS_logfiles/Oct_13_SMC_PPO_RL_Exp87/No_1_CellRobotEnvCPG6NewP2PTarget-v4_PPO-2020-10-13_03:43:06
+
+
 
 (以下为原始文档)
 

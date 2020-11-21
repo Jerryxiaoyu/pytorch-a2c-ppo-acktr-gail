@@ -13,26 +13,26 @@ import os
 from utils.fir_filter import fir_filter
 import math
 import time
-state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.],
-                    [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.],
-                    [0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.]])
+from .state_m import big_quadruped_M, quadruped_M, quadruped_position_vector
+# state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.],
+#                     [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.],
+#                     [0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.]])
 
-position_vector = np.array([0.9922418358258432, -0.26790716313078566, 1.544827488736095, 0.1697636863918297, 1.7741507083847519, 0.128810963574171, 0.9526971501553204, 1.8825515998993296, 1.7745743229887139, 1.0339288488706027, 1.0159186128367077, 0.6280555987489267, 1.6581479953809704, -1.7832213538976736, 0.01704474730114954, 0.0, 0.0022918597671406863, -0.02634337338777438, 0.004503538681869408, 0.0032371806499659804, 0.0, -0.03838697831725827, 0.0, 0.0, 0.0, 0.04910381476502241, 0.0, -1.0773638647322994, -1.8049011801072816, 2.4889661572487243, 1.0395144002763324, 1.8340430909060688, -2.3262172061379927, 0.7419174909731787,
-                            -0.7273188675247564, -2.397205732544516, -1.460001220824175, 2.212927483411068, -2.5633159512167834, -0.9789777531415957])
-joint_index = obs_low = 6
-obs_high = 19
+# position_vector = np.array([0.9922418358258432, -0.26790716313078566, 1.544827488736095, 0.1697636863918297, 1.7741507083847519, 0.128810963574171, 0.9526971501553204, 1.8825515998993296, 1.7745743229887139, 1.0339288488706027, 1.0159186128367077, 0.6280555987489267, 1.6581479953809704, -1.7832213538976736, 0.01704474730114954, 0.0, 0.0022918597671406863, -0.02634337338777438, 0.004503538681869408, 0.0032371806499659804, 0.0, -0.03838697831725827, 0.0, 0.0, 0.0, 0.04910381476502241, 0.0, -1.0773638647322994, -1.8049011801072816, 2.4889661572487243, 1.0395144002763324, 1.8340430909060688, -2.3262172061379927, 0.7419174909731787,
+#                             -0.7273188675247564, -2.397205732544516, -1.460001220824175, 2.212927483411068, -2.5633159512167834, -0.9789777531415957])
 
-CPG_controller_fun  = CPG_network_Sinusoid
+
+#CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
 from utils.Logger import IO
@@ -58,7 +58,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                  is_hard_reset_position = False,
                  max_steps = 2000,
 
-                 isRenderTrajectory = False
+                 isRenderTrajectory = False,
+                 robot_name = 'quadruped'
                  ):
 
         self.max_steps = max_steps
@@ -206,8 +207,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self.kc = self.k0
         self.cur_itr_rl = 0
 
-        self.num_joint = 13
-        policy_a_dim = 13  # networt output
+
+
         self.command = command_generator(10000, 0.01, 2, render = False)
         self._t_step = 0
         self.c_index_max = 10000
@@ -251,8 +252,25 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command_duration = 20
 
         dt = 0.01
-        self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint,
-                                                 position_vector=position_vector, dt= dt,
+
+
+        self.robot_name = robot_name
+        if self.robot_name == 'quadruped':
+            self.state_M= quadruped_M
+            self.CPG_controller_fun = CPG_network_Sinusoid
+            self.position_vector = quadruped_position_vector
+            self.num_joint = 13
+        elif self.robot_name == 'big_quadruped':
+            self.state_M= big_quadruped_M
+            self.CPG_controller_fun =  CPG_network_Sinusoid
+            self.position_vector =quadruped_position_vector# quadruped_position_vector
+            self.num_joint = 17
+
+        else:
+            raise NotImplementedError
+
+        self.CPG_controller = self.CPG_controller_fun(CPG_node_num=self.num_joint,
+                                                 position_vector=self.position_vector, dt= dt,
                                                  mode = self.cpg_mode)
 
 
@@ -297,11 +315,11 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         print('State size :', self.observation_space.shape[0])
         print('Policy action size : ', self.action_space.shape[0] )
 
-    def get_one_disturbance(self):
-        v_bullet = np.random.uniform(5,5)
+    def get_one_disturbance(self, vel = None):
+        v_bullet = np.random.uniform(5,5) if vel is None else vel
 
-        x = np.random.uniform(self.root_position[0] - 1, self.root_position[0] + 1)
-        y = np.random.uniform(self.root_position[1] - 1, self.root_position[1] + 1)
+        x = np.random.uniform(self.root_position[0] - 2, self.root_position[0] + 2)
+        y = np.random.uniform(self.root_position[1] - 2, self.root_position[1] + 2)
         z = np.random.uniform(1, 2)
         p_0 = np.array([x, y, z])
         #
@@ -321,6 +339,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def addDisturbance(self):
         if self._t_step == self.disturb_time_list[self.disturb_cnt]:
+            print('step:', self._t_step)
             qpos = self.sim.data.qpos.ravel().copy()
             qvel = self.sim.data.qvel.ravel().copy()
 
@@ -334,6 +353,21 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
             qpos[20:23] = p_target
             qvel[19:22] =  v
+
+            nums_balls = 5
+
+            for i in range(nums_balls):
+                p_target, v = self.get_one_disturbance()
+                #print(p_target)
+                qpos[20+7*i:20+7*i+3] = p_target
+                qvel[19+6*i:19+6*i+3] = v
+            print(self.disturb_cnt)
+            if self.disturb_cnt==10:
+                i=5
+                p_target, v = self.get_one_disturbance(vel=10)
+                # print(p_target)
+                qpos[20 + 7 * i:20 + 7 * i + 3] = p_target
+                qvel[19 + 6 * i:19 + 6 * i + 3] = v
 
             self.set_state(qpos, qvel)
 
@@ -353,6 +387,15 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
 
 
         self.sim.model.site_pos[(self._t_step  + 5) % 20000] = root_pos#self.root_position
+
+
+        ##online render future reference
+        for i in range(1000):
+            ref_pos =  self.command[self._t_step+i] # *1.05
+            ref_pos[2] = 0.05
+            self.sim.model.site_pos[10000 + i] = ref_pos
+            self.sim.model.site_rgba[10000 + i] = [0, 0, 1, 1]
+
 
         #
         #
@@ -446,8 +489,8 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         return False, 0
 
     def _get_robot_state(self):
-        joint_position = state_M.dot(self.sim.data.qpos[7:7+13].reshape((-1, 1))).flatten()
-        joint_velocity = state_M.dot(self.sim.data.qvel[6:6+13].reshape((-1, 1))).flatten()
+        joint_position = self.state_M.dot(self.sim.data.qpos[7:7+self.num_joint].reshape((-1, 1))).flatten()
+        joint_velocity = self.state_M.dot(self.sim.data.qvel[6:6+self.num_joint].reshape((-1, 1))).flatten()
 
         root_position = self.get_body_com("torso").flatten()
 
@@ -621,7 +664,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
                 qvel = self.init_qvel #+ self.np_random.randn(self.model.nv) * .1
 
         # for star
-        qpos[0:2] = self.command[0,:2]
+        #qpos[0:2] = self.command[0,:2]
 
         # for eight
         #qpos[3:7] =[ 0.65328148,  0.27059805,  0.65328148, -0.27059805]
@@ -664,7 +707,31 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
             self.command = IO('{}/{}.pkl'.format(proj_dir, global_command)).read_pickle()
             print('Global command is selected, cmd_{}'.format(global_command))
 
+        #self.render_velocity_traj()
+
+    def render_velocity_traj(self):
        # plot_command(self.command)
+        dt = 0.05
+        pos_rx = []
+        pos_ry = []
+        for i in range(2000):
+            if i == 0:
+                pos_x = self.command[i, 0]
+                pos_y = self.command[i, 1]
+            else:
+                pos_x += self.command[i, 0] * dt
+                pos_y += self.command[i, 1] * dt
+            pos_rx.append(pos_x)
+            pos_ry.append(pos_y)
+        pos_rx = np.array(pos_rx)
+        pos_ry = np.array(pos_ry)
+
+        pos_rxyz = np.concatenate((pos_rx, pos_ry, np.zeros_like(pos_rx))).reshape((3, -1)).transpose()
+        for i in range(2000):
+            ref_pos = pos_rxyz[i]  # *1.05
+            ref_pos[2] = 0.05
+            self.sim.model.site_pos[10000 + i] = ref_pos
+            self.sim.model.site_rgba[10000 + i] = [0, 0, 1, 1]
 
     def reset_model(self, command = None,  ):
 
@@ -705,7 +772,7 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         self._t_step = 0
 
         # reset something...
-        self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector, dt=self.dt,
+        self.CPG_controller = self.CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=self.position_vector, dt=self.dt,
                                                  mode=self.cpg_mode)
         self._last_root_position = self.root_position
         self._last_root_euler = self.root_euler
@@ -840,16 +907,16 @@ class CellRobotEnvCPG6Goal(mujoco_env.MujocoEnv, utils.EzPickle):
         return self._robot_state[3:6]
     @property
     def joint_position(self):
-        return self._robot_state[6:19]
+        return self._robot_state[6:6+self.num_joint]
     @property
     def joint_velocity(self):
-        return  self._robot_state[19:32]
+        return  self._robot_state[6+self.num_joint:6+2*self.num_joint]
     @property
     def root_velocity(self):
-        return self._robot_state[32:35]
+        return self._robot_state[6+2*self.num_joint:6+2*self.num_joint+3]
     @property
     def root_angluar_velocity(self):
-        return self._robot_state[35:38]
+        return self._robot_state[6+2*self.num_joint+3:6+2*self.num_joint+6]
     # @property
     # def filterd_root_velocity(self):
     #     return self._robot_state[38:41]

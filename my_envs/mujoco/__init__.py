@@ -178,6 +178,8 @@ register(
                    # isRenderDir = False,
                 #isRenderDir = True,
 
+                isRenderTrajectory = True,
+
                  )
 )
 register(
@@ -210,6 +212,7 @@ register(
                  robot_state_dim = 42+3,
 
                 isAddDisturbance= True,
+isRenderTrajectory = True,
 
                     disturb_time_list = np.arange(0, 2000, 200).tolist(),
                     xml_name='cellrobot_Quadruped_float_limit_ball.xml',
@@ -326,13 +329,41 @@ register(
     reward_threshold=6000.0,
     kwargs=dict( control_skip = 5,
                  cpg_mode=2,
-                 max_steps = 400,
+                 max_steps = 600, #400
+                hardReset_per_reset=5,
 
                 trajectory_length = 40,
 
                  robot_state_dim = 42,
                 isRenderGoal = 1,
-                 sample_mode = 1
+                 sample_mode = 1,
+
+                isRenderTrajectory = True,
+                 )
+)
+
+register(
+    id='CellRobotEnvCPG6NewTargetDisturb-v2',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewTarget',
+    max_episode_steps=2000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 600, #400
+                hardReset_per_reset=5,
+
+                trajectory_length = 40,
+
+                 robot_state_dim = 42,
+                isRenderGoal = 1,
+                 sample_mode = 1,
+
+                isRenderTrajectory = False,
+
+                isAddDisturbance= True,
+
+                disturb_time_list = np.arange(0, 10000, 200).tolist(),
+                xml_name='cellrobot_Quadruped_float_limit_visualizer_ball.xml',
                  )
 )
 register(
@@ -566,6 +597,33 @@ register(
 )
 
 
+register(
+    id='CellRobotEnvCPG6NewP2PTargetBigQuadruped-v4',
+    entry_point='my_envs.mujoco:CellRobotEnvCPG6NewP2PTarget',
+    max_episode_steps=13000,
+    reward_threshold=6000.0,
+    kwargs=dict( control_skip = 5,
+                 cpg_mode=2,
+                 max_steps = 4000,
+
+                 hardReset_per_reset= 1,
+
+                 num_goals = 4,
+
+                 goal_interval_steps =10,
+                 trajectory_length = 40,
+                 robot_state_dim = 42,
+                 isRenderGoal = 1,
+                 sample_mode = 0,
+
+cpg_enable = 0,
+
+                isRenderTrajectory = True,
+            robot_name = 'big_quadruped',
+            xml_name='cellrobot_big_quadruped_float.xml',
+                 )
+)
+
 
 register(
     id='CellRobotEnvCPG6NewP2PTargetDisturb-v4',
@@ -587,7 +645,7 @@ register(
                 isRenderGoal=1,
                 sample_mode=0,
 
-                isRenderTrajectory=False,
+                isRenderTrajectory=True,
 
                 isAddDisturbance= True,
 

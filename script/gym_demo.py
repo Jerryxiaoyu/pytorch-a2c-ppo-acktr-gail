@@ -27,10 +27,10 @@ os.environ["ACTION_DIM"] = str(2)
 
 #os.environ["SAMPLE_MODE"] = "2"
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
-os.environ["COMMAND_MODE"] = "p2p"  #point dir_vel
+os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #os.environ["COMMAND_MODE"] = "point"  #point dir_vel
 #HalfCheetah-v2  CellrobotEnvCPG5-v0 Ant-v2  CellRobotEnvCPG6Goal-v1 CellRobotEnvCPG6Traj-v1 CellRobotEnvCPG6Traj-v1  CellRobotEnvCPG6Target-v2
-env = gym.make("CellRobotEnvCPG6NewP2PTarget-g4-I20-v4" ,isRenderTrajectory = False)
+env = gym.make("CellRobotEnvCPG6NewTarget-v2" ,isRenderTrajectory = False)
 
 
 obs = env.reset()

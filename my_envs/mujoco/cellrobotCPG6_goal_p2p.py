@@ -15,26 +15,26 @@ from .cellrobotCPG6_goal_SMC import CellRobotEnvCPG6GoalTraj
 from my_envs.utils.goals import generate_point_in_arc_area, generate_same_interval_eight_curve, \
     generate_eight_curve,generate_circle_curve,generate_butterfly_curve, generate_star_curve, generate_heart_curve, generate_rect_curve
 
-state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.],
-                    [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0.],
-                    [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.],
-                    [0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.],
-                    [0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.]])
-
-position_vector = np.array([0.9922418358258432, -0.26790716313078566, 1.544827488736095, 0.1697636863918297, 1.7741507083847519, 0.128810963574171, 0.9526971501553204, 1.8825515998993296, 1.7745743229887139, 1.0339288488706027, 1.0159186128367077, 0.6280555987489267, 1.6581479953809704, -1.7832213538976736, 0.01704474730114954, 0.0, 0.0022918597671406863, -0.02634337338777438, 0.004503538681869408, 0.0032371806499659804, 0.0, -0.03838697831725827, 0.0, 0.0, 0.0, 0.04910381476502241, 0.0, -1.0773638647322994, -1.8049011801072816, 2.4889661572487243, 1.0395144002763324, 1.8340430909060688, -2.3262172061379927, 0.7419174909731787,
-                            -0.7273188675247564, -2.397205732544516, -1.460001220824175, 2.212927483411068, -2.5633159512167834, -0.9789777531415957])
-joint_index = obs_low = 6
-obs_high = 19
-
-CPG_controller_fun  = CPG_network_Sinusoid
+# state_M = np.array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.],
+#                     [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0.],
+#                     [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.],
+#                     [0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.],
+#                     [0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.]])
+#
+# position_vector = np.array([0.9922418358258432, -0.26790716313078566, 1.544827488736095, 0.1697636863918297, 1.7741507083847519, 0.128810963574171, 0.9526971501553204, 1.8825515998993296, 1.7745743229887139, 1.0339288488706027, 1.0159186128367077, 0.6280555987489267, 1.6581479953809704, -1.7832213538976736, 0.01704474730114954, 0.0, 0.0022918597671406863, -0.02634337338777438, 0.004503538681869408, 0.0032371806499659804, 0.0, -0.03838697831725827, 0.0, 0.0, 0.0, 0.04910381476502241, 0.0, -1.0773638647322994, -1.8049011801072816, 2.4889661572487243, 1.0395144002763324, 1.8340430909060688, -2.3262172061379927, 0.7419174909731787,
+#                             -0.7273188675247564, -2.397205732544516, -1.460001220824175, 2.212927483411068, -2.5633159512167834, -0.9789777531415957])
+# joint_index = obs_low = 6
+# obs_high = 19
+#
+# CPG_controller_fun  = CPG_network_Sinusoid
 from gym.utils import seeding
 from my_envs.base.global_config import *
 from utils.Logger import IO
@@ -69,7 +69,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         self.num_goals = num_goals
 
-        self._isRenderGoal = False# isRenderGoal # False#
+        self._isRenderGoal =   False  #isRenderGoal # False#
         self.max_steps = max_steps
 
         self.goal_state = np.zeros(self.num_goals*3)
@@ -185,7 +185,7 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
         # reset something...
         if self.reset_count == 0 or self.reset_count >= self.hardReset_per_reset:
-            self.CPG_controller = CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=position_vector,
+            self.CPG_controller = self.CPG_controller_fun(CPG_node_num=self.num_joint, position_vector=self.position_vector,
                                                      dt=self.dt,
                                                      mode=self.cpg_mode)
         self._last_root_position = self.root_position
@@ -250,6 +250,8 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
                 print("Change the max steps to : ", self.max_steps)
             # elif global_command == 'p2p_butterfly':
             #     points = generate_butterfly_curve(vel=0.1)
+                self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+                print('Global command is selected,  {}'.format(global_command))
 
             elif global_command.split('-')[0] == 'p2p_eight':
                 A = float(global_command.split('-')[1])
@@ -259,6 +261,9 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
                 self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
+
+                self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+                print('Global command is selected,  {}'.format(global_command))
             elif global_command.split('-')[0] == 'p2p_star':
 
                 # default
@@ -269,6 +274,9 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
                 points = generate_star_curve(A=0.3, C=C, vel=vel, no_extend=True) #0.23
                 self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
+
+                self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+                print('Global command is selected,  {}'.format(global_command))
             elif global_command.split('-')[0] == 'p2p_heart':
 
 
@@ -276,6 +284,9 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
 
                 self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
+
+                self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+                print('Global command is selected,  {}'.format(global_command))
             elif global_command.split('-')[0] == 'p2p_rect':
                 vel = float(global_command.split('-')[1])  #0.12 default
 
@@ -284,18 +295,27 @@ class CellRobotEnvCPG6NewP2PTarget(CellRobotEnvCPG6GoalTraj):
                 self.max_steps = int(points.shape[0]/2)+100
                 print("Change the max steps to : ", self.max_steps)
 
+                self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
+                print('Global command is selected,  {}'.format(global_command))
+
+            elif global_command.split('-')[0] == 'p2p_nurbs':
+                self.command = IO('data/contours/nurbs3.pkl'.format(proj_dir, global_command)).read_pickle()
+
+
+
+                self.max_steps = int(self.command.shape[0])+100
+                print("Change the max steps to : ", self.max_steps)
 
             else:
                 raise NotImplementedError
-            self.command = np.concatenate((points, np.zeros(points.shape[0])[:, None]), axis=1)
-            print('Global command is selected,  {}'.format(global_command))
+
 
             #
-            for i in range(min(4200, self.command.shape[0])):
-                ref_pos = self.command[i]#*1.05
-                ref_pos[2] = 0.05
-                self.sim.model.site_pos[10000+i] = ref_pos
-                self.sim.model.site_rgba[10000+i] = [0, 0, 1, 1]
+            # for i in range(min(4200, self.command.shape[0])):
+            #     ref_pos = self.command[i]#*1.05
+            #     ref_pos[2] = 0.05
+            #     self.sim.model.site_pos[10000+i] = ref_pos
+            #     self.sim.model.site_rgba[10000+i] = [0, 0, 1, 1]
 
 
         # _render_goal_position
